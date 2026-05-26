@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Fondo azul -->
+    <path
+        android:fillColor="#082B5B"
+        android:pathData="M54,0A54,54 0 1,1 53.9,0Z"/>
+
+    <!-- Anillo gris -->
+    <path
+        android:fillColor="#D9D9D9"
+        android:pathData="M54,3A51,51 0 1,1 53.9,3Z"/>
+
+    <!-- Círculo azul interno -->
+    <path
+        android:fillColor="#0B3F78"
+        android:pathData="M54,6A48,48 0 1,1 53.9,6Z"/>
+
+    <!-- Línea celeste -->
+    <path
+        android:fillColor="#8ED8FF"
+        android:pathData="
+            M0,58
+            Q27,52 54,56
+            Q81,60 108,64
+            L108,68
+            Q81,64 54,61
+            Q27,58 0,63Z" />
+
+    <!-- Círculo central gris -->
+    <path
+        android:fillColor="#D0D0D0"
+        android:pathData="M54,29A25,25 0 1,1 53.9,29Z"/>
+
+    <!-- Círculo central azul -->
+    <path
+        android:fillColor="#082B5B"
+        android:pathData="M54,33A21,21 0 1,1 53.9,33Z"/>
+
+    <!-- Pokebola roja arriba -->
+    <path
+        android:fillColor="#FF003C"
+        android:pathData="
+            M35,54
+            A19,19 0 0,1 73,54
+            L63,54
+            A9,9 0 0,0 45,54Z"/>
+
+    <!-- Pokebola blanca abajo -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="
+            M35,54
+            A19,19 0 0,0 73,54
+            L63,54
+            A9,9 0 0,1 45,54Z"/>
+
+    <!-- Centro azul -->
+    <path
+        android:fillColor="#082B5B"
+        android:pathData="M54,45A9,9 0 1,1 53.9,45Z"/>
+
+    <!-- Centro blanco -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:pathData="M54,48A6,6 0 1,1 53.9,48Z"/>
+
+</vector>

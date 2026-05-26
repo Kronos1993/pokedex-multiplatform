@@ -1,0 +1,157 @@
+package com.kronos.mutliplatform.pokedex.features.pokemon.list
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import com.kronos.mutliplatform.pokedex.core.ui.components.AppTopAppBar
+import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
+import com.kronos.mutliplatform.pokedex.core.ui.components.Destinations
+import com.kronos.mutliplatform.pokedex.core.ui.components.LoadingDialog
+import com.kronos.mutliplatform.pokedex.core.ui.components.PullToRefreshContainer
+import com.kronos.mutliplatform.pokedex.core.ui.components.button.ButtonType
+import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
+import com.kronos.mutliplatform.pokedex.features.pokemon.list.content.PokemonsContent
+import com.kronos.mutliplatform.pokedex.screen_config.DeviceScreenConfiguration
+import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+import pokedex.shared.generated.resources.Res
+import pokedex.shared.generated.resources.loading_dialog_text
+import pokedex.shared.generated.resources.loading_dialog_title
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PokemonListScreen(
+    navHost: NavHostController,
+    pokedex:String,
+    isDarkTheme: Boolean,
+    deviceScreenConfiguration: DeviceScreenConfiguration,
+) {
+    val viewModel = koinViewModel<PokemonListScreenViewModel>()
+
+    val pokemonList by viewModel.pokemons.collectAsStateWithLifecycle()
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val listState = rememberLazyGridState()
+
+    LaunchedEffect(Unit){
+        viewModel.loadPokemons(pokedex)
+    }
+
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.secondaryContainer
+    ) {
+        Scaffold(
+            topBar = {
+                AppTopAppBar(
+                    title = pokedex.replace("-"," ").replaceFirstChar { it.uppercase() },
+                    navIconButton = {
+                        IconButton(
+                            icon = Icons.AutoMirrored.Filled.ArrowBack,
+                            onClick = {
+                                scope.launch {
+                                    navHost.popBackStack()
+                                }
+                            },
+                            type = ButtonType.TEXT,
+                            iconColor = Color.White,
+                            size = ComponentSize.LARGE
+                        )
+                    },
+                    actions = listOf()
+                )
+            },
+            modifier = Modifier.fillMaxSize().systemBarsPadding(),
+            snackbarHost = {
+                SnackbarHost(snackbarHostState) { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
+                    )
+                }
+            }
+        ) {
+            PullToRefreshContainer(
+                innerPadding = it,
+                isRefreshing = viewModel.loading,
+                onRefresh = { viewModel.refreshPokemons(pokedex) }
+            ) {
+                val rootModifier = Modifier
+                    .fillMaxSize()
+                    .padding(vertical = 4.dp)
+                    .background(color = Color.Transparent)
+                    .consumeWindowInsets(WindowInsets.navigationBars)
+
+                PokemonsContent(
+                    gridColumns = when (deviceScreenConfiguration) {
+                        DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
+                            1
+                        }
+
+                        DeviceScreenConfiguration.MOBILE_LANDSCAPE,
+                        DeviceScreenConfiguration.TABLET_PORTRAIT -> {
+                            2
+                        }
+
+                        DeviceScreenConfiguration.TABLET_LANDSCAPE,
+                        DeviceScreenConfiguration.DESKTOP -> {
+                            3
+                        }
+                    },
+                    listState = listState,
+                    pokemonList = pokemonList,
+                    onClick = { pokemon->
+                        navHost.navigate("${Destinations.POKEMON_DETAIL.name}/${pokemon.pokemon.name}")
+                    },
+                    modifier = rootModifier
+                )
+            }
+
+
+            // Diálogo de carga
+            LoadingDialog(
+                Res.string.loading_dialog_title,
+                Res.string.loading_dialog_text,
+                showDialog = viewModel.loading
+            )
+
+            // Mostrar Snackbar en caso de error
+            if (viewModel.message.orEmpty().containsKey("error")) {
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = viewModel.message.orEmpty()["error"].orEmpty(),
+                        duration = SnackbarDuration.Short
+                    )
+                    viewModel.message?.clear()
+                }
+            }
+        }
+    }
+}

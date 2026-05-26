@@ -1,0 +1,84 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="108"
+    height="108"
+    viewBox="0 0 108 108">
+
+    <!-- Fondo azul -->
+    <circle
+        cx="54"
+        cy="54"
+        r="54"
+        fill="#082B5B" />
+
+    <!-- Anillo gris -->
+    <circle
+        cx="54"
+        cy="54"
+        r="51"
+        fill="#D9D9D9" />
+
+    <!-- Círculo azul interno -->
+    <circle
+        cx="54"
+        cy="54"
+        r="48"
+        fill="#0B3F78" />
+
+    <!-- Línea celeste recta -->
+    <rect
+        x="0"
+        y="51"
+        width="108"
+        height="6"
+        fill="#8ED8FF" />
+
+    <!-- Círculo central gris -->
+    <circle
+        cx="54"
+        cy="54"
+        r="25"
+        fill="#D0D0D0" />
+
+    <!-- Círculo central azul -->
+    <circle
+        cx="54"
+        cy="54"
+        r="21"
+        fill="#082B5B" />
+
+    <!-- Pokebola roja arriba -->
+    <path
+        d="
+            M35,54
+            A19,19 0 0,1 73,54
+            L63,54
+            A9,9 0 0,0 45,54
+            Z"
+        fill="#FF003C" />
+
+    <!-- Pokebola blanca abajo -->
+    <path
+        d="
+            M35,54
+            A19,19 0 0,0 73,54
+            L63,54
+            A9,9 0 0,1 45,54
+            Z"
+        fill="#FFFFFF" />
+
+    <!-- Centro azul -->
+    <circle
+        cx="54"
+        cy="54"
+        r="9"
+        fill="#082B5B" />
+
+    <!-- Centro blanco -->
+    <circle
+        cx="54"
+        cy="54"
+        r="6"
+        fill="#F5F5F5" />
+
+</svg>

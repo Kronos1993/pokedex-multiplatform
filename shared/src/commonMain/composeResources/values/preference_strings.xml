@@ -1,0 +1,12 @@
+<resources>
+    <string name="preference_lang_title">App language</string>
+    <string name="preference_lang_subtitle">Select the language of the app</string>
+    <string name="preference_lang_entries">English,Spanish</string>
+    <string name="preference_lang_values">en,es</string>
+
+    <string name="preference_theme_title">App theme</string>
+    <string name="preference_theme_subtitle">Select the theme of the app</string>
+    <string name="preference_app_theme_entries">Dark,Light</string>
+    <string name="preference_app_theme_values">dark,light</string>
+
+</resources>

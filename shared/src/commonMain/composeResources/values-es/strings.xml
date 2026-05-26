@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Pokedex</string>
+
+    <string name="required_field">Este campo es obligatorio</string>
+    <string name="storage_permission_dialog_message">Es necesario el acceso al almacenamiento para guardar las localizaciones del usuario</string>
+    <string name="storage_permission_dialog_title">Permisos requeridos</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancelar</string>
+
+    <string name="exit_dialog_title">Salir</string>
+    <string name="exit_dialog_body">Estas seguro que quieres salir?</string>
+    <string name="exit_dialog_yes">Yes</string>
+    <string name="exit_dialog_no">No</string>
+
+
+</resources>

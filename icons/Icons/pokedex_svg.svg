@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 512 700">
+
+  <!-- TOP BODY -->
+  <rect x="126"
+      y="40"
+      width="260"
+      height="240"
+      rx="22"
+      fill="#d94f4f"/>
+
+  <!-- TOP SCREEN FRAME -->
+  <rect x="154"
+      y="68"
+      width="204"
+      height="176"
+      rx="12"
+      fill="#8396a0"/>
+
+  <!-- TOP SCREEN -->
+  <rect x="166"
+      y="80"
+      width="180"
+      height="152"
+      rx="6"
+      fill="#b9dff0"/>
+
+  <!-- CAMERA -->
+  <rect x="102"
+      y="96"
+      width="28"
+      height="48"
+      rx="6"
+      fill="#596a78"/>
+
+  <rect x="108"
+      y="102"
+      width="12"
+      height="8"
+      rx="2"
+      fill="#92a0a8"
+      opacity="0.5"/>
+
+  <!-- HINGE -->
+  <rect x="126"
+      y="278"
+      width="260"
+      height="18"
+      rx="8"
+      fill="#b73232"/>
+
+  <!-- LOWER SILVER BODY -->
+  <rect x="46"
+      y="300"
+      width="420"
+      height="240"
+      rx="120"
+      fill="#d8dbdd"/>
+
+  <rect x="52"
+      y="306"
+      width="408"
+      height="228"
+      rx="114"
+      fill="#e5e8ea"/>
+
+  <!-- LOWER RED BODY -->
+  <rect x="126"
+      y="300"
+      width="260"
+      height="240"
+      rx="22"
+      fill="#d94f4f"/>
+
+  <!-- LOWER SCREEN FRAME -->
+  <rect x="170"
+      y="328"
+      width="172"
+      height="160"
+      rx="12"
+      fill="#8396a0"/>
+
+  <!-- LOWER SCREEN -->
+  <rect x="182"
+      y="340"
+      width="148"
+      height="136"
+      rx="6"
+      fill="#b9dff0"/>
+
+  <!-- DPAD -->
+  <rect x="72"
+      y="412"
+      width="68"
+      height="28"
+      rx="6"
+      fill="#596a78"/>
+
+  <rect x="92"
+      y="392"
+      width="28"
+      height="68"
+      rx="6"
+      fill="#596a78"/>
+
+  <!-- WHITE CROSS -->
+  <rect x="98"
+      y="424"
+      width="16"
+      height="4"
+      rx="2"
+      fill="#ffffff"/>
+
+  <rect x="104"
+      y="418"
+      width="4"
+      height="16"
+      rx="2"
+      fill="#ffffff"/>
+
+  <!-- GREEN BUTTON -->
+  <circle cx="398"
+      cy="426"
+      r="34"
+      fill="#c7d7be"/>
+
+  <circle cx="398"
+      cy="426"
+      r="24"
+      fill="#a7c98f"/>
+
+  <!-- SHINE -->
+  <circle cx="390"
+      cy="418"
+      r="6"
+      fill="#ffffff"
+      opacity="0.25"/>
+
+</svg>
