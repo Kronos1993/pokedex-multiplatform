@@ -8,6 +8,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CornerBasedShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,6 +34,7 @@ fun BaseCardView(
     borderStroke: BorderStroke? = null,
     enabled: Boolean = true,
     onClick: (() -> Unit)? = null,
+    shape: CornerBasedShape = RoundedCornerShape(20.dp),
     content: @Composable () -> Unit,
 ) {
 
@@ -63,7 +66,8 @@ fun BaseCardView(
         elevation = CardDefaults.cardElevation(
             defaultElevation = animatedElevation
         ),
-        border = borderStroke
+        border = borderStroke,
+        shape = shape,
     ) {
         content()
     }

@@ -39,6 +39,7 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.button.ButtonType
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.toPokemonColor
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonDetailTab
+import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonLocationTab
 import com.kronos.mutliplatform.pokedex.screen_config.DeviceScreenConfiguration
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -70,11 +71,14 @@ fun PokemonDetailScreen(
 ) {
     val viewModel = koinViewModel<PokemonDetailScreenViewModel>()
     val pokemonInfo by viewModel.pokemon.collectAsStateWithLifecycle()
+    val pokemonEncounters by viewModel.pokemonEncounterList.collectAsStateWithLifecycle()
     val pokemonSpritesUrl by viewModel.pokemonSpritesUrl.collectAsStateWithLifecycle()
     val pokemonOtherFormsUrl by viewModel.pokemonOtherFormsUrl.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    val listState = rememberLazyGridState()
+
+    val detailListState = rememberLazyGridState()
+    val locationListState = rememberLazyGridState()
 
     val stringSpriteHome = stringResource(Res.string.home)
     val stringSpriteHomeShiny = stringResource(Res.string.home_shiny)
@@ -93,6 +97,7 @@ fun PokemonDetailScreen(
             stringSpriteFemaleShiny = stringSpriteFemaleShiny
         )
         viewModel.loadPokemonInfo()
+        viewModel.getPokemonEncounters()
     }
 
     val typeName = remember(pokemonInfo.types) {
@@ -124,7 +129,7 @@ fun PokemonDetailScreen(
                 dominantColor = dominantColor,
                 isDarkTheme = isDarkTheme,
                 currentLang = currentLang,
-                listState = listState,
+                listState = detailListState,
                 gridColumns = when (deviceScreenConfiguration) {
                     DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
                         1
@@ -160,7 +165,28 @@ fun PokemonDetailScreen(
             Icons.PokemonLocation,
             index = 2
         ) {
-            //todo add screen
+            PokemonLocationTab(
+                pokemonEncounters = pokemonEncounters,
+                dominantColor = dominantColor,
+                isDarkTheme = isDarkTheme,
+                currentLang = currentLang,
+                listState = locationListState,
+                gridColumns = when (deviceScreenConfiguration) {
+                    DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
+                        1
+                    }
+
+                    DeviceScreenConfiguration.MOBILE_LANDSCAPE,
+                    DeviceScreenConfiguration.TABLET_PORTRAIT -> {
+                        2
+                    }
+
+                    DeviceScreenConfiguration.TABLET_LANDSCAPE,
+                    DeviceScreenConfiguration.DESKTOP -> {
+                        3
+                    }
+                }
+            )
         },
 
         TabItem(

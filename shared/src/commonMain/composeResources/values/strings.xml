@@ -46,4 +46,8 @@
     <string name="capture_rate">Capture Rate</string>
     <string name="capture_rate_value">%1$s (%2$s% full HP with a pokeball)</string>
     <string name="no_info_available">Unknown</string>
+    <string name="min_level">Min Level</string>
+    <string name="max_level">Max Level</string>
+    <string name="max_chance">Max Chance</string>
+    <string name="game_version">Game Version</string>
 </resources>

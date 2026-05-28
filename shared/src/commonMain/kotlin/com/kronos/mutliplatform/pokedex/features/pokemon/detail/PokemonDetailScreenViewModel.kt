@@ -164,54 +164,14 @@ class PokemonDetailScreenViewModel(
         postPokemonStats(pokemonInfo.stats)
         postPokemonGames(pokemonInfo.games)
 
-        val pokemonSprite = mutableListOf<Pair<String, String>>()
-        pokemonInfo.sprites.frontHome.let {
-            if (it.isNotEmpty()) {
-                pokemonSprite.add(Pair(it, context.getString(R.string.home)))
-            }
-        }
-        pokemonInfo.sprites.frontHomeShiny.let {
-            if (it.isNotEmpty()) {
-                pokemonSprite.add(Pair(it, context.getString(R.string.home_shiny)))
-            }
-        }
-        pokemonInfo.sprites.frontDefault.let {
-            if (it.isNotEmpty()) {
-                pokemonSprite.add(Pair(it, context.getString(R.string.front)))
-            }
-        }
-        pokemonInfo.sprites.frontFemale.let {
-            if (it.isNotEmpty()) {
-                pokemonSprite.add(Pair(it, context.getString(R.string.female)))
-            }
-        }
-        pokemonInfo.sprites.frontShiny.let {
-            if (it.isNotEmpty()) {
-                pokemonSprite.add(Pair(it, context.getString(R.string.front_shiny)))
-            }
-        }
-        pokemonInfo.sprites.frontShinyFemale.let {
-            if (it.isNotEmpty()) {
-                pokemonSprite.add(Pair(it, context.getString(R.string.female_shiny)))
-            }
-        }
-        postPokemonSprites(pokemonSprite)
 
-        val pokemonOtherForms = mutableListOf<Pair<String, String>>()
-        pokemonInfo.specieInfo.varieties.forEach {
-            if (it.pokemon.name.isNotEmpty() && pokemonInfo.name != it.pokemon.name) {
-                pokemonOtherForms.add(
-                    Pair(
-                        it.pokemon.url,
-                        it.pokemon.name.replace("-".toRegex(), " ").uppercase()
-                    )
-                )
-            }
-        }
-        postPokemonOtherForms(pokemonOtherForms)
         statsTotal.set(pokemonInfo.totalStat())
         loading.postValue(false)*/
 
+    }
+
+    private fun postPokemonEncounters(list: List<Encounter>) {
+        _pokemonEncounterList.value = (list)
     }
 
     fun loadPokemonInfo() {
@@ -234,6 +194,24 @@ class PokemonDetailScreenViewModel(
                     loading = (false)
                 }
 
+        }
+    }
+
+    fun getPokemonEncounters(){
+        viewModelScope.launch (Dispatchers.IO){
+            pokemonRemoteRepository.getPokemonEncountersInfo(urlProvider.extractIdFromUrl(appCache._currentPokemon.value?.url.orEmpty()).toString())
+                .onSuccess {
+                    postPokemonEncounters(it)
+                }
+                .onError {
+                    val err = HashMap<String, String>()
+                    if (it is FullNetworkError) {
+                        err["error"] = it.errorMessage
+                    } else {
+                        err["error"] = it.toString()
+                    }
+                    message = (err)
+                }
         }
     }
 

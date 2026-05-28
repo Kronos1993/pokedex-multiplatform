@@ -23,13 +23,43 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
+import androidx.compose.material.icons.filled.Air
+import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.BeachAccess
+import androidx.compose.material.icons.filled.CardGiftcard
 import androidx.compose.material.icons.filled.CatchingPokemon
+import androidx.compose.material.icons.filled.CloudQueue
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Egg
+import androidx.compose.material.icons.filled.Forest
+import androidx.compose.material.icons.filled.Grass
+import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.Hiking
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.LocalFlorist
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.NaturePeople
+import androidx.compose.material.icons.filled.Park
+import androidx.compose.material.icons.filled.Percent
+import androidx.compose.material.icons.filled.Phishing
+import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Pool
 import androidx.compose.material.icons.filled.Psychology
+import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.QuestionMark
+import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.Stars
+import androidx.compose.material.icons.filled.Straight
+import androidx.compose.material.icons.filled.Terrain
+import androidx.compose.material.icons.filled.TravelExplore
+import androidx.compose.material.icons.filled.VideogameAsset
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -86,13 +116,17 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
 import com.kronos.mutliplatform.pokedex.core.ui.components.LabelText
 import com.kronos.mutliplatform.pokedex.core.ui.components.TitleText
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.ratingColorContainerLight
 import com.kronos.mutliplatform.pokedex.core.util.format
 import com.kronos.mutliplatform.pokedex.domain.model.FlavorText
 import com.kronos.mutliplatform.pokedex.domain.model.Name
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.ability.Ability
+import com.kronos.mutliplatform.pokedex.domain.model.pokemon.Encounter
+import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterDetail
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonInfo
+import com.kronos.mutliplatform.pokedex.domain.model.pokemon.VersionDetail
 import com.kronos.mutliplatform.pokedex.domain.model.specie.GenderPossibility
 import com.kronos.mutliplatform.pokedex.domain.model.specie.PokemonGenera
 import com.kronos.mutliplatform.pokedex.domain.model.specie.SpecieInfo
@@ -105,6 +139,7 @@ import pokedex.shared.generated.resources.baby_pokemon
 import pokedex.shared.generated.resources.base_exp
 import pokedex.shared.generated.resources.capture_rate
 import pokedex.shared.generated.resources.capture_rate_value
+import pokedex.shared.generated.resources.game_version
 import pokedex.shared.generated.resources.genderless
 import pokedex.shared.generated.resources.growth_rate
 import pokedex.shared.generated.resources.habitat
@@ -115,6 +150,9 @@ import pokedex.shared.generated.resources.height
 import pokedex.shared.generated.resources.high_happiness
 import pokedex.shared.generated.resources.legendary_pokemon
 import pokedex.shared.generated.resources.lower_happiness
+import pokedex.shared.generated.resources.max_chance
+import pokedex.shared.generated.resources.max_level
+import pokedex.shared.generated.resources.min_level
 import pokedex.shared.generated.resources.mythical_pokemon
 import pokedex.shared.generated.resources.no_info_available
 import pokedex.shared.generated.resources.normal_happiness
@@ -302,15 +340,50 @@ fun PokemonSectionCard(
             modifier = Modifier.padding(bottom = 10.dp)
         )
 
-        ElevatedCard(
+        BaseCardView(
             shape = RoundedCornerShape(28.dp),
-            elevation = CardDefaults.elevatedCardElevation(
-                defaultElevation = 6.dp
-            )
+            elevation = 6.dp
         ) {
 
             Column(
                 modifier = Modifier.padding(18.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                content = content
+            )
+        }
+    }
+}
+
+
+@Composable
+fun PokemonEncounterSectionCard(
+    title: String,
+    icon: ImageVector,
+    iconTint: Color,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit
+) {
+
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
+
+        BodyText(
+            text = title,
+            vector = icon,
+            iconTint = iconTint,
+            fontWeight = FontWeight.Bold,
+            size = ComponentSize.LARGE,
+            modifier = Modifier.padding(bottom = 10.dp)
+        )
+
+        BaseCardView(
+            cardBackgroundColor = Color.Transparent,
+            elevation = 0.dp
+        ) {
+
+            Column(
+                modifier = Modifier,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 content = content
             )
@@ -600,7 +673,7 @@ fun PokemonAbilitiesCard(
 
             pokemon.abilities.forEach { ability ->
 
-                ElevatedCard(
+                BaseCardView(
                     modifier = Modifier.clickable {
                         onAbilityClick(ability)
                     },
@@ -658,7 +731,7 @@ fun PokemonSpritesCard(
 
             pokemonSprites.forEach { sprite ->
 
-                ElevatedCard(
+                BaseCardView(
                     modifier = Modifier
                         .fillMaxWidth(.48f)
                         .aspectRatio(1f)
@@ -725,7 +798,7 @@ fun PokemonOtherFormsCard(
 
             pokemonOtherForms.forEach { sprite ->
 
-                ElevatedCard(
+                BaseCardView(
                     modifier = Modifier
                         .fillMaxWidth(.48f)
                         .aspectRatio(1f)
@@ -798,6 +871,129 @@ fun TypeChip(
                 .copy(alpha = .22f)
         )
     )
+}
+
+/* -------------------------------------------------------------------------- */
+/* Ecounter grid item                                                               */
+/* -------------------------------------------------------------------------- */
+
+private val ColorVersion = Color(0xFF534AB7)   // purple
+private val ColorMinLevel = Color(0xFF1D9E75)  // teal
+private val ColorMaxLevel = Color(0xFFBA7517)  // amber
+private val ColorChance = Color(0xFFD85A30)    // coral
+
+@Composable
+fun PokemonEncounterGridItem(
+    item: Encounter,
+    modifier: Modifier = Modifier,
+) {
+    PokemonEncounterSectionCard(
+        title = item.location.name.prettyName(),
+        icon = Icons.Default.Place,
+        iconTint = MaterialTheme.colorScheme.onSurface,
+        modifier = modifier.background(Color.Transparent)
+    ) {
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            maxItemsInEachRow = 2
+        ) {
+            item.versionDetails.forEach { detail ->
+                VersionItem(
+                    item = detail,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun VersionItem(
+    item: VersionDetail,
+    modifier: Modifier = Modifier,
+) {
+    val methodName = item.encounterDetail.method.name
+    val (badgeBg, badgeFg) = encounterMethodColors(methodName)
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Row(
+            modifier = Modifier
+                .clip(RoundedCornerShape(50.dp))
+                .background(badgeBg)
+                .padding(horizontal = 12.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Icon(
+                imageVector = encounterMethodIcon(methodName),
+                contentDescription = null,
+                tint = badgeFg,
+                modifier = Modifier.size(16.dp)
+            )
+            Text(
+                text = methodName.prettyName(),
+                style = MaterialTheme.typography.labelMedium,
+                color = badgeFg,
+                fontWeight = FontWeight.Medium
+            )
+        }
+
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outlineVariant,
+            thickness = 0.5.dp
+        )
+
+        val infoItems = listOf(
+            PokemonInfoItem(
+                title = stringResource(Res.string.game_version),
+                value = item.version.name.prettyName(),
+                icon = Icons.Default.VideogameAsset,
+                iconTint = ColorVersion
+            ),
+            PokemonInfoItem(
+                title = stringResource(Res.string.min_level),
+                value = item.encounterDetail.minLevel.toString(),
+                icon = Icons.Default.KeyboardArrowDown,
+                iconTint = ColorMinLevel
+            ),
+            PokemonInfoItem(
+                title = stringResource(Res.string.max_level),
+                value = item.encounterDetail.maxLevel.toString(),
+                icon = Icons.Default.KeyboardArrowUp,
+                iconTint = ColorMaxLevel
+            ),
+            PokemonInfoItem(
+                title = stringResource(Res.string.max_chance),
+                value = "${item.encounterDetail.chance}%",
+                icon = Icons.Default.Percent,
+                iconTint = ColorChance
+            ),
+        )
+
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            infoItems.forEach { info ->
+                PokemonInfoGridItem(
+                    item = info,
+                    modifier = Modifier.fillMaxWidth(.48f)
+                )
+            }
+        }
+    }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -950,6 +1146,189 @@ fun String.toEggGroupColor(): Color {
     }
 }
 
+// ─── Colores ───────────────────────────────────────────────────────────────
+
+private data class EncounterColors(val bg: Color, val fg: Color)
+
+private fun encounterMethodIcon(method: String): ImageVector {
+    val m = method.lowercase()
+    return when {
+        m.contains("walk") || m.contains("dark-grass") || m.contains("grass-spot") ||
+                m.contains("shaking-grass") || m.contains("sweet-scent") ->
+            Icons.AutoMirrored.Filled.DirectionsWalk
+
+        m.contains("rough-terrain") ->
+            Icons.Default.Hiking
+
+        m.contains("flower") ->
+            Icons.Default.LocalFlorist
+
+        m.contains("rod") || m.contains("fishing") ->
+            Icons.Default.Phishing
+
+        m.contains("surf") ->
+            Icons.Default.Pool
+
+        m.contains("cave") || m.contains("rock-smash") ->
+            Icons.Default.Terrain
+
+        m.contains("headbutt") ->
+            Icons.Default.Forest
+
+        m.contains("bridge") ->
+            Icons.Default.Straight
+
+        m.contains("radar") ->
+            Icons.Default.TravelExplore
+
+        m.contains("devon") || m.contains("scope") ->
+            Icons.Default.Visibility
+
+        m.contains("roamer") ->
+            Icons.Default.Air
+
+        m.contains("only-one") ->
+            Icons.Default.Stars
+
+        m.contains("gift") ->
+            Icons.Default.CardGiftcard
+
+        m.contains("hatch") || m.contains("egg") ->
+            Icons.Default.Egg
+
+        m.contains("grotto") ->
+            Icons.Default.NaturePeople
+
+        m.contains("sos") ->
+            Icons.Default.Wifi
+
+        m.contains("raid") || m.contains("dynamax") ->
+            Icons.Default.Shield
+
+        m.contains("shaking-tree") || m.contains("tree") ->
+            Icons.Default.Park
+
+        m.contains("shadow") ->
+            Icons.Default.DarkMode
+
+        m.contains("overworld") || m.contains("terrestrial") ->
+            Icons.Default.Public
+
+        m.contains("sky") ->
+            Icons.Default.CloudQueue
+
+        m.contains("starter") ->
+            Icons.Default.AutoAwesome
+
+        m.contains("grass") ->
+            Icons.Default.Grass
+
+        m.contains("poke-radar") ->
+            Icons.Default.TravelExplore
+
+        m.contains("shaking") ->
+            Icons.Default.Park
+
+        m.contains("island-scan") || m.contains("island") ->
+            Icons.Default.BeachAccess
+
+        m.contains("horde") ->
+            Icons.Default.Groups
+
+        m.contains("snag") ->
+            Icons.Default.CatchingPokemon
+
+        m.contains("pokeflute") || m.contains("flute") ->
+            Icons.Default.MusicNote
+
+        m.contains("colosseum") || m.contains("bonus-disc") ->
+            Icons.Default.Album
+
+        else -> Icons.Default.QuestionMark
+    }
+}
+
+private fun encounterMethodColors(method: String): EncounterColors {
+    val m = method.lowercase()
+    return when {
+        m.contains("walk") || m.contains("dark-grass") || m.contains("grass-spot") ||
+                m.contains("shaking-grass") || m.contains("sweet-scent") || m.contains("rough-terrain") ->
+            EncounterColors(Color(0xFFE1F5EE), Color(0xFF0F6E56))
+
+        m.contains("flower") ->
+            EncounterColors(Color(0xFFEAF3DE), Color(0xFF3B6D11))
+
+        m.contains("surf") ->
+            EncounterColors(Color(0xFFE6F1FB), Color(0xFF185FA5))
+
+        m.contains("rod") || m.contains("fishing") ->
+            EncounterColors(Color(0xFFFAEEDA), Color(0xFF854F0B))
+
+        m.contains("cave") || m.contains("rock-smash") ->
+            EncounterColors(Color(0xFFF1EFE8), Color(0xFF5F5E5A))
+
+        m.contains("headbutt") || m.contains("shaking-tree") ->
+            EncounterColors(Color(0xFFEAF3DE), Color(0xFF27500A))
+
+        m.contains("bridge") ->
+            EncounterColors(Color(0xFFD3D1C7), Color(0xFF444441))
+
+        m.contains("radar") || m.contains("devon") || m.contains("scope") ->
+            EncounterColors(Color(0xFFEEEDFE), Color(0xFF3C3489))
+
+        m.contains("roamer") ->
+            EncounterColors(Color(0xFFFAECE7), Color(0xFF993C1D))
+
+        m.contains("only-one") ->
+            EncounterColors(Color(0xFFFBEAF0), Color(0xFF993556))
+
+        m.contains("gift") || m.contains("hatch") || m.contains("egg") ->
+            EncounterColors(Color(0xFFE1F5EE), Color(0xFF085041))
+
+        m.contains("grotto") ->
+            EncounterColors(Color(0xFFEAF3DE), Color(0xFF173404))
+
+        m.contains("sos") ->
+            EncounterColors(Color(0xFFE6F1FB), Color(0xFF0C447C))
+
+        m.contains("raid") || m.contains("dynamax") ->
+            EncounterColors(Color(0xFFFCEBEB), Color(0xFFA32D2D))
+
+        m.contains("shadow") ->
+            EncounterColors(Color(0xFFD3D1C7), Color(0xFF2C2C2A))
+
+        m.contains("overworld") || m.contains("terrestrial") ->
+            EncounterColors(Color(0xFFE1F5EE), Color(0xFF1D9E75))
+
+        m.contains("sky") ->
+            EncounterColors(Color(0xFFE6F1FB), Color(0xFF378ADD))
+
+        m.contains("starter") ->
+            EncounterColors(Color(0xFFFBEAF0), Color(0xFF72243E))
+
+        m.contains("grass") || m.contains("shaking") ->
+            EncounterColors(Color(0xFFEAF3DE), Color(0xFF639922))
+
+        m.contains("island-scan") || m.contains("island") ->
+            EncounterColors(Color(0xFFE6F1FB), Color(0xFF185FA5))
+
+        m.contains("horde") ->
+            EncounterColors(Color(0xFFFCEBEB), Color(0xFFA32D2D))
+
+        m.contains("snag") ->
+            EncounterColors(Color(0xFFEEEDFE), Color(0xFF534AB7))
+
+        m.contains("pokeflute") || m.contains("flute") ->
+            EncounterColors(Color(0xFFFBEAF0), Color(0xFF72243E))
+
+        m.contains("colosseum") || m.contains("bonus-disc") ->
+            EncounterColors(Color(0xFFFAEEDA), Color(0xFF854F0B))
+
+        else ->
+            EncounterColors(Color(0xFFF1EFE8), Color(0xFF888780))
+    }
+}
+
 fun String.prettyName(): String {
     return replaceFirstChar { it.uppercase() }.replace("-", " ")
 }
@@ -970,8 +1349,7 @@ fun Double.formatWeight(): String {
 @Composable
 fun PreviewPokemonDetailItem() {
 
-    MaterialTheme {
-
+    AppTheme {
         Surface {
 
             PokemonDetailItem(
@@ -989,7 +1367,7 @@ fun PreviewPokemonDetailItem() {
 @Composable
 fun PreviewPokemonBasicInfoCard() {
 
-    MaterialTheme {
+    AppTheme {
 
         Surface {
 
@@ -1004,7 +1382,7 @@ fun PreviewPokemonBasicInfoCard() {
 @Composable
 fun PreviewPokemonBreedingCard() {
 
-    MaterialTheme {
+    AppTheme {
 
         Surface {
 
@@ -1020,7 +1398,7 @@ fun PreviewPokemonBreedingCard() {
 @Composable
 fun PreviewPokemonAbilitiesCard() {
 
-    MaterialTheme {
+    AppTheme {
 
         Surface {
 
@@ -1036,7 +1414,7 @@ fun PreviewPokemonAbilitiesCard() {
 @Composable
 fun PreviewPokemonSpritesCard() {
 
-    MaterialTheme {
+    AppTheme {
 
         Surface {
 
@@ -1159,4 +1537,91 @@ private fun previewPokemon(): PokemonInfo {
             )
         )
     )
+}
+
+// --- Preview Data ---
+
+private val mockEncounterDetail = EncounterDetail(
+    method = NamedResourceApi(name = "walk"),
+    minLevel = 5,
+    maxLevel = 15,
+    chance = 30
+)
+
+private val mockVersionDetail = VersionDetail(
+    encounterDetail = mockEncounterDetail
+)
+
+private val mockEncounter = Encounter(
+    location = NamedResourceApi(name = "pallet-town-area"),
+    versionDetails = listOf(
+        mockVersionDetail,
+        mockVersionDetail.copy(
+            encounterDetail = mockEncounterDetail.copy(
+                method = NamedResourceApi(name = "surf"),
+                minLevel = 10,
+                maxLevel = 25,
+                chance = 15
+            )
+        )
+    )
+)
+
+// --- Previews ---
+
+@Preview
+@Composable
+private fun VersionItemPreview() {
+    AppTheme {
+        VersionItem(
+            item = mockVersionDetail,
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PokemonEncounterGridItemPreview() {
+    AppTheme {
+        Surface {
+
+            PokemonEncounterGridItem(
+                item = mockEncounter,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun PokemonEncounterGridItemMultipleVersionsPreview() {
+    AppTheme {
+        Surface {
+            PokemonEncounterGridItem(
+                item = mockEncounter.copy(
+                    location = NamedResourceApi(name = "viridian-forest"),
+                    versionDetails = listOf(
+                        mockVersionDetail,
+                        mockVersionDetail.copy(
+                            encounterDetail = mockEncounterDetail.copy(
+                                method = NamedResourceApi(
+                                    name = "surf"
+                                )
+                            )
+                        ),
+                        mockVersionDetail.copy(
+                            encounterDetail = mockEncounterDetail.copy(
+                                method = NamedResourceApi(
+                                    name = "old-rod"
+                                )
+                            )
+                        ),
+                    )
+                ),
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
 }

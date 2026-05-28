@@ -12,4 +12,6 @@ import kotlinx.serialization.Serializable
 data class Encounter (
     var location:NamedResourceApi = NamedResourceApi(),
     var versionDetails:List<VersionDetail> = listOf(),
-)
+){
+
+}
