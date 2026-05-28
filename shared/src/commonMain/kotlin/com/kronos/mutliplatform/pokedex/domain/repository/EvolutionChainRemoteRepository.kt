@@ -2,7 +2,7 @@ package com.kronos.mutliplatform.pokedex.domain.repository
 
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.ResponseList
-import com.kronos.pokedex.domian.model.evolution_chain.EvolutionChain
+import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.EvolutionChain
 import com.kronos.mutliplatform.pokedex.core.result.Error
 import com.kronos.mutliplatform.pokedex.core.result.Result
 

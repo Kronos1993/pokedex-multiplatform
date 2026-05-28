@@ -7,21 +7,21 @@ import kotlinx.serialization.Serializable
 data class SpriteDto(
     val default:String = "",
     @SerialName("back_default")
-    val backDefault:String = "",
+    val backDefault:String? = "",
     @SerialName("back_female")
-    val backFemale:String = "",
+    val backFemale:String? = "",
     @SerialName("back_shiny")
-    val backShiny:String = "",
+    val backShiny:String?= "",
     @SerialName("back_shiny_female")
-    val backShinyFemale:String = "",
+    val backShinyFemale:String? = "",
     @SerialName("front_default")
-    val frontDefault:String = "",
+    val frontDefault:String? = "",
     @SerialName("front_female")
-    val frontFemale:String = "",
+    val frontFemale:String? = "",
     @SerialName("front_shiny")
-    val frontShiny:String = "",
+    val frontShiny:String? = "",
     @SerialName("front_shiny_female")
-    val frontShinyFemale:String = "",
+    val frontShinyFemale:String? = "",
     @SerialName("other")
     val otherSprites: OtherSpriteDto = OtherSpriteDto(),
 )

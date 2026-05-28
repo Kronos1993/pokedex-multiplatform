@@ -39,6 +39,7 @@ import com.kronos.mutliplatform.pokedex.data.repository.type.TypeRemoteRepositor
 import com.kronos.mutliplatform.pokedex.domain.repository.AbilityRemoteRepository
 import com.kronos.mutliplatform.pokedex.domain.repository.BerryRemoteRepository
 import com.kronos.mutliplatform.pokedex.domain.repository.EggGroupRemoteRepository
+import com.kronos.mutliplatform.pokedex.domain.repository.EvolutionChainRemoteRepository
 import com.kronos.mutliplatform.pokedex.domain.repository.ItemRemoteRepository
 import com.kronos.mutliplatform.pokedex.domain.repository.MoveRemoteRepository
 import com.kronos.mutliplatform.pokedex.domain.repository.NatureRemoteRepository
@@ -146,7 +147,7 @@ val commonRemoteModules = module {
     singleOf(::AbilityRemoteRepositoryImpl).bind<AbilityRemoteRepository>()
     singleOf(::BerryRemoteRepositoryImpl).bind<BerryRemoteRepository>()
     singleOf(::EggGroupRemoteRepositoryImpl).bind<EggGroupRemoteRepository>()
-    singleOf(::EvolutionChainRemoteRepositoryImpl).bind<EvolutionChainRemoteRepositoryImpl>()
+    singleOf(::EvolutionChainRemoteRepositoryImpl).bind<EvolutionChainRemoteRepository>()
     singleOf(::ItemRemoteRepositoryImpl).bind<ItemRemoteRepository>()
     singleOf(::MoveRemoteRepositoryImpl).bind<MoveRemoteRepository>()
     singleOf(::NatureRemoteRepositoryImpl).bind<NatureRemoteRepository>()

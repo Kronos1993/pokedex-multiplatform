@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.kronos.mutliplatform.pokedex.components.EmptyList
 import com.kronos.mutliplatform.pokedex.components.icon.AppIcon
 import com.kronos.mutliplatform.pokedex.core.ui.components.AppTopAppBar
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
@@ -53,6 +54,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import pokedex.shared.generated.resources.Res
 import pokedex.shared.generated.resources.app_name
+import pokedex.shared.generated.resources.empty_pokedex_list
 import pokedex.shared.generated.resources.exit_dialog_body
 import pokedex.shared.generated.resources.exit_dialog_no
 import pokedex.shared.generated.resources.exit_dialog_title
@@ -60,6 +62,7 @@ import pokedex.shared.generated.resources.exit_dialog_yes
 import pokedex.shared.generated.resources.loading_dialog_text
 import pokedex.shared.generated.resources.loading_dialog_title
 import pokedex.shared.generated.resources.menu_pokedex
+import pokedex.shared.generated.resources.refresh_list
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -150,29 +153,41 @@ fun PokedexScreen(
                         .background(color = Color.Transparent)
                         .consumeWindowInsets(WindowInsets.navigationBars)
 
-                    PokedexContent(
-                        gridColumns = when (deviceScreenConfiguration) {
-                            DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
-                                2
-                            }
+                    if (pokedexList.isEmpty()) {
+                        EmptyList(
+                            title = stringResource(Res.string.empty_pokedex_list),
+                            subtitle = stringResource(Res.string.refresh_list),
+                            showRetryButton = true,
+                            onRetryClick = {
+                                viewModel.refreshPokedex()
+                            },
+                            modifier = rootModifier
+                        )
+                    } else {
+                        PokedexContent(
+                            gridColumns = when (deviceScreenConfiguration) {
+                                DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
+                                    2
+                                }
 
-                            DeviceScreenConfiguration.MOBILE_LANDSCAPE,
-                            DeviceScreenConfiguration.TABLET_PORTRAIT -> {
-                                3
-                            }
+                                DeviceScreenConfiguration.MOBILE_LANDSCAPE,
+                                DeviceScreenConfiguration.TABLET_PORTRAIT -> {
+                                    3
+                                }
 
-                            DeviceScreenConfiguration.TABLET_LANDSCAPE,
-                            DeviceScreenConfiguration.DESKTOP -> {
-                                4
-                            }
-                        },
-                        listState = listState,
-                        pokedexList = pokedexList,
-                        onClick = {
-                            navHost.navigate("${Destinations.POKEMON_LIST.name}/${it.name}")
-                        },
-                        modifier = rootModifier
-                    )
+                                DeviceScreenConfiguration.TABLET_LANDSCAPE,
+                                DeviceScreenConfiguration.DESKTOP -> {
+                                    4
+                                }
+                            },
+                            listState = listState,
+                            pokedexList = pokedexList,
+                            onClick = {
+                                navHost.navigate("${Destinations.POKEMON_LIST.name}/${it.name}")
+                            },
+                            modifier = rootModifier
+                        )
+                    }
                 }
 
                 // Diálogo de carga

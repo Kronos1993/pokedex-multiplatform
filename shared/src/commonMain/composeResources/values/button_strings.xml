@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="button_text_ok">OK</string>
+    <string name="button_text_add">Add</string>
+    <string name="button_text_update">Update</string>
+    <string name="button_text_create">Create</string>
+    <string name="button_text_dismiss">Dismiss</string>
+    <string name="button_text_cancel">Cancel</string>
+    <string name="button_text_clear_all">Clear all</string>
+    <string name="button_text_accept">Accept</string>
+    <string name="button_text_reject">Reject</string>
+    <string name="button_text_refresh">Refresh</string>
+</resources>

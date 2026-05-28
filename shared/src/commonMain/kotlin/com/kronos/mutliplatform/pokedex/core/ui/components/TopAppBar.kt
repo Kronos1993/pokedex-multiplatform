@@ -12,6 +12,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.kronos.mutliplatform.pokedex.core.ui.components.button.Button
 import com.kronos.mutliplatform.pokedex.core.ui.components.menu.AppBarAction
 import org.jetbrains.compose.resources.stringResource
 import pokedex.shared.generated.resources.Res
@@ -36,6 +38,13 @@ fun AppTopAppBar(
     navIconButton: @Composable () -> Unit,
     actions: List<AppBarAction>,
     scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
+    appBarColors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        titleContentColor = Color.White,
+        actionIconContentColor = Color.White,
+        navigationIconContentColor = Color.White
+    ),
+    modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -44,13 +53,7 @@ fun AppTopAppBar(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (title.isNullOrEmpty()) {
-                    Text(
-                        stringResource(Res.string.app_name),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                } else {
+                if (!title.isNullOrEmpty()) {
                     Text(
                         title,
                         maxLines = 1,
@@ -104,15 +107,119 @@ fun AppTopAppBar(
                             }
                         }
                     }
+
+                    is AppBarAction.IconText -> {
+                        Button(
+                            text = action.text,
+                            iconPosition = action.iconPosition,
+                            icon = action.icon,
+                            onClick = action.onClick,
+                            size = action.size,
+                            type = action.type,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                    }
                 }
             }
         },
         scrollBehavior = scrollBehavior,
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            titleContentColor = Color.White,
-            actionIconContentColor = Color.White,
-            navigationIconContentColor = Color.White
-        )
+        colors = appBarColors,
+        modifier = modifier
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppTopAppBarIconLess(
+    title: String?,
+    actions: List<AppBarAction>,
+    scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
+    appBarColors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        titleContentColor = Color.White,
+        actionIconContentColor = Color.White,
+        navigationIconContentColor = Color.White
+    ),
+    modifier: Modifier = Modifier
+) {
+
+    var expanded by remember { mutableStateOf(false) }
+
+    TopAppBar(
+        title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (title.isNullOrEmpty()) {
+                    Text(stringResource(Res.string.app_name))
+                } else {
+                    Text(title)
+                }
+            }
+        },
+        actions = {
+            actions.forEach { action ->
+                when (action) {
+                    is AppBarAction.Icon -> {
+                        IconButton(onClick = action.onClick) {
+                            Icon(
+                                imageVector = action.icon,
+                                contentDescription = action.contentDescription
+                            )
+                        }
+                    }
+
+                    is AppBarAction.Menu -> {
+                        IconButton(onClick = { expanded = !expanded }) {
+                            Icon(
+                                imageVector = Icons.Filled.MoreVert,
+                                contentDescription = "more options",
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            action.items.forEach { menuItem ->
+                                DropdownMenuItem(
+                                    onClick = {
+                                        menuItem.onClick()
+                                        expanded = false
+                                    },
+                                    text = {
+                                        Text(menuItem.label)
+                                    },
+                                    leadingIcon = {
+                                        if (menuItem.icon != null) {
+                                            Icon(
+                                                imageVector = menuItem.icon,
+                                                contentDescription = menuItem.label,
+                                                modifier = Modifier.padding(end = 8.dp)
+                                            )
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    is AppBarAction.IconText -> {
+                        Button(
+                            text = action.text,
+                            iconPosition = action.iconPosition,
+                            icon = action.icon,
+                            onClick = action.onClick,
+                            size = action.size,
+                            type = action.type,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                    }
+                }
+            }
+        },
+        scrollBehavior = scrollBehavior,
+        colors = appBarColors,
+        modifier = modifier
     )
 }

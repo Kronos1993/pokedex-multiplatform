@@ -25,7 +25,7 @@ data class PokemonInfoDto(
     val stats:List<StatDto> = listOf(),
     val sprites: SpriteDto = SpriteDto(),
     val moves:List<MoveListDto> = listOf(),
-    val specie: NamedResourceApiDto = NamedResourceApiDto(),
+    val species: NamedResourceApiDto = NamedResourceApiDto(),
     @SerialName("game_indices")
     val gameIndices: List<GameIndexDto> = listOf(),
     val specieInfoDto: SpecieInfoDto = SpecieInfoDto(),

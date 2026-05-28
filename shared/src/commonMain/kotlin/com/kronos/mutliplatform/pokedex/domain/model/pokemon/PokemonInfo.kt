@@ -25,4 +25,20 @@ data class PokemonInfo(
     var specieInfo: SpecieInfo? = SpecieInfo(),
     var specie: NamedResourceApi = NamedResourceApi(),
     var games:List<Game> = listOf()
-)
+){
+    fun getTotalStat():Int{
+        var total = 0
+        this.stats.forEach { total += it.baseStat}
+        return total
+    }
+
+    fun getMaxStatValue():Int{
+        val stat = this.stats.maxByOrNull { it.baseStat }
+        return stat.let {
+            if (it!=null)
+                it.baseStat + 10
+            else
+                0
+        }
+    }
+}

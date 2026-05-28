@@ -1,7 +1,11 @@
 package com.kronos.mutliplatform.pokedex.features.pokemon.detail
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -11,7 +15,9 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -27,15 +33,27 @@ import com.kronos.mutliplatform.pokedex.components.icon.Stats
 import com.kronos.mutliplatform.pokedex.components.icon.TmDisk
 import com.kronos.mutliplatform.pokedex.core.ui.components.AppTopAppBar
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
+import com.kronos.mutliplatform.pokedex.core.ui.components.Destinations
+import com.kronos.mutliplatform.pokedex.core.ui.components.LoadingDialog
 import com.kronos.mutliplatform.pokedex.core.ui.components.ScrollableTabView
 import com.kronos.mutliplatform.pokedex.core.ui.components.TabItem
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.ButtonType
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
+import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.toPokemonColor
+import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonDetailTab
 import com.kronos.mutliplatform.pokedex.screen_config.DeviceScreenConfiguration
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import pokedex.shared.generated.resources.Res
+import pokedex.shared.generated.resources.female
+import pokedex.shared.generated.resources.female_shiny
+import pokedex.shared.generated.resources.front
+import pokedex.shared.generated.resources.front_shiny
+import pokedex.shared.generated.resources.home
+import pokedex.shared.generated.resources.home_shiny
+import pokedex.shared.generated.resources.loading_dialog_text
+import pokedex.shared.generated.resources.loading_dialog_title
 import pokedex.shared.generated.resources.pokemon_detail_tab_encounter
 import pokedex.shared.generated.resources.pokemon_detail_tab_evolution
 import pokedex.shared.generated.resources.pokemon_detail_tab_games
@@ -46,7 +64,7 @@ import pokedex.shared.generated.resources.pokemon_detail_tab_stats
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokemonDetailScreen(
-    pokemon:String,
+    pokemon: String,
     navHost: NavHostController,
     isDarkTheme: Boolean,
     currentLang: String,
@@ -54,8 +72,45 @@ fun PokemonDetailScreen(
 ) {
     val viewModel = koinViewModel<PokemonDetailScreenViewModel>()
     val pokemonInfo by viewModel.pokemon.collectAsStateWithLifecycle()
+    val pokemonSpritesUrl by viewModel.pokemonSpritesUrl.collectAsStateWithLifecycle()
+    val pokemonOtherFormsUrl by viewModel.pokemonOtherFormsUrl.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val listState = rememberLazyGridState()
+
+    val stringSpriteHome = stringResource(Res.string.home)
+    val stringSpriteHomeShiny = stringResource(Res.string.home_shiny)
+    val stringSpriteFront = stringResource(Res.string.front)
+    val stringSpriteFemale = stringResource(Res.string.female)
+    val stringSpriteFrontShiny = stringResource(Res.string.front_shiny)
+    val stringSpriteFemaleShiny = stringResource(Res.string.female_shiny)
+
+    LaunchedEffect(Unit) {
+        viewModel.initStrings(
+            stringSpriteHome = stringSpriteHome,
+            stringSpriteHomeShiny = stringSpriteHomeShiny,
+            stringSpriteFront = stringSpriteFront,
+            stringSpriteFemale = stringSpriteFemale,
+            stringSpriteFrontShiny = stringSpriteFrontShiny,
+            stringSpriteFemaleShiny = stringSpriteFemaleShiny
+        )
+        viewModel.loadPokemonInfo(pokemon)
+    }
+
+    val typeName = remember(pokemonInfo.types) {
+        pokemonInfo.types.firstOrNull()?.name
+    }
+
+    val targetColor = typeName?.toPokemonColor() ?: MaterialTheme.colorScheme.surfaceVariant
+
+    val dominantColor by animateColorAsState(
+        targetValue = targetColor,
+        animationSpec = tween(
+            durationMillis = 400,
+            easing = FastOutSlowInEasing
+        ),
+        label = "dominantColorAnimation"
+    )
 
     val tabs = listOf(
         TabItem(
@@ -64,7 +119,40 @@ fun PokemonDetailScreen(
             Icons.Pokeball,
             index = 1
         ) {
-            //todo add screen
+            PokemonDetailTab(
+                pokemon = pokemonInfo,
+                pokemonSprites = pokemonSpritesUrl,
+                pokemonOtherForms = pokemonOtherFormsUrl,
+                dominantColor = dominantColor,
+                isDarkTheme = isDarkTheme,
+                currentLang = currentLang,
+                listState = listState,
+                gridColumns = when (deviceScreenConfiguration) {
+                    DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
+                        1
+                    }
+
+                    DeviceScreenConfiguration.MOBILE_LANDSCAPE,
+                    DeviceScreenConfiguration.TABLET_PORTRAIT -> {
+                        2
+                    }
+
+                    DeviceScreenConfiguration.TABLET_LANDSCAPE,
+                    DeviceScreenConfiguration.DESKTOP -> {
+                        3
+                    }
+                },
+                onTypeClick = {
+                },
+                onEggGroupClick = {
+                },
+                onAbilityClick = {
+                },
+                onSpriteClick = {},
+                onOtherFormsClick = {
+                    navHost.navigate("${Destinations.POKEMON_DETAIL.name}/${it}")
+                },
+            )
         },
 
         TabItem(
@@ -120,7 +208,7 @@ fun PokemonDetailScreen(
         Scaffold(
             topBar = {
                 AppTopAppBar(
-                    title = pokemon.replaceFirstChar { it.uppercase() },
+                    title = pokemon.replaceFirstChar { it.uppercase() }.replace("-", " "),
                     navIconButton = {
                         IconButton(
                             icon = Icons.AutoMirrored.Filled.ArrowBack,
@@ -134,7 +222,13 @@ fun PokemonDetailScreen(
                             size = ComponentSize.LARGE
                         )
                     },
-                    actions = listOf()
+                    actions = listOf(),
+                    appBarColors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = dominantColor.copy(alpha = .25f),
+                        titleContentColor = Color.White,
+                        actionIconContentColor = Color.White,
+                        navigationIconContentColor = Color.White
+                    ),
                 )
             },
             modifier = Modifier.fillMaxSize().systemBarsPadding(),
@@ -148,9 +242,17 @@ fun PokemonDetailScreen(
                 }
             }
         ) { paddingValues ->
-            ScrollableTabView(
-                tabs = tabs,
-                paddingValues = paddingValues
+            if (!viewModel.loading) {
+                ScrollableTabView(
+                    tabs = tabs,
+                    paddingValues = paddingValues
+                )
+            }
+
+            LoadingDialog(
+                Res.string.loading_dialog_title,
+                Res.string.loading_dialog_text,
+                showDialog = viewModel.loading
             )
         }
     }

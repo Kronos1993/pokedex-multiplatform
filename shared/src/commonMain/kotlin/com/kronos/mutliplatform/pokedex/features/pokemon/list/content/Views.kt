@@ -35,9 +35,9 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.kronos.mutliplatform.pokedex.components.icon.Pokeball
+import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
 import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
-import com.kronos.mutliplatform.pokedex.core.ui.components.ExpressiveBaseCardView
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonDexEntry
 
@@ -52,6 +52,7 @@ fun PokemonsContent(
     Column(
         modifier = modifier
     ) {
+
         LazyVerticalGrid(
             state = listState,
             columns = GridCells.Fixed(gridColumns),
@@ -78,7 +79,7 @@ fun PokemonItemCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ExpressiveBaseCardView(
+    BaseCardView(
         onClick = onClick,
         modifier = modifier.fillMaxWidth()
     ) {

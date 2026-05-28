@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.kronos.mutliplatform.pokedex.components.EmptyList
 import com.kronos.mutliplatform.pokedex.core.ui.components.AppTopAppBar
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
 import com.kronos.mutliplatform.pokedex.core.ui.components.Destinations
@@ -38,16 +39,19 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
 import com.kronos.mutliplatform.pokedex.features.pokemon.list.content.PokemonsContent
 import com.kronos.mutliplatform.pokedex.screen_config.DeviceScreenConfiguration
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import pokedex.shared.generated.resources.Res
+import pokedex.shared.generated.resources.empty_pokedex_list
 import pokedex.shared.generated.resources.loading_dialog_text
 import pokedex.shared.generated.resources.loading_dialog_title
+import pokedex.shared.generated.resources.refresh_list
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokemonListScreen(
     navHost: NavHostController,
-    pokedex:String,
+    pokedex: String,
     isDarkTheme: Boolean,
     deviceScreenConfiguration: DeviceScreenConfiguration,
 ) {
@@ -59,7 +63,7 @@ fun PokemonListScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val listState = rememberLazyGridState()
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         viewModel.loadPokemons(pokedex)
     }
 
@@ -70,7 +74,7 @@ fun PokemonListScreen(
         Scaffold(
             topBar = {
                 AppTopAppBar(
-                    title = pokedex.replace("-"," ").replaceFirstChar { it.uppercase() },
+                    title = pokedex.replace("-", " ").replaceFirstChar { it.uppercase() },
                     navIconButton = {
                         IconButton(
                             icon = Icons.AutoMirrored.Filled.ArrowBack,
@@ -109,29 +113,41 @@ fun PokemonListScreen(
                     .background(color = Color.Transparent)
                     .consumeWindowInsets(WindowInsets.navigationBars)
 
-                PokemonsContent(
-                    gridColumns = when (deviceScreenConfiguration) {
-                        DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
-                            1
-                        }
+                if (pokemonList.isEmpty()) {
+                    EmptyList(
+                        title = stringResource(Res.string.empty_pokedex_list),
+                        subtitle = stringResource(Res.string.refresh_list),
+                        showRetryButton = true,
+                        onRetryClick = {
+                            viewModel.refreshPokemons(pokedex)
+                        },
+                        modifier = rootModifier
+                    )
+                } else {
+                    PokemonsContent(
+                        gridColumns = when (deviceScreenConfiguration) {
+                            DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
+                                2
+                            }
 
-                        DeviceScreenConfiguration.MOBILE_LANDSCAPE,
-                        DeviceScreenConfiguration.TABLET_PORTRAIT -> {
-                            2
-                        }
+                            DeviceScreenConfiguration.MOBILE_LANDSCAPE,
+                            DeviceScreenConfiguration.TABLET_PORTRAIT -> {
+                                3
+                            }
 
-                        DeviceScreenConfiguration.TABLET_LANDSCAPE,
-                        DeviceScreenConfiguration.DESKTOP -> {
-                            3
-                        }
-                    },
-                    listState = listState,
-                    pokemonList = pokemonList,
-                    onClick = { pokemon->
-                        navHost.navigate("${Destinations.POKEMON_DETAIL.name}/${pokemon.pokemon.name}")
-                    },
-                    modifier = rootModifier
-                )
+                            DeviceScreenConfiguration.TABLET_LANDSCAPE,
+                            DeviceScreenConfiguration.DESKTOP -> {
+                                4
+                            }
+                        },
+                        listState = listState,
+                        pokemonList = pokemonList,
+                        onClick = { pokemon ->
+                            navHost.navigate("${Destinations.POKEMON_DETAIL.name}/${pokemon.pokemon.name}")
+                        },
+                        modifier = rootModifier
+                    )
+                }
             }
 
 

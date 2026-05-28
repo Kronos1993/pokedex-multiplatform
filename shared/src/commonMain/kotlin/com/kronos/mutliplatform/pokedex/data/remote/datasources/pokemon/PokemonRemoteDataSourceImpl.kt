@@ -222,7 +222,7 @@ class PokemonRemoteDataSourceImpl(
         val response =
             try {
                 httpClient.createKtorClient(httpEngine)
-                    .get(urlProvider.getPublicApiUrl() + PokemonApi.GET_POKEMON_ENCOUNTERS(pokemon))
+                    .get(urlProvider.getPublicApiUrl() + PokemonApi.GET_POKEMON_INFO(pokemon))
             } catch (e: UnresolvedAddressException) {
                 e.printStackTrace()
                 return Result.Error(
@@ -289,8 +289,15 @@ class PokemonRemoteDataSourceImpl(
                         }
                         val list =
                             json.decodeFromString<PokemonInfoDto>(result)
-                        val specie = specieRemoteDataSource.getSpecie(list.specie.name)
-                        Result.Success(list.toPokemonInfo((specie as Result.Success).data))
+                        val specie = specieRemoteDataSource.getSpecie(list.species.name)
+                        val specieResult = if (
+                            specie is Result.Success
+                        ){
+                            specie.data
+                        }else{
+                            null
+                        }
+                        Result.Success(list.toPokemonInfo(specieResult))
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Result.Error(

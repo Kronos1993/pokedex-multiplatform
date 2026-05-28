@@ -24,22 +24,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kronos.mutliplatform.pokedex.components.icon.PokedexSvg
+import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
 import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
-import com.kronos.mutliplatform.pokedex.core.ui.components.ExpressiveBaseCardView
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 
 @Composable
 fun PokedexContent(
     listState: LazyGridState,
-    gridColumns:Int = 1,
+    gridColumns: Int = 1,
     pokedexList: List<NamedResourceApi>,
     onClick: (item: NamedResourceApi) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
-    ){
+    ) {
         LazyVerticalGrid(
             state = listState,
             columns = GridCells.Fixed(gridColumns),
@@ -49,11 +49,11 @@ fun PokedexContent(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-           items(pokedexList, key = { it.name }){
-               PokedexItemCard(it.name, onClick = {
-                   onClick(it)
-               })
-           }
+            items(pokedexList, key = { it.name }) {
+                PokedexItemCard(it.name, onClick = {
+                    onClick(it)
+                })
+            }
 
             item { Spacer(modifier = Modifier.height(5.dp)) }
         }
@@ -66,7 +66,7 @@ fun PokedexItemCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ExpressiveBaseCardView(
+    BaseCardView(
         onClick = onClick,
         modifier = modifier.fillMaxWidth()
     ) {
@@ -82,7 +82,7 @@ fun PokedexItemCard(
                 modifier = Modifier.size(96.dp)
             )
             BodyText(
-                text = name.replace("-"," ").replaceFirstChar { it.uppercase() },
+                text = name.replace("-", " ").replaceFirstChar { it.uppercase() },
                 size = ComponentSize.LARGE
             )
         }

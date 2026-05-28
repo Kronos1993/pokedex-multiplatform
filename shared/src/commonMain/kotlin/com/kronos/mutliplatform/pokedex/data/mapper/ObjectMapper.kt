@@ -47,9 +47,9 @@ import com.kronos.mutliplatform.pokedex.domain.model.ability.AbilityInfo
 import com.kronos.mutliplatform.pokedex.domain.model.ability.PokemonWithAbility
 import com.kronos.mutliplatform.pokedex.domain.model.egg_group.EggGroupInfo
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.ChainLink
-import com.kronos.pokedex.domian.model.evolution_chain.EvolutionChain
+import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.EvolutionChain
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.EvolutionDetail
-import com.kronos.pokedex.domian.model.evolution_chain.EvolutionTrigger
+import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.EvolutionTrigger
 import com.kronos.mutliplatform.pokedex.domain.model.game.Game
 import com.kronos.mutliplatform.pokedex.domain.model.item.BerryFlavor
 import com.kronos.mutliplatform.pokedex.domain.model.item.BerryInfo
@@ -370,7 +370,7 @@ fun PokemonInfoDto.toPokemonInfo(): PokemonInfo =
             it.toMoveList()
         },
         specieInfo = SpecieInfo(),
-        specie = specie.toNamedResource()
+        specie = species.toNamedResource()
     )
 
 fun PokemonInfoDto.toPokemonInfo(specieInfo:SpecieInfo?): PokemonInfo =
@@ -393,7 +393,8 @@ fun PokemonInfoDto.toPokemonInfo(specieInfo:SpecieInfo?): PokemonInfo =
         moves = moves.map {
             it.toMoveList()
         },
-        specieInfo = specieInfo,
+        specie = species.toNamedResource(),
+        specieInfo = specieInfo?: SpecieInfo(),
         games = gameIndices.map {
             it.toGame()
         }
@@ -425,7 +426,7 @@ fun SpecieInfoDto.toSpecieInfo(): SpecieInfo =
         evolutionChain = evolutionChain,
         evolvesFrom = evolvesFrom.let{
             if(evolvesFrom!=null)
-                evolvesFrom.toNamedResource()
+                evolvesFrom!!.toNamedResource()
             else
                 null
         },
@@ -435,7 +436,7 @@ fun SpecieInfoDto.toSpecieInfo(): SpecieInfo =
         growthRate = growthRate.toNamedResource(),
         habitat = habitat.let{
             if(habitat!=null)
-                habitat.toNamedResource()
+                habitat!!.toNamedResource()
             else
                 null
         },

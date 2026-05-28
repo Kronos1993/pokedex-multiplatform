@@ -8,6 +8,5 @@ data class FlavorTextEntryDto(
     @SerialName("flavor_text")
     val flavorText: String,
     val language: NamedResourceApiDto,
-    @SerialName("version_group")
-    val versionGroup: NamedResourceApiDto
+    val version: NamedResourceApiDto?
     )

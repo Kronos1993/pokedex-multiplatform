@@ -14,7 +14,7 @@ data class SpecieInfoDto(
     @SerialName("evolution_chain")
     var evolutionChain: ResourceApi = ResourceApi(),
     @SerialName("evolves_from_species")
-    var evolvesFrom:NamedResourceApiDto = NamedResourceApiDto(),
+    var evolvesFrom:NamedResourceApiDto? = NamedResourceApiDto(),
     @SerialName("flavor_text_entries")
     var description:List<FlavorTextEntryDto> = listOf(),
     @SerialName("growth_rate")
@@ -24,7 +24,7 @@ data class SpecieInfoDto(
     @SerialName("hatch_counter")
     var hatchCounter:Int = -1,
     @SerialName("habitat")
-    var habitat:NamedResourceApiDto = NamedResourceApiDto(),
+    var habitat:NamedResourceApiDto? = NamedResourceApiDto(),
     @SerialName("has_gender_differences")
     var hasGenderDifferences:Boolean = false,
     @SerialName("is_baby")
