@@ -201,10 +201,9 @@ fun PokemonDetailItem(
                     Spacer(modifier = Modifier.height(14.dp))
 
                     FlowRow(
-                        maxLines = 1,
                         maxItemsInEachRow = 2,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
 
                         pokemon.types.forEach { type ->
@@ -778,8 +777,6 @@ fun TypeChip(
     type: Type,
     onClick: () -> Unit
 ) {
-
-
     AssistChip(
         onClick = onClick,
         leadingIcon = {
@@ -1089,7 +1086,7 @@ private fun previewPokemon(): PokemonInfo {
             ),
             Type(
                 slot = 2,
-                name = "flying"
+                name = "dragon"
             )
         ),
 
