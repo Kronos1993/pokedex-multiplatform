@@ -4,7 +4,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -22,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.kronos.mutliplatform.pokedex.components.icon.EvolutionChains
@@ -203,7 +201,7 @@ fun PokemonDetailScreen(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.onPrimary,
+        color = MaterialTheme.colorScheme.secondaryContainer,
     ) {
         Scaffold(
             topBar = {
@@ -218,20 +216,20 @@ fun PokemonDetailScreen(
                                 }
                             },
                             type = ButtonType.TEXT,
-                            iconColor = Color.White,
+                            iconColor = dominantColor,
                             size = ComponentSize.LARGE
                         )
                     },
                     actions = listOf(),
                     appBarColors = TopAppBarDefaults.topAppBarColors(
                         containerColor = dominantColor.copy(alpha = .25f),
-                        titleContentColor = Color.White,
-                        actionIconContentColor = Color.White,
-                        navigationIconContentColor = Color.White
+                        titleContentColor = dominantColor,
+                        navigationIconContentColor = dominantColor,
+                        actionIconContentColor = dominantColor,
                     ),
                 )
             },
-            modifier = Modifier.fillMaxSize().systemBarsPadding(),
+            modifier = Modifier.fillMaxSize(),
             snackbarHost = {
                 SnackbarHost(snackbarHostState) { data ->
                     Snackbar(

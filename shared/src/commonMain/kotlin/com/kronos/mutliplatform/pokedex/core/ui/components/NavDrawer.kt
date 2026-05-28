@@ -16,6 +16,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.automirrored.outlined.List
+import androidx.compose.material.icons.filled.CatchingPokemon
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.DrawerDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -33,21 +45,25 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
 import kotlinx.coroutines.launch
 
 enum class Destinations {
-    POKEDEX, POKEMON_LIST, POKEMON_DETAIL, MOVES, MOVE_DETAIL, SETTINGS,ABOUT
+    POKEDEX, POKEMON_LIST, POKEMON_DETAIL, MOVES, MOVE_DETAIL, SETTINGS, ABOUT
 }
 
 data class NavigationItem(
@@ -59,6 +75,16 @@ data class NavigationItem(
     val isSelected: Boolean = false,
     var badgeCount: Int? = null,
     val onClick: (Int, NavigationItem) -> Unit
+)
+
+private val drawerHeaderGradient = Brush.linearGradient(
+    colors = listOf(
+        Color(0xFFCC0000),
+        Color(0xFFE53935),
+        Color(0xFFEF5350),
+    ),
+    start = Offset(0f, 0f),
+    end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
 )
 
 @Composable
@@ -75,7 +101,10 @@ fun NavDrawer(
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet(
+                drawerContainerColor = MaterialTheme.colorScheme.surface,
+                drawerContentColor = MaterialTheme.colorScheme.onSurface,
+            ) {
                 drawerHeader()
 
                 Spacer(modifier = Modifier.padding(5.dp))
@@ -89,7 +118,9 @@ fun NavDrawer(
                         if (index > 0 && navigationItems[index - 1].isPrimary && !item.isPrimary) {
                             Spacer(modifier = Modifier.padding(2.dp))
                             HorizontalDivider(
-                                modifier = Modifier.height(5.dp).padding(top = 5.dp, bottom = 5.dp)
+                                modifier = Modifier
+                                    .height(5.dp)
+                                    .padding(top = 5.dp, bottom = 5.dp)
                             )
                             Spacer(modifier = Modifier.padding(2.dp))
                         }
@@ -127,6 +158,13 @@ fun NavDrawer(
                                     )
                                 }
                             },
+                            colors = NavigationDrawerItemDefaults.colors(
+                                selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurface,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurface,
+                            ),
                             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                         )
                     }
@@ -150,14 +188,14 @@ fun DrawerHeader(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .background(brush = drawerHeaderGradient)
             .padding(16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            if (!avatarUrl.isNullOrEmpty()){
+            if (!avatarUrl.isNullOrEmpty()) {
                 AvatarView(
                     avatarUrl = avatarUrl,
                     placeholder = name,
@@ -174,7 +212,7 @@ fun DrawerHeader(
                 Spacer(modifier = Modifier.height(5.dp))
                 BodyText(
                     text = subtitle,
-                    textColor = Color.White,
+                    textColor = Color.White.copy(alpha = 0.85f),
                     maxLines = 5,
                     textOverflow = TextOverflow.Ellipsis,
                     size = ComponentSize.MEDIUM
@@ -193,14 +231,14 @@ fun DrawerHeader(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .background(brush = drawerHeaderGradient)
             .padding(16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            if (icon != null){
+            if (icon != null) {
                 Icon(
                     imageVector = icon,
                     modifier = Modifier.size(64.dp),
@@ -218,7 +256,7 @@ fun DrawerHeader(
                 Spacer(modifier = Modifier.height(5.dp))
                 BodyText(
                     text = subtitle,
-                    textColor = Color.White,
+                    textColor = Color.White.copy(alpha = 0.85f),
                     maxLines = 5,
                     textOverflow = TextOverflow.Ellipsis,
                     size = ComponentSize.MEDIUM
@@ -234,7 +272,7 @@ fun DrawerPlaceholderHeader(title: String = "Welcome!") {
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
-            .background(MaterialTheme.colorScheme.secondaryContainer),
+            .background(brush = drawerHeaderGradient),
         contentAlignment = Alignment.Center
     ) {
         TitleText(text = title, textColor = Color.White, size = ComponentSize.MEDIUM)
@@ -281,5 +319,96 @@ fun AvatarView(
                 style = MaterialTheme.typography.titleLarge
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun NavDrawerPreview() {
+    val items = listOf(
+        NavigationItem(
+            title = "Pokédex",
+            destination = Destinations.POKEDEX,
+            selectedIcon = Icons.Filled.Home,
+            unselectedIcon = Icons.Outlined.Home,
+            isPrimary = true,
+            isSelected = true,
+            onClick = { _, _ -> }
+        ),
+        NavigationItem(
+            title = "Pokémon List",
+            destination = Destinations.POKEMON_LIST,
+            selectedIcon = Icons.AutoMirrored.Filled.List,
+            unselectedIcon = Icons.AutoMirrored.Outlined.List,
+            isPrimary = true,
+            onClick = { _, _ -> }
+        ),
+        NavigationItem(
+            title = "Moves",
+            destination = Destinations.MOVES,
+            selectedIcon = Icons.Filled.Star,
+            unselectedIcon = Icons.Outlined.Star,
+            isPrimary = true,
+            badgeCount = 3,
+            onClick = { _, _ -> }
+        ),
+        NavigationItem(
+            title = "Settings",
+            destination = Destinations.SETTINGS,
+            selectedIcon = Icons.Filled.Settings,
+            unselectedIcon = Icons.Outlined.Settings,
+            isPrimary = false,
+            onClick = { _, _ -> }
+        ),
+        NavigationItem(
+            title = "About",
+            destination = Destinations.ABOUT,
+            selectedIcon = Icons.Filled.Info,
+            unselectedIcon = Icons.Outlined.Info,
+            isPrimary = false,
+            onClick = { _, _ -> }
+        ),
+    )
+
+    AppTheme {
+        NavDrawer(
+            navigationItems = items,
+            selectedIndex = 0,
+            drawerState = rememberDrawerState(DrawerValue.Open),
+            drawerHeader = {
+                DrawerHeader(
+                    icon = Icons.Filled.CatchingPokemon,
+                    name = "Pokédex",
+                    subtitle = "Gotta catch 'em all"
+                )
+            },
+            content = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
+                )
+            }
+        )
+    }
+}
+
+@Preview
+@Composable
+fun DrawerHeaderAvatarPreview() {
+    AppTheme {
+        DrawerHeader(
+            avatarUrl = "",
+            name = "Ash Ketchum",
+            subtitle = "Pallet Town Trainer"
+        )
+    }
+}
+
+@Preview
+@Composable
+fun DrawerPlaceholderHeaderPreview() {
+    AppTheme {
+        DrawerPlaceholderHeader(title = "Welcome!")
     }
 }

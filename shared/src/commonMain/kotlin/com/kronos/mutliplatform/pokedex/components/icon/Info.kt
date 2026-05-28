@@ -26,7 +26,7 @@ val Icons.Info: ImageVector
             viewportWidth = 24f, 
             viewportHeight = 24f
         ).apply {
-            path(fill = SolidColor(Color(0xFF1C274C)), fillAlpha = 0.5f, strokeAlpha = 0.5f) {
+            path(fill = SolidColor(Color(0xFFE53935)), fillAlpha = 0.5f, strokeAlpha = 0.5f) {
                 moveTo(22f, 12f)
                 curveTo(22f, 17.523f, 17.523f, 22f, 12f, 22f)
                 curveTo(6.477f, 22f, 2f, 17.523f, 2f, 12f)
@@ -34,7 +34,7 @@ val Icons.Info: ImageVector
                 curveTo(17.523f, 2f, 22f, 6.477f, 22f, 12f)
                 close()
             }
-            path(fill = SolidColor(Color(0xFF1C274C))) {
+            path(fill = SolidColor(Color.White)) {
                 moveTo(12f, 17.75f)
                 curveTo(12.414f, 17.75f, 12.75f, 17.414f, 12.75f, 17f)
                 verticalLineTo(11f)
@@ -44,7 +44,7 @@ val Icons.Info: ImageVector
                 curveTo(11.25f, 17.414f, 11.586f, 17.75f, 12f, 17.75f)
                 close()
             }
-            path(fill = SolidColor(Color(0xFF1C274C))) {
+            path(fill = SolidColor(Color.White)) {
                 moveTo(12f, 7f)
                 curveTo(12.552f, 7f, 13f, 7.448f, 13f, 8f)
                 curveTo(13f, 8.552f, 12.552f, 9f, 12f, 9f)

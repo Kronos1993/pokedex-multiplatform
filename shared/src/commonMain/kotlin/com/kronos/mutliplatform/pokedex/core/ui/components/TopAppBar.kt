@@ -39,10 +39,10 @@ fun AppTopAppBar(
     actions: List<AppBarAction>,
     scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
     appBarColors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-        titleContentColor = Color.White,
-        actionIconContentColor = Color.White,
-        navigationIconContentColor = Color.White
+        containerColor = MaterialTheme.colorScheme.primary,
+        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+        navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+        actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
     ),
     modifier: Modifier = Modifier
 ) {

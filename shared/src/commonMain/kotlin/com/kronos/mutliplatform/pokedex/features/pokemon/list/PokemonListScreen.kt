@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -84,14 +83,14 @@ fun PokemonListScreen(
                                 }
                             },
                             type = ButtonType.TEXT,
-                            iconColor = Color.White,
+                            iconColor = MaterialTheme.colorScheme.onPrimary,
                             size = ComponentSize.LARGE
                         )
                     },
                     actions = listOf()
                 )
             },
-            modifier = Modifier.fillMaxSize().systemBarsPadding(),
+            modifier = Modifier.fillMaxSize(),
             snackbarHost = {
                 SnackbarHost(snackbarHostState) { data ->
                     Snackbar(
@@ -109,7 +108,7 @@ fun PokemonListScreen(
             ) {
                 val rootModifier = Modifier
                     .fillMaxSize()
-                    .padding(vertical = 4.dp)
+                    .padding(4.dp)
                     .background(color = Color.Transparent)
                     .consumeWindowInsets(WindowInsets.navigationBars)
 

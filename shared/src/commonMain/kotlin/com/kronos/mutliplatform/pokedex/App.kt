@@ -1,8 +1,6 @@
 package com.kronos.mutliplatform.pokedex
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -18,14 +16,17 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.kronos.mutliplatform.pokedex.components.icon.Info
 import com.kronos.mutliplatform.pokedex.components.icon.PokedexSvg
+import com.kronos.mutliplatform.pokedex.components.icon.Settings
 import com.kronos.mutliplatform.pokedex.components.icon.TmDisk
 import com.kronos.mutliplatform.pokedex.core.preferences.PreferenceViewModel
+import com.kronos.mutliplatform.pokedex.core.ui.ConfigureSystemBars
 import com.kronos.mutliplatform.pokedex.core.ui.components.Destinations
 import com.kronos.mutliplatform.pokedex.core.ui.components.NavigationItem
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
 import com.kronos.mutliplatform.pokedex.features.pokedex.PokedexScreen
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.PokemonDetailScreen
 import com.kronos.mutliplatform.pokedex.features.pokemon.list.PokemonListScreen
+import com.kronos.mutliplatform.pokedex.features.setting.SettingsScreen
 import com.kronos.mutliplatform.pokedex.screen_config.DeviceScreenConfiguration
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -70,6 +71,10 @@ fun App() {
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
     val deviceScreenConfiguration =
         DeviceScreenConfiguration.fromWindowSizeClass(windowSizeClass)
+
+    ConfigureSystemBars(
+        darkTheme = isDarkTheme == stringResource(Res.string.theme_preference_default_value)
+    )
 
     Scaffold() {
         AppTheme(
@@ -133,15 +138,21 @@ fun App() {
                             deviceScreenConfiguration = deviceScreenConfiguration,
                         )
                     }
+                    */
+
                     composable(
                         route = Destinations.SETTINGS.name,
                     ) { backStackEntry ->
                         SettingsScreen(
                             navController,
                             isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            currentLang = currentLang,
                             deviceScreenConfiguration = deviceScreenConfiguration,
+                            onLanguageChange = {
+                                viewModel.updateAppLanguage(it)
+                            }
                         )
-                    }*/
+                    }
                 }
             }
         }
@@ -176,8 +187,8 @@ fun getNavDestinations(
     NavigationItem(
         title = stringResource(Res.string.menu_settings),
         destination = Destinations.SETTINGS,
-        selectedIcon = Icons.Filled.Settings,
-        unselectedIcon = Icons.Outlined.Settings,
+        selectedIcon = Icons.Settings,
+        unselectedIcon = Icons.Settings,
         isPrimary = false,
         onClick = { pos, navItem ->
             navController.navigate(navItem.destination.name)

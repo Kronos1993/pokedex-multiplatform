@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
 import kotlinx.coroutines.launch
 
 
@@ -288,7 +289,7 @@ fun PillTabPagerViewPreview_Page1() {
         pageCount = { tabs.size }
     )
 
-    MaterialTheme {
+    AppTheme {
         PillTabPagerPreviewContent(tabs, pagerState)
     }
 }
@@ -303,7 +304,7 @@ fun PillTabPagerViewPreview_Page2() {
         pageCount = { tabs.size }
     )
 
-    MaterialTheme {
+    AppTheme {
         PillTabPagerPreviewContent(tabs, pagerState)
     }
 }

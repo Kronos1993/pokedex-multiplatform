@@ -105,4 +105,8 @@ class PreferenceViewModel(
     fun getSystemLanguage() =
         changeLang.getSystemLang()
 
+    fun updateAppLanguage(lang:String){
+        changeLang.onLangChange(lang)
+    }
+
 }

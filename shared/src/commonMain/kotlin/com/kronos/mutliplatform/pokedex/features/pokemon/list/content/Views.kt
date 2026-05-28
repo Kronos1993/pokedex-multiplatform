@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +37,7 @@ import com.kronos.mutliplatform.pokedex.components.icon.Pokeball
 import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
 import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonDexEntry
 
@@ -59,8 +59,8 @@ fun PokemonsContent(
             modifier = modifier
                 .fillMaxSize()
                 .background(color = Color.Transparent),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(pokemonList, key = { it.dexEntry }) {
                 PokemonItemCard(it, onClick = {
@@ -140,7 +140,7 @@ fun PokemonItemCard(
 @Preview(showBackground = true)
 @Composable
 fun PokemonItemCardPreview() {
-    MaterialTheme {
+    AppTheme {
         PokemonItemCard(
             item = PokemonDexEntry(
                 dexEntry = 1,
@@ -163,7 +163,7 @@ fun PokemonsContentPreview() {
         PokemonDexEntry(dexEntry = 6, pokemon = NamedResourceApi(name = "charizard", url = "")),
     )
 
-    MaterialTheme {
+    AppTheme {
         PokemonsContent(
             listState = rememberLazyGridState(),
             gridColumns = 2,

@@ -20,12 +20,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BaseCardView(
     modifier: Modifier = Modifier,
-    cardBackgroundColor: Color = MaterialTheme.colorScheme.surfaceContainer,
+    cardBackgroundColor: Color = MaterialTheme.colorScheme.surface,
     elevation: Dp = 4.dp,
     pressedElevation: Dp = elevation / 2,
     borderStroke: BorderStroke? = null,
@@ -56,7 +57,8 @@ fun BaseCardView(
         enabled = enabled,
         onClick = onClick ?: {},
         colors = CardDefaults.cardColors(
-            containerColor = cardBackgroundColor
+            containerColor = cardBackgroundColor,
+            contentColor = MaterialTheme.colorScheme.onSurface,
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = animatedElevation
@@ -71,7 +73,7 @@ fun BaseCardView(
 @Preview(showBackground = true)
 @Composable
 fun BaseCardViewNoClickPreview() {
-    MaterialTheme {
+    AppTheme {
         BaseCardView {
             Column(Modifier.padding(16.dp)) {
                 TitleText("Static Card")

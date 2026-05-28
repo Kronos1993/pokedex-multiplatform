@@ -23,14 +23,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.TrendingUp
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CatchingPokemon
 import androidx.compose.material.icons.filled.Psychology
-import androidx.compose.material.icons.rounded.Bolt
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.Forest
-import androidx.compose.material.icons.rounded.Height
-import androidx.compose.material.icons.rounded.Scale
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.CardDefaults
@@ -56,6 +51,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.kronos.mutliplatform.pokedex.components.icon.Bolt
 import com.kronos.mutliplatform.pokedex.components.icon.Bug
 import com.kronos.mutliplatform.pokedex.components.icon.Dark
 import com.kronos.mutliplatform.pokedex.components.icon.Dragon
@@ -69,22 +65,27 @@ import com.kronos.mutliplatform.pokedex.components.icon.Flying
 import com.kronos.mutliplatform.pokedex.components.icon.Ghost
 import com.kronos.mutliplatform.pokedex.components.icon.Grass
 import com.kronos.mutliplatform.pokedex.components.icon.Ground
+import com.kronos.mutliplatform.pokedex.components.icon.Heart
 import com.kronos.mutliplatform.pokedex.components.icon.Ice
+import com.kronos.mutliplatform.pokedex.components.icon.LevelUp
 import com.kronos.mutliplatform.pokedex.components.icon.Male
+import com.kronos.mutliplatform.pokedex.components.icon.Natures
 import com.kronos.mutliplatform.pokedex.components.icon.Normal
 import com.kronos.mutliplatform.pokedex.components.icon.Poison
 import com.kronos.mutliplatform.pokedex.components.icon.Pokeball
 import com.kronos.mutliplatform.pokedex.components.icon.PokemonTypes
 import com.kronos.mutliplatform.pokedex.components.icon.Psychic
 import com.kronos.mutliplatform.pokedex.components.icon.Rock
+import com.kronos.mutliplatform.pokedex.components.icon.Scale
 import com.kronos.mutliplatform.pokedex.components.icon.Steel
+import com.kronos.mutliplatform.pokedex.components.icon.UpArrow
 import com.kronos.mutliplatform.pokedex.components.icon.Water
 import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
 import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
-import com.kronos.mutliplatform.pokedex.core.ui.components.HeaderText
 import com.kronos.mutliplatform.pokedex.core.ui.components.LabelText
 import com.kronos.mutliplatform.pokedex.core.ui.components.TitleText
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.ratingColorContainerLight
 import com.kronos.mutliplatform.pokedex.core.util.format
 import com.kronos.mutliplatform.pokedex.domain.model.FlavorText
 import com.kronos.mutliplatform.pokedex.domain.model.Name
@@ -98,6 +99,7 @@ import com.kronos.mutliplatform.pokedex.domain.model.sprite.Sprite
 import com.kronos.mutliplatform.pokedex.domain.model.type.Type
 import org.jetbrains.compose.resources.stringResource
 import pokedex.shared.generated.resources.Res
+import pokedex.shared.generated.resources.baby_pokemon
 import pokedex.shared.generated.resources.base_exp
 import pokedex.shared.generated.resources.capture_rate
 import pokedex.shared.generated.resources.capture_rate_value
@@ -108,6 +110,8 @@ import pokedex.shared.generated.resources.happiness
 import pokedex.shared.generated.resources.hatch_counter
 import pokedex.shared.generated.resources.hatch_counter_value
 import pokedex.shared.generated.resources.height
+import pokedex.shared.generated.resources.legendary_pokemon
+import pokedex.shared.generated.resources.mythical_pokemon
 import pokedex.shared.generated.resources.weight
 
 /* -------------------------------------------------------------------------- */
@@ -156,20 +160,37 @@ fun PokemonDetailItem(
 
                     Spacer(modifier = Modifier.height(4.dp))
 
-                    HeaderText(
+                    TitleText(
                         text = pokemon.name.prettyName(),
                         maxLines = 1,
+                        size = ComponentSize.MEDIUM,
                         textOverflow = TextOverflow.Ellipsis,
-                        size = ComponentSize.SMALL
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     BodyText(
                         text = pokemon.specieInfo?.getPokemonGenera(currentLang) ?: "",
-                        size = ComponentSize.LARGE,
                         textColor = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+
+                    val specieInfo = pokemon.specieInfo
+                    val specieLabels = buildList {
+                        if (specieInfo?.isBaby == true) add(stringResource(Res.string.baby_pokemon))
+                        if (specieInfo?.isLegendary == true) add(stringResource(Res.string.legendary_pokemon))
+                        if (specieInfo?.isMythical == true) add(stringResource(Res.string.mythical_pokemon))
+                    }
+                    if (specieLabels.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            specieLabels.forEach { label ->
+                                BodyText(
+                                    text = label,
+                                    textColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
 
                     Spacer(modifier = Modifier.height(14.dp))
 
@@ -209,11 +230,11 @@ fun PokemonDetailItem(
 
                 BodyText(
                     modifier = Modifier.fillMaxWidth(),
-                    text = description.replace("\n"," "),
+                    text = description.replace("\n", " "),
                     maxLines = 5,
                     textOverflow = TextOverflow.Ellipsis,
                     textColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Justify
+                    textAlign = TextAlign.Justify,
                 )
             }
         }
@@ -270,7 +291,7 @@ fun PokemonSectionCard(
         modifier = modifier.fillMaxWidth()
     ) {
 
-        TitleText(
+        BodyText(
             text = title,
             fontWeight = FontWeight.Bold,
             size = ComponentSize.LARGE,
@@ -306,38 +327,38 @@ fun PokemonBasicInfoCard(
         PokemonInfoItem(
             title = stringResource(Res.string.base_exp),
             value = "${pokemon.baseExperience}",
-            icon = Icons.Rounded.Bolt,
-            iconTint = MaterialTheme.colorScheme.primary
+            icon = Icons.Bolt,
+            iconTint = Color.Unspecified
         ),
         PokemonInfoItem(
             title = stringResource(Res.string.height),
             value = pokemon.height.formatHeight(),
-            icon = Icons.Rounded.Height,
-            iconTint = MaterialTheme.colorScheme.primary
+            icon = Icons.UpArrow,
+            iconTint = Color.Unspecified
         ),
         PokemonInfoItem(
             title = stringResource(Res.string.weight),
             value = pokemon.weight.formatWeight(),
-            icon = Icons.Rounded.Scale,
-            iconTint = MaterialTheme.colorScheme.primary
+            icon = Icons.Scale,
+            iconTint = Color.Unspecified
         ),
         PokemonInfoItem(
             title = stringResource(Res.string.happiness),
             value = "${pokemon.specieInfo?.baseHappiness ?: 0}",
-            icon = Icons.Rounded.Favorite,
-            iconTint = MaterialTheme.colorScheme.primary
+            icon = Icons.Heart,
+            iconTint = Color.Unspecified
         ),
         PokemonInfoItem(
             title = stringResource(Res.string.growth_rate),
             value = pokemon.specieInfo?.growthRate?.name ?: "-",
-            icon = Icons.AutoMirrored.Rounded.TrendingUp,
-            iconTint = MaterialTheme.colorScheme.primary
+            icon = Icons.LevelUp,
+            iconTint = Color.Unspecified
         ),
         PokemonInfoItem(
             title = stringResource(Res.string.habitat),
             value = pokemon.specieInfo?.habitat?.name ?: "-",
-            icon = Icons.Rounded.Forest,
-            iconTint = MaterialTheme.colorScheme.primary
+            icon = Icons.Natures,
+            iconTint = Color.Unspecified
         )
     )
 
@@ -388,11 +409,9 @@ fun PokemonInfoGridItem(
 
         TitleText(
             text = item.title,
-            fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
             vector = item.icon,
             iconTint = item.iconTint,
-            size = ComponentSize.SMALL
         )
 
         TitleText(
@@ -460,7 +479,10 @@ fun PokemonBreedingCard(
                 modifier = Modifier.weight(1f),
                 item = PokemonInfoItem(
                     title = stringResource(Res.string.capture_rate),
-                    value = stringResource(Res.string.capture_rate_value).format(pokemon.specieInfo?.captureRate?:0,pokemon.specieInfo?.calculateCaptureRate()?:0),
+                    value = stringResource(Res.string.capture_rate_value).format(
+                        pokemon.specieInfo?.captureRate ?: 0,
+                        pokemon.specieInfo?.calculateCaptureRate() ?: 0
+                    ),
                     icon = Icons.Pokeball
                 )
             )
@@ -469,7 +491,10 @@ fun PokemonBreedingCard(
                 modifier = Modifier.weight(1f),
                 item = PokemonInfoItem(
                     title = stringResource(Res.string.hatch_counter),
-                    value = stringResource(Res.string.hatch_counter_value).format(pokemon.specieInfo?.hatchCounter?:0,pokemon.specieInfo?.calculateHatchCounter()?:0),
+                    value = stringResource(Res.string.hatch_counter_value).format(
+                        pokemon.specieInfo?.hatchCounter ?: 0,
+                        pokemon.specieInfo?.calculateHatchCounter() ?: 0
+                    ),
                     icon = Icons.Egg
                 )
             )
@@ -490,8 +515,8 @@ fun GenderRateBar(
 
         LinearProgressIndicator(
             progress = { (genderPossibility?.male ?: 0f) / 100f },
-            color = Color(0xFF448AFF),
-            trackColor = Color(0xFFE040FB),
+            color = if (genderPossibility?.genderless == true) Color(0xFF7A757F) else Color(0xFF448AFF),
+            trackColor = if (genderPossibility?.genderless == true) Color(0xFF7A757F) else Color(0xFFE040FB),
             drawStopIndicator = {},
             modifier = Modifier
                 .fillMaxWidth()
@@ -564,8 +589,9 @@ fun PokemonAbilitiesCard(
                     ) {
 
                         Icon(
-                            imageVector = Icons.Default.Psychology,
-                            contentDescription = null
+                            imageVector = if (ability.isHidden) Icons.Default.AutoAwesome else Icons.Default.Psychology,
+                            contentDescription = null,
+                            tint = if (ability.isHidden) ratingColorContainerLight else MaterialTheme.colorScheme.primary,
                         )
 
                         Spacer(modifier = Modifier.width(8.dp))
@@ -900,7 +926,7 @@ fun String.toEggGroupColor(): Color {
 }
 
 fun String.prettyName(): String {
-    return replaceFirstChar { it.uppercase() }.replace("-"," ")
+    return replaceFirstChar { it.uppercase() }.replace("-", " ")
 }
 
 fun Double.formatHeight(): String {

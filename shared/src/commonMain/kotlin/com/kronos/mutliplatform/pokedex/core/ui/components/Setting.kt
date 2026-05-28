@@ -41,6 +41,9 @@ fun SettingRadioOptions(
     selectedOption: String,
     onOptionSelected: (String) -> Unit
 ) {
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val radioColor = MaterialTheme.colorScheme.primary
+
     Surface(
         color = Color.Transparent,
         modifier = Modifier
@@ -58,46 +61,40 @@ fun SettingRadioOptions(
                     Icon(
                         painter = painterResource(icon),
                         contentDescription = iconDesc,
+                        tint = textColor,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-
                 }
-                TitleText(
-                    text = title,
-                    modifier = Modifier
-                )
+                TitleText(text = title, textColor = textColor)
             }
             BodyText(
                 text = subtitle,
-                modifier = Modifier,
-                size = ComponentSize.LARGE
+                size = ComponentSize.LARGE,
+                textColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
             options.forEach { option ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
-                            onOptionSelected(option.second)
-                        }
+                        .clickable { onOptionSelected(option.second) }
                         .padding(vertical = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween, // Align items with space between
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    BodyText(
-                        text = option.first,
-                        modifier = Modifier,
-                        size = ComponentSize.LARGE
-                    )
+                    BodyText(text = option.first, size = ComponentSize.LARGE, textColor = textColor)
                     RadioButton(
                         selected = selectedOption == option.second,
-                        onClick = { onOptionSelected(option.second) }
+                        onClick = { onOptionSelected(option.second) },
+                        colors = RadioButtonDefaults.colors(
+                            selectedColor = radioColor,
+                            unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     )
                 }
             }
-            HorizontalDivider()
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
-
     }
 }
 
@@ -109,6 +106,9 @@ fun SettingRadioOption(
     selectedOption: String,
     onOptionSelected: (String) -> Unit
 ) {
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val radioColor = MaterialTheme.colorScheme.primary
+
     Surface(
         color = Color.Transparent,
         modifier = Modifier
@@ -121,31 +121,30 @@ fun SettingRadioOption(
                     .fillMaxWidth()
                     .clickable { onOptionSelected(option.second) }
                     .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween, // Align items with space between
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (icon != null) {
                     Icon(
                         painter = painterResource(icon),
                         contentDescription = iconDesc,
+                        tint = textColor,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-
                 }
-                BodyText(
-                    text = option.first,
-                    modifier = Modifier,
-                    size = ComponentSize.LARGE
-                )
+                BodyText(text = option.first, size = ComponentSize.LARGE, textColor = textColor)
                 Spacer(modifier = Modifier.weight(1f))
                 RadioButton(
                     selected = selectedOption == option.second,
-                    onClick = { onOptionSelected(option.second) }
+                    onClick = { onOptionSelected(option.second) },
+                    colors = RadioButtonDefaults.colors(
+                        selectedColor = radioColor,
+                        unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 )
-
             }
-            HorizontalDivider()
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
     }
 }
@@ -162,6 +161,12 @@ fun SettingRadioOptions(
     selectedOption: String,
     onOptionSelected: (String) -> Unit
 ) {
+    val resolvedTextColor =
+        if (textColor == Color.Unspecified) MaterialTheme.colorScheme.onSurface else textColor
+    val resolvedIconTint =
+        if (iconTint == Color.Unspecified) MaterialTheme.colorScheme.onSurface else iconTint
+    val radioColor = MaterialTheme.colorScheme.primary
+
     Surface(
         color = Color.Transparent,
         modifier = Modifier
@@ -178,55 +183,45 @@ fun SettingRadioOptions(
                 if (icon != null) {
                     Icon(
                         imageVector = icon,
-                        tint = iconTint,
+                        tint = resolvedIconTint,
                         contentDescription = iconDesc,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-
                 }
-                TitleText(
-                    text = title,
-                    modifier = Modifier,
-                    textColor = textColor
-                )
+                TitleText(text = title, textColor = resolvedTextColor)
             }
             BodyText(
                 text = subtitle,
-                modifier = Modifier,
                 size = ComponentSize.LARGE,
-                textColor = textColor
+                textColor = if (textColor == Color.Unspecified) MaterialTheme.colorScheme.onSurfaceVariant else textColor
             )
             options.forEach { option ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
-                            onOptionSelected(option.second)
-                        }
+                        .clickable { onOptionSelected(option.second) }
                         .padding(horizontal = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween, // Align items with space between
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     BodyText(
                         text = option.first,
-                        modifier = Modifier,
                         size = ComponentSize.LARGE,
-                        textColor = textColor
+                        textColor = resolvedTextColor
                     )
                     RadioButton(
                         selected = selectedOption == option.second,
                         onClick = { onOptionSelected(option.second) },
                         colors = RadioButtonDefaults.colors(
-                            selectedColor = MaterialTheme.colorScheme.inversePrimary,
-                            unselectedColor = MaterialTheme.colorScheme.inversePrimary
+                            selectedColor = radioColor,
+                            unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     )
                 }
             }
-            HorizontalDivider()
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
-
     }
 }
 
@@ -240,6 +235,8 @@ fun SettingSwitchOptions(
     selectedOption: String,
     onOptionSelected: (String) -> Unit
 ) {
+    val textColor = MaterialTheme.colorScheme.onSurface
+
     Surface(
         color = Color.Transparent,
         modifier = Modifier
@@ -257,21 +254,18 @@ fun SettingSwitchOptions(
                     Icon(
                         painter = painterResource(icon),
                         contentDescription = iconDesc,
+                        tint = textColor,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-
                 }
-                TitleText(
-                    text = stringResource(title),
-                    modifier = Modifier
-                )
+                TitleText(text = stringResource(title), textColor = textColor)
             }
             if (subtitle != null)
                 BodyText(
                     text = stringResource(subtitle),
-                    modifier = Modifier,
-                    size = ComponentSize.LARGE
+                    size = ComponentSize.LARGE,
+                    textColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             options.forEach { option ->
                 Row(
@@ -279,14 +273,10 @@ fun SettingSwitchOptions(
                         .fillMaxWidth()
                         .clickable { onOptionSelected(option.second) }
                         .padding(vertical = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween, // Align items with space between
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    BodyText(
-                        text = option.first,
-                        modifier = Modifier,
-                        size = ComponentSize.LARGE
-                    )
+                    BodyText(text = option.first, size = ComponentSize.LARGE, textColor = textColor)
                     Spacer(modifier = Modifier.weight(1f))
                     Switch(
                         checked = selectedOption == option.second,
@@ -294,11 +284,10 @@ fun SettingSwitchOptions(
                     )
                 }
             }
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
-        HorizontalDivider()
     }
 }
-
 
 @Composable
 fun SettingSwitchOption(
@@ -308,6 +297,8 @@ fun SettingSwitchOption(
     selectedOption: String,
     onOptionSelected: (String) -> Unit
 ) {
+    val textColor = MaterialTheme.colorScheme.onSurface
+
     Surface(
         color = Color.Transparent,
         modifier = Modifier
@@ -319,30 +310,26 @@ fun SettingSwitchOption(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween, // Align items with space between
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (icon != null) {
                     Icon(
                         painter = painterResource(icon),
                         contentDescription = iconDesc,
+                        tint = textColor,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-
                 }
-                BodyText(
-                    text = option.first,
-                    modifier = Modifier,
-                    size = ComponentSize.LARGE
-                )
+                BodyText(text = option.first, size = ComponentSize.LARGE, textColor = textColor)
                 Spacer(modifier = Modifier.weight(1f))
                 Switch(
                     checked = selectedOption == option.second,
                     onCheckedChange = { onOptionSelected(option.second) }
                 )
             }
-            HorizontalDivider()
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
     }
 }
@@ -357,6 +344,8 @@ fun SettingClickableOptions(
     selectedOption: String,
     onOptionSelected: (String) -> Unit
 ) {
+    val textColor = MaterialTheme.colorScheme.onSurface
+
     Surface(
         color = Color.Transparent,
         modifier = Modifier
@@ -374,21 +363,18 @@ fun SettingClickableOptions(
                     Icon(
                         painter = painterResource(icon),
                         contentDescription = iconDesc,
+                        tint = textColor,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-
                 }
-                TitleText(
-                    text = title,
-                    modifier = Modifier
-                )
+                TitleText(text = title, textColor = textColor)
             }
             if (subtitle != null)
                 BodyText(
                     text = subtitle,
-                    modifier = Modifier,
-                    size = ComponentSize.LARGE
+                    size = ComponentSize.LARGE,
+                    textColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             options.forEach { option ->
                 Row(
@@ -396,14 +382,10 @@ fun SettingClickableOptions(
                         .fillMaxWidth()
                         .clickable { onOptionSelected(option.second) }
                         .padding(vertical = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween, // Align items with space between
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    BodyText(
-                        text = title,
-                        modifier = Modifier,
-                        size = ComponentSize.LARGE
-                    )
+                    BodyText(text = option.first, size = ComponentSize.LARGE, textColor = textColor)
                     Spacer(modifier = Modifier.weight(1f))
                     Switch(
                         checked = selectedOption == option.second,
@@ -411,9 +393,8 @@ fun SettingClickableOptions(
                     )
                 }
             }
-            HorizontalDivider()
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
-
     }
 }
 
@@ -424,6 +405,8 @@ fun SettingClickableOption(
     iconDesc: String? = null,
     onOptionSelected: () -> Unit
 ) {
+    val textColor = MaterialTheme.colorScheme.onSurface
+
     Surface(
         color = Color.Transparent,
         modifier = Modifier
@@ -442,17 +425,14 @@ fun SettingClickableOption(
                     Icon(
                         painter = painterResource(icon),
                         contentDescription = iconDesc,
+                        tint = textColor,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-
                 }
-                BodyText(
-                    text = title,
-                    size = ComponentSize.LARGE
-                )
+                BodyText(text = title, size = ComponentSize.LARGE, textColor = textColor)
             }
-            HorizontalDivider()
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
     }
 }
@@ -469,6 +449,8 @@ fun SettingButtonOptions(
     buttonType: ButtonType,
     onClick: () -> Unit
 ) {
+    val textColor = MaterialTheme.colorScheme.onSurface
+
     Surface(
         color = Color.Transparent,
         modifier = Modifier
@@ -486,24 +468,20 @@ fun SettingButtonOptions(
                     Icon(
                         imageVector = icon,
                         contentDescription = iconDesc,
+                        tint = textColor,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-
                 }
-                TitleText(
-                    text = title,
-                    modifier = Modifier
-                )
+                TitleText(text = title, textColor = textColor)
             }
             Spacer(modifier = Modifier.height(8.dp))
             if (subtitle != null)
                 BodyText(
                     text = subtitle,
-                    modifier = Modifier,
-                    size = ComponentSize.LARGE
+                    size = ComponentSize.LARGE,
+                    textColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = onClick,
@@ -511,13 +489,10 @@ fun SettingButtonOptions(
                 icon = buttonIcon,
                 type = buttonType,
                 style = buttonStyle,
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             )
-
             Spacer(modifier = Modifier.height(8.dp))
-            HorizontalDivider()
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
-
     }
 }

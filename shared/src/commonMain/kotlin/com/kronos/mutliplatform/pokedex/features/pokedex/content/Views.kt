@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +26,7 @@ import com.kronos.mutliplatform.pokedex.components.icon.PokedexSvg
 import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
 import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 
 @Composable
@@ -46,8 +46,8 @@ fun PokedexContent(
             modifier = modifier
                 .fillMaxSize()
                 .background(color = Color.Transparent),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(pokedexList, key = { it.name }) {
                 PokedexItemCard(it.name, onClick = {
@@ -92,7 +92,7 @@ fun PokedexItemCard(
 @Preview(showBackground = true)
 @Composable
 fun PokedexItemCardPreview() {
-    MaterialTheme() {
+    AppTheme() {
         PokedexItemCard(
             name = "national",
             onClick = {}
@@ -112,7 +112,7 @@ fun PokedexContentPreview() {
         NamedResourceApi(name = "unova", url = ""),
     )
 
-    MaterialTheme {
+    AppTheme {
         PokedexContent(
             listState = rememberLazyGridState(),
             gridColumns = 2,
