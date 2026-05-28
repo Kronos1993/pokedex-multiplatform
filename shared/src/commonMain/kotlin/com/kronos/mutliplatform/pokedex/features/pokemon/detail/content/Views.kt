@@ -207,7 +207,6 @@ fun PokemonDetailItem(
                     ) {
 
                         pokemon.types.forEach { type ->
-
                             TypeChip(
                                 type = type,
                                 onClick = {
