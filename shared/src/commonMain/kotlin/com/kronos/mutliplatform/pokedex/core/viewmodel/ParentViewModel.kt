@@ -28,6 +28,13 @@ open class ParentViewModel(
     internal var _total = MutableStateFlow<Long>(0)
     val total = _total.asStateFlow()
 
+    private val _lastPage = MutableStateFlow<Boolean>(false)
+    val lastPage = _lastPage.asStateFlow()
+
+    fun setLastPage(i: Boolean) {
+        _lastPage.value = i
+    }
+
     fun setLimit(i: Int) {
         _limit.value = i
     }

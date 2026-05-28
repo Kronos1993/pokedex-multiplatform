@@ -19,6 +19,7 @@
 
     <string name="empty_pokedex_list">No Pokedex found</string>
     <string name="empty_pokemon_list">No Pokémon found in this Pokédex</string>
+    <string name="empty_pokemon_encounter_list">No encounter location found</string>
     <string name="refresh_list">Click the button below to refresh</string>
 
     <string name="pokemon_detail_tab_info">Info</string>

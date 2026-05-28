@@ -20,8 +20,7 @@ import com.kronos.mutliplatform.pokedex.domain.model.pokemon.Encounter
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.PokemonEncounterGridItem
 import org.jetbrains.compose.resources.stringResource
 import pokedex.shared.generated.resources.Res
-import pokedex.shared.generated.resources.empty_pokedex_list
-import pokedex.shared.generated.resources.refresh_list
+import pokedex.shared.generated.resources.empty_pokemon_encounter_list
 
 /* -------------------------------------------------------------------------- */
 /* SCREEN                                                                     */
@@ -40,8 +39,8 @@ fun PokemonLocationTab(
 
     if (pokemonEncounters.isEmpty()){
         EmptyList(
-            title = stringResource(Res.string.empty_pokedex_list),
-            subtitle = stringResource(Res.string.refresh_list),
+            title = stringResource(Res.string.empty_pokemon_encounter_list),
+            subtitle = "",
             showRetryButton = false,
             modifier = modifier
         )

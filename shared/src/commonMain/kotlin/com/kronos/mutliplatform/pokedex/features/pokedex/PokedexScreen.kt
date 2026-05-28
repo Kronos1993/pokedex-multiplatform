@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -143,7 +144,7 @@ fun PokedexScreen(
                 PullToRefreshContainer(
                     innerPadding = it,
                     isRefreshing = viewModel.loading,
-                    onRefresh = { viewModel.refreshPokedex() }
+                    onRefresh = { viewModel.loadPokedex(true) }
                 ) {
 
                     val rootModifier = Modifier
@@ -152,13 +153,28 @@ fun PokedexScreen(
                         .background(color = Color.Transparent)
                         .consumeWindowInsets(WindowInsets.navigationBars)
 
+                    LaunchedEffect(listState) {
+                        snapshotFlow {
+                            listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                        }.collect { lastVisibleItemIndex ->
+                            val totalItems = listState.layoutInfo.totalItemsCount
+                            if (lastVisibleItemIndex != null &&
+                                lastVisibleItemIndex >= totalItems - 3 &&
+                                !viewModel.lastPage.value &&
+                                pokedexList.isNotEmpty()
+                            ) {
+                                viewModel.loadPokedex()
+                            }
+                        }
+                    }
+
                     if (pokedexList.isEmpty()) {
                         EmptyList(
                             title = stringResource(Res.string.empty_pokedex_list),
                             subtitle = stringResource(Res.string.refresh_list),
                             showRetryButton = true,
                             onRetryClick = {
-                                viewModel.refreshPokedex()
+                                viewModel.loadPokedex(true)
                             },
                             modifier = rootModifier
                         )

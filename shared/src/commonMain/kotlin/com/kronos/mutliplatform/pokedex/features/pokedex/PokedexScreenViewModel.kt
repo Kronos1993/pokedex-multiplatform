@@ -39,7 +39,7 @@ class PokedexScreenViewModel(
         _appVersion.value = appInfo.getAppVersion()
     }
 
-    private fun postPokedex(pokedex: List<NamedResourceApi>) {
+    private fun postPokedex(newItems: List<NamedResourceApi>) {
 
         val specialPrefixes = listOf(
             "updated-",
@@ -57,8 +57,9 @@ class PokedexScreenViewModel(
         }
 
         val result = linkedMapOf<String, PokedexItem>()
+        _pokedex.value.forEach { result[it.normalizeName] = it }
 
-        pokedex.forEach { item ->
+        newItems.forEach { item ->
 
             val normalizedName = normalizeName(item.name)
 
@@ -71,15 +72,11 @@ class PokedexScreenViewModel(
             val isSpecial = specialPrefixes.any(item.name::contains)
 
             if (!isSpecial) {
-
                 result[normalizedName] = pokedexItem
-
             } else {
-
                 val match = result.entries.firstOrNull { (_, value) ->
                     item.name.contains(value.normalizeName)
                 }
-
                 if (match != null) {
                     result[match.key] = pokedexItem
                 }
@@ -89,8 +86,13 @@ class PokedexScreenViewModel(
         _pokedex.value = result.values.toList()
     }
 
-    fun loadPokedex() {
+    fun loadPokedex(reset: Boolean = false) {
         loading = true
+        if (reset) {
+            setLimit(50)
+            setOffset(0)
+            setLastPage(false)
+        }
         viewModelScope.launch(Dispatchers.IO) {
             pokedexRemoteRepository.list(
                 limit.value,
@@ -98,7 +100,15 @@ class PokedexScreenViewModel(
             )
                 .onSuccess {
                     loading = (false)
-                    postPokedex(it.results)
+                    if (reset)
+                        _pokedex.value = listOf()
+
+                    if (it.results.isNotEmpty()) {
+                        setOffset(offset.value + limit.value)
+                        postPokedex(it.results)
+                    } else
+                        setLastPage(true)
+
                 }
                 .onError {
                     val err = HashMap<String, String>()
@@ -111,15 +121,6 @@ class PokedexScreenViewModel(
                     loading = (false)
                 }
         }
-    }
-
-    fun refreshPokedex() {
-        _pokedex.value = listOf()
-        setLimit(50)
-        setOffset(0)
-        val err = HashMap<String, String>()
-        message = (err)
-        loadPokedex()
     }
 
     fun closeApp() {

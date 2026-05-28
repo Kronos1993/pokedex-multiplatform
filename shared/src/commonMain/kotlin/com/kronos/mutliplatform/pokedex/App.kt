@@ -23,6 +23,7 @@ import com.kronos.mutliplatform.pokedex.core.ui.ConfigureSystemBars
 import com.kronos.mutliplatform.pokedex.core.ui.components.Destinations
 import com.kronos.mutliplatform.pokedex.core.ui.components.NavigationItem
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
+import com.kronos.mutliplatform.pokedex.features.move.list.MoveListScreen
 import com.kronos.mutliplatform.pokedex.features.pokedex.PokedexScreen
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.PokemonDetailScreen
 import com.kronos.mutliplatform.pokedex.features.pokemon.list.PokemonListScreen
@@ -92,6 +93,15 @@ fun App() {
                             deviceScreenConfiguration = deviceScreenConfiguration,
                         )
                     }
+
+                    composable(route = Destinations.MOVES.name) {
+                        MoveListScreen(
+                            navController,
+                            isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            deviceScreenConfiguration = deviceScreenConfiguration,
+                        )
+                    }
+
                     composable(
                         route = "${Destinations.POKEMON_LIST}/{pokedexName}",
                         arguments = listOf(navArgument("pokedexName") {
