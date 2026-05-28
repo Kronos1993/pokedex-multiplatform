@@ -27,14 +27,14 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
 import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
-import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
+import com.kronos.mutliplatform.pokedex.features.pokedex.domain.PokedexItem
 
 @Composable
 fun PokedexContent(
     listState: LazyGridState,
     gridColumns: Int = 1,
-    pokedexList: List<NamedResourceApi>,
-    onClick: (item: NamedResourceApi) -> Unit,
+    pokedexList: List<PokedexItem>,
+    onClick: (item: PokedexItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -50,7 +50,7 @@ fun PokedexContent(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(pokedexList, key = { it.name }) {
-                PokedexItemCard(it.name, onClick = {
+                PokedexItemCard(it.normalizeName, onClick = {
                     onClick(it)
                 })
             }
@@ -103,13 +103,38 @@ fun PokedexItemCardPreview() {
 @Preview(showBackground = true)
 @Composable
 fun PokedexContentPreview() {
+
     val fakeList = listOf(
-        NamedResourceApi(name = "national", url = ""),
-        NamedResourceApi(name = "kanto", url = ""),
-        NamedResourceApi(name = "johto", url = ""),
-        NamedResourceApi(name = "hoenn", url = ""),
-        NamedResourceApi(name = "sinnoh", url = ""),
-        NamedResourceApi(name = "unova", url = ""),
+        PokedexItem(
+            name = "national",
+            url = "",
+            normalizeName = "national"
+        ),
+        PokedexItem(
+            name = "kanto",
+            url = "",
+            normalizeName = "kanto"
+        ),
+        PokedexItem(
+            name = "johto",
+            url = "",
+            normalizeName = "johto"
+        ),
+        PokedexItem(
+            name = "hoenn",
+            url = "",
+            normalizeName = "hoenn"
+        ),
+        PokedexItem(
+            name = "sinnoh",
+            url = "",
+            normalizeName = "sinnoh"
+        ),
+        PokedexItem(
+            name = "unova",
+            url = "",
+            normalizeName = "unova"
+        )
     )
 
     AppTheme {

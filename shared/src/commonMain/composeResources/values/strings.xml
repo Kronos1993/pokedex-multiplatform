@@ -45,4 +45,5 @@
     <string name="hatch_counter_value">%1$s cycles (%2$s steps)</string>
     <string name="capture_rate">Capture Rate</string>
     <string name="capture_rate_value">%1$s (%2$s% full HP with a pokeball)</string>
+    <string name="no_info_available">Unknown</string>
 </resources>

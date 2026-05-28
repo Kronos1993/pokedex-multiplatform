@@ -17,7 +17,7 @@ data class PokemonInfoDto(
     val name:String = "",
     val abilities:List<AbilityDto> = listOf(),
     @SerialName("base_experience")
-    val baseExperience:Int = 0,
+    val baseExperience:Int? = 0,
     val forms:List<NamedResourceApi> = listOf(),
     val height:Double = 0.0,
     val weight:Double = 0.0,

@@ -20,8 +20,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -57,13 +59,17 @@ fun PokemonListScreen(
     val viewModel = koinViewModel<PokemonListScreenViewModel>()
 
     val pokemonList by viewModel.pokemons.collectAsStateWithLifecycle()
-
+    var pokedexName by remember { mutableStateOf(pokedex) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val listState = rememberLazyGridState()
 
     LaunchedEffect(Unit) {
         viewModel.loadPokemons(pokedex)
+        pokedexName = pokedex.removePrefix("updated-")
+            .removePrefix("extended-")
+            .removePrefix("original-")
+            .removePrefix("letsgo-")
     }
 
     Surface(
@@ -73,7 +79,7 @@ fun PokemonListScreen(
         Scaffold(
             topBar = {
                 AppTopAppBar(
-                    title = pokedex.replace("-", " ").replaceFirstChar { it.uppercase() },
+                    title = pokedexName.replace("-", " ").replaceFirstChar { it.uppercase() },
                     navIconButton = {
                         IconButton(
                             icon = Icons.AutoMirrored.Filled.ArrowBack,
@@ -142,6 +148,7 @@ fun PokemonListScreen(
                         listState = listState,
                         pokemonList = pokemonList,
                         onClick = { pokemon ->
+                            viewModel.appCache._currentPokemon.value = pokemon.pokemon
                             navHost.navigate("${Destinations.POKEMON_DETAIL.name}/${pokemon.pokemon.name}")
                         },
                         modifier = rootModifier

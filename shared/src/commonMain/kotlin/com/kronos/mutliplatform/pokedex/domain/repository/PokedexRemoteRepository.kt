@@ -4,7 +4,7 @@ import com.kronos.mutliplatform.pokedex.core.result.Error
 import com.kronos.mutliplatform.pokedex.core.result.Result
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.ResponseList
-import com.kronos.pokedex.domian.model.pokedex.Pokedex
+import com.kronos.mutliplatform.pokedex.domain.model.pokedex.Pokedex
 
 interface PokedexRemoteRepository {
     suspend fun list(limit:Int = 20,offset:Int = 0): Result<ResponseList<NamedResourceApi>, Error>

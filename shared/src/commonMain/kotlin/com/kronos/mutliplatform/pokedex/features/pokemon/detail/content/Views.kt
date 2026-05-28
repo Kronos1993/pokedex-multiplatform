@@ -70,6 +70,7 @@ import com.kronos.mutliplatform.pokedex.components.icon.Ice
 import com.kronos.mutliplatform.pokedex.components.icon.LevelUp
 import com.kronos.mutliplatform.pokedex.components.icon.Male
 import com.kronos.mutliplatform.pokedex.components.icon.Natures
+import com.kronos.mutliplatform.pokedex.components.icon.NoEgg
 import com.kronos.mutliplatform.pokedex.components.icon.Normal
 import com.kronos.mutliplatform.pokedex.components.icon.Poison
 import com.kronos.mutliplatform.pokedex.components.icon.Pokeball
@@ -97,6 +98,7 @@ import com.kronos.mutliplatform.pokedex.domain.model.specie.PokemonGenera
 import com.kronos.mutliplatform.pokedex.domain.model.specie.SpecieInfo
 import com.kronos.mutliplatform.pokedex.domain.model.sprite.Sprite
 import com.kronos.mutliplatform.pokedex.domain.model.type.Type
+import com.kronos.mutliplatform.pokedex.features.pokemon.detail.domain.PokemonOtherForm
 import org.jetbrains.compose.resources.stringResource
 import pokedex.shared.generated.resources.Res
 import pokedex.shared.generated.resources.baby_pokemon
@@ -110,8 +112,12 @@ import pokedex.shared.generated.resources.happiness
 import pokedex.shared.generated.resources.hatch_counter
 import pokedex.shared.generated.resources.hatch_counter_value
 import pokedex.shared.generated.resources.height
+import pokedex.shared.generated.resources.high_happiness
 import pokedex.shared.generated.resources.legendary_pokemon
+import pokedex.shared.generated.resources.lower_happiness
 import pokedex.shared.generated.resources.mythical_pokemon
+import pokedex.shared.generated.resources.no_info_available
+import pokedex.shared.generated.resources.normal_happiness
 import pokedex.shared.generated.resources.weight
 
 /* -------------------------------------------------------------------------- */
@@ -344,19 +350,38 @@ fun PokemonBasicInfoCard(
         ),
         PokemonInfoItem(
             title = stringResource(Res.string.happiness),
-            value = "${pokemon.specieInfo?.baseHappiness ?: 0}",
+            value =
+                when {
+                    (pokemon.specieInfo?.baseHappiness ?: 0) in 0..<50 -> {
+                        stringResource(Res.string.lower_happiness)
+                    }
+
+                    (pokemon.specieInfo?.baseHappiness ?: 0) in 50..<100 -> {
+                        stringResource(Res.string.normal_happiness)
+                    }
+
+                    (pokemon.specieInfo?.baseHappiness ?: 0) >= 100 -> {
+                        stringResource(Res.string.high_happiness)
+                    }
+
+                    else -> {
+                        stringResource(Res.string.no_info_available)
+                    }
+                },
             icon = Icons.Heart,
             iconTint = Color.Unspecified
         ),
         PokemonInfoItem(
             title = stringResource(Res.string.growth_rate),
-            value = pokemon.specieInfo?.growthRate?.name ?: "-",
+            value = pokemon.specieInfo?.growthRate?.name?.takeIf { it.isNotBlank() }
+                ?: stringResource(Res.string.no_info_available),
             icon = Icons.LevelUp,
             iconTint = Color.Unspecified
         ),
         PokemonInfoItem(
             title = stringResource(Res.string.habitat),
-            value = pokemon.specieInfo?.habitat?.name ?: "-",
+            value = pokemon.specieInfo?.habitat?.name?.takeIf { it.isNotBlank() }
+                ?: stringResource(Res.string.no_info_available),
             icon = Icons.Natures,
             iconTint = Color.Unspecified
         )
@@ -515,8 +540,12 @@ fun GenderRateBar(
 
         LinearProgressIndicator(
             progress = { (genderPossibility?.male ?: 0f) / 100f },
-            color = if (genderPossibility?.genderless == true) Color(0xFF7A757F) else Color(0xFF448AFF),
-            trackColor = if (genderPossibility?.genderless == true) Color(0xFF7A757F) else Color(0xFFE040FB),
+            color = if (genderPossibility?.genderless == true) Color(0xFF7A757F) else Color(
+                0xFF448AFF
+            ),
+            trackColor = if (genderPossibility?.genderless == true) Color(0xFF7A757F) else Color(
+                0xFFE040FB
+            ),
             drawStopIndicator = {},
             modifier = Modifier
                 .fillMaxWidth()
@@ -679,8 +708,8 @@ fun PokemonSpritesCard(
 
 @Composable
 fun PokemonOtherFormsCard(
-    pokemonOtherForms: List<Triple<String, String, String>>,
-    onOtherFormsClick: (item: String) -> Unit
+    pokemonOtherForms: List<PokemonOtherForm>,
+    onOtherFormsClick: (item: NamedResourceApi) -> Unit
 ) {
 
     if (pokemonOtherForms.isEmpty()) return
@@ -703,7 +732,7 @@ fun PokemonOtherFormsCard(
                         .fillMaxWidth(.48f)
                         .aspectRatio(1f)
                         .clickable {
-                            onOtherFormsClick(sprite.second)
+                            onOtherFormsClick(NamedResourceApi(sprite.name, sprite.url))
                         },
                     shape = RoundedCornerShape(24.dp)
                 ) {
@@ -715,7 +744,7 @@ fun PokemonOtherFormsCard(
                     ) {
 
                         AsyncImage(
-                            model = sprite.first,
+                            model = sprite.imgUrl,
                             contentDescription = null,
                             modifier = Modifier
                                 .weight(1f)
@@ -725,7 +754,7 @@ fun PokemonOtherFormsCard(
                         )
 
                         Text(
-                            text = sprite.third,
+                            text = sprite.nameFormatted,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -881,7 +910,7 @@ fun String.toEggGroupIcon(): ImageVector {
         // Undiscovered / legendary babies
         "undiscovered" -> PokemonTypes.Steel
 
-        else -> Icons.Default.CatchingPokemon
+        else -> Icons.NoEgg
     }
 }
 

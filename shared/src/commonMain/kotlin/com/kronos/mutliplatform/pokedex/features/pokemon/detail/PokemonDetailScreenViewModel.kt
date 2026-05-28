@@ -1,12 +1,14 @@
 package com.kronos.mutliplatform.pokedex.features.pokemon.detail
 
 import androidx.lifecycle.viewModelScope
+import com.kronos.mutliplatform.pokedex.core.cache.ICache
 import com.kronos.mutliplatform.pokedex.core.result.onError
 import com.kronos.mutliplatform.pokedex.core.result.onSuccess
 import com.kronos.mutliplatform.pokedex.core.viewmodel.ParentViewModel
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.ImageType
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.UrlProvider
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.util.FullNetworkError
+import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.ChainLink
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.EvolutionChain
 import com.kronos.mutliplatform.pokedex.domain.model.game.Game
@@ -17,6 +19,7 @@ import com.kronos.mutliplatform.pokedex.domain.repository.AbilityRemoteRepositor
 import com.kronos.mutliplatform.pokedex.domain.repository.EvolutionChainRemoteRepository
 import com.kronos.mutliplatform.pokedex.domain.repository.MoveRemoteRepository
 import com.kronos.mutliplatform.pokedex.domain.repository.PokemonRemoteRepository
+import com.kronos.mutliplatform.pokedex.features.pokemon.detail.domain.PokemonOtherForm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +32,7 @@ class PokemonDetailScreenViewModel(
     private var pokemonEvolutionChainRemoteRepository: EvolutionChainRemoteRepository,
     private var abilityRemoteRepository: AbilityRemoteRepository,
     private var moveRemoteRepository: MoveRemoteRepository,
+    private var appCache: ICache,
     var urlProvider: UrlProvider,
 ) : ParentViewModel() {
 
@@ -46,7 +50,7 @@ class PokemonDetailScreenViewModel(
     private val _pokemonSpritesUrl = MutableStateFlow<List<Pair<String, String>>>(emptyList())
     val pokemonSpritesUrl = _pokemonSpritesUrl.asStateFlow()
 
-    private val _pokemonOtherFormsUrl = MutableStateFlow<List<Triple<String, String, String>>>(emptyList())
+    private val _pokemonOtherFormsUrl = MutableStateFlow<List<PokemonOtherForm>>(emptyList())
     val pokemonOtherFormsUrl = _pokemonOtherFormsUrl.asStateFlow()
 
     private val _pokemonGames = MutableStateFlow<List<Game>>(emptyList())
@@ -111,14 +115,15 @@ class PokemonDetailScreenViewModel(
         _pokemonSpritesUrl.value = sprites
 
 
-        val pokemonOtherForms = mutableListOf<Triple<String, String, String>>()
+        val pokemonOtherForms = mutableListOf<PokemonOtherForm>()
         pokemon.specieInfo?.varieties.orEmpty().forEach {
             if (it.pokemon.name.isNotEmpty() && pokemon.name != it.pokemon.name) {
                 pokemonOtherForms.add(
-                    Triple(
-                        urlProvider.getImageUrl(ImageType.POKEMON, urlProvider.extractIdFromUrl(it.pokemon.url).toString()),
-                        it.pokemon.name,
-                        it.pokemon.name.replace("-".toRegex(), " ").uppercase()
+                    PokemonOtherForm(
+                        imgUrl = urlProvider.getImageUrl(ImageType.POKEMON, urlProvider.extractIdFromUrl(it.pokemon.url).toString()),
+                        nameFormatted = it.pokemon.name.replace("-".toRegex(), " ").uppercase(),
+                        name = it.pokemon.name,
+                        url = it.pokemon.url
                     )
                 )
             }
@@ -209,10 +214,11 @@ class PokemonDetailScreenViewModel(
 
     }
 
-    fun loadPokemonInfo(pokemon: String) {
+    fun loadPokemonInfo() {
         viewModelScope.launch(Dispatchers.IO) {
             loading = (true)
-            pokemonRemoteRepository.getPokemonInfo(pokemon)
+
+            pokemonRemoteRepository.getPokemonInfo(urlProvider.extractIdFromUrl(appCache._currentPokemon.value?.url.orEmpty()).toString())
                 .onSuccess {
                     loading = (false)
                     postPokemon(it)
@@ -229,6 +235,10 @@ class PokemonDetailScreenViewModel(
                 }
 
         }
+    }
+
+    fun setCurrentPokemon(pokemon: NamedResourceApi) {
+        appCache._currentPokemon.value = pokemon
     }
 }
 

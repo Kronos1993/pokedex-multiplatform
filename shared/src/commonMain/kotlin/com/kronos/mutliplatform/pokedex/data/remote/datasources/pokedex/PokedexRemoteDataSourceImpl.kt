@@ -16,7 +16,7 @@ import com.kronos.mutliplatform.pokedex.data.remote.ktor.util.FullNetworkError
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.util.NetworkError
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.ResponseList
-import com.kronos.pokedex.domian.model.pokedex.Pokedex
+import com.kronos.mutliplatform.pokedex.domain.model.pokedex.Pokedex
 import io.ktor.client.call.body
 import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.request.get

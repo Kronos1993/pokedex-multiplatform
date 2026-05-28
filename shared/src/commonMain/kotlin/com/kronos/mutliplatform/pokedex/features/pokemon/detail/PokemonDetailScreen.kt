@@ -92,7 +92,7 @@ fun PokemonDetailScreen(
             stringSpriteFrontShiny = stringSpriteFrontShiny,
             stringSpriteFemaleShiny = stringSpriteFemaleShiny
         )
-        viewModel.loadPokemonInfo(pokemon)
+        viewModel.loadPokemonInfo()
     }
 
     val typeName = remember(pokemonInfo.types) {
@@ -148,7 +148,8 @@ fun PokemonDetailScreen(
                 },
                 onSpriteClick = {},
                 onOtherFormsClick = {
-                    navHost.navigate("${Destinations.POKEMON_DETAIL.name}/${it}")
+                    viewModel.setCurrentPokemon(it)
+                    navHost.navigate("${Destinations.POKEMON_DETAIL.name}/${it.name}")
                 },
             )
         },

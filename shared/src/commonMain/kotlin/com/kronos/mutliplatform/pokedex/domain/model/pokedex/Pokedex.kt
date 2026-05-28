@@ -1,4 +1,4 @@
-package com.kronos.pokedex.domian.model.pokedex
+package com.kronos.mutliplatform.pokedex.domain.model.pokedex
 
 import com.kronos.mutliplatform.pokedex.domain.model.Name
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonDexEntry

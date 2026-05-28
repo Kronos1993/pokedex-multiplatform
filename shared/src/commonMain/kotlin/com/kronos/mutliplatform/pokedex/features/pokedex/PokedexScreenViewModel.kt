@@ -8,9 +8,11 @@ import com.kronos.mutliplatform.pokedex.core.result.onSuccess
 import com.kronos.mutliplatform.pokedex.core.util.IAppInfo
 import com.kronos.mutliplatform.pokedex.core.util.ICloseApp
 import com.kronos.mutliplatform.pokedex.core.viewmodel.ParentViewModel
+import com.kronos.mutliplatform.pokedex.data.remote.ktor.UrlProvider
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.util.FullNetworkError
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.repository.PokedexRemoteRepository
+import com.kronos.mutliplatform.pokedex.features.pokedex.domain.PokedexItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,33 +20,73 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class PokedexScreenViewModel (
+class PokedexScreenViewModel(
     private val pokedexRemoteRepository: PokedexRemoteRepository,
     private val appInfo: IAppInfo,
     private var closeApp: ICloseApp,
+    var urlProvider: UrlProvider,
     var appCache: ICache,
     val platform: Platform,
 ) : ParentViewModel() {
 
-    private var _pokedex = MutableStateFlow(listOf<NamedResourceApi>())
-    var pokedex: StateFlow<List<NamedResourceApi>> = _pokedex.asStateFlow()
+    private var _pokedex = MutableStateFlow(listOf<PokedexItem>())
+    var pokedex: StateFlow<List<PokedexItem>> = _pokedex.asStateFlow()
 
     private var _appVersion = MutableStateFlow("")
     var appVersion: StateFlow<String> = _appVersion.asStateFlow()
 
-    fun getAppVersion(){
+    fun getAppVersion() {
         _appVersion.value = appInfo.getAppVersion()
     }
 
     private fun postPokedex(pokedex: List<NamedResourceApi>) {
-        val filtered = pokedex.filter { item ->
-            !item.name.contains("updated-") &&
-                    !item.name.contains("original-") &&
-                    !item.name.contains("extended-") &&
-                    !item.name.contains("letsgo-") &&
-                    !item.name.contains("conquest-gallery")
+
+        val specialPrefixes = listOf(
+            "updated-",
+            "extended-",
+            "letsgo-",
+            "conquest-gallery"
+        )
+
+        fun normalizeName(name: String): String {
+            return name
+                .removePrefix("updated-")
+                .removePrefix("extended-")
+                .removePrefix("original-")
+                .removePrefix("letsgo-")
         }
-        _pokedex.value = filtered
+
+        val result = linkedMapOf<String, PokedexItem>()
+
+        pokedex.forEach { item ->
+
+            val normalizedName = normalizeName(item.name)
+
+            val pokedexItem = PokedexItem(
+                name = item.name,
+                url = item.url,
+                normalizeName = normalizedName
+            )
+
+            val isSpecial = specialPrefixes.any(item.name::contains)
+
+            if (!isSpecial) {
+
+                result[normalizedName] = pokedexItem
+
+            } else {
+
+                val match = result.entries.firstOrNull { (_, value) ->
+                    item.name.contains(value.normalizeName)
+                }
+
+                if (match != null) {
+                    result[match.key] = pokedexItem
+                }
+            }
+        }
+
+        _pokedex.value = result.values.toList()
     }
 
     fun loadPokedex() {
@@ -60,9 +102,9 @@ class PokedexScreenViewModel (
                 }
                 .onError {
                     val err = HashMap<String, String>()
-                    if (it is FullNetworkError){
+                    if (it is FullNetworkError) {
                         err["error"] = it.errorMessage
-                    }else{
+                    } else {
                         err["error"] = it.toString()
                     }
                     message = (err)

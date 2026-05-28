@@ -182,6 +182,7 @@ fun PokedexScreen(
                             listState = listState,
                             pokedexList = pokedexList,
                             onClick = {
+                                viewModel.appCache._currentPokedex.value = it
                                 navHost.navigate("${Destinations.POKEMON_LIST.name}/${it.name}")
                             },
                             modifier = rootModifier

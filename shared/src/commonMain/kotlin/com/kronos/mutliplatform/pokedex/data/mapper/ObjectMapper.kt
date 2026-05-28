@@ -59,7 +59,7 @@ import com.kronos.mutliplatform.pokedex.domain.model.move.MoveDetail
 import com.kronos.mutliplatform.pokedex.domain.model.move.MoveInfo
 import com.kronos.mutliplatform.pokedex.domain.model.move.MoveList
 import com.kronos.mutliplatform.pokedex.domain.model.nature.NatureDetail
-import com.kronos.pokedex.domian.model.pokedex.Pokedex
+import com.kronos.mutliplatform.pokedex.domain.model.pokedex.Pokedex
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.Encounter
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterDetail
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonDexEntry
@@ -359,7 +359,7 @@ fun PokemonInfoDto.toPokemonInfo(): PokemonInfo =
         height = height,
         weight = weight,
         sprites = sprites.toSprite(),
-        baseExperience = baseExperience,
+        baseExperience = baseExperience?:0,
         types = types.map {
             it.toType()
         },
@@ -383,7 +383,7 @@ fun PokemonInfoDto.toPokemonInfo(specieInfo:SpecieInfo?): PokemonInfo =
         height = height,
         weight = weight,
         sprites = sprites.toSprite(),
-        baseExperience = baseExperience,
+        baseExperience = baseExperience?:0,
         types = types.map {
             it.toType()
         },

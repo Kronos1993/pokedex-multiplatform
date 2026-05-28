@@ -6,7 +6,7 @@ import com.kronos.mutliplatform.pokedex.data.remote.datasources.pokedex.PokedexR
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.ResponseList
 import com.kronos.mutliplatform.pokedex.domain.repository.PokedexRemoteRepository
-import com.kronos.pokedex.domian.model.pokedex.Pokedex
+import com.kronos.mutliplatform.pokedex.domain.model.pokedex.Pokedex
 
 class PokedexRemoteRepositoryImpl(
     private val pokedexRemoteDataSource: PokedexRemoteDataSource

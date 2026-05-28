@@ -25,6 +25,7 @@ import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.PokemonB
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.PokemonDetailItem
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.PokemonOtherFormsCard
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.PokemonSpritesCard
+import com.kronos.mutliplatform.pokedex.features.pokemon.detail.domain.PokemonOtherForm
 
 /* -------------------------------------------------------------------------- */
 /* SCREEN                                                                     */
@@ -34,7 +35,7 @@ import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.PokemonS
 fun PokemonDetailTab(
     pokemon: PokemonInfo,
     pokemonSprites: List<Pair<String, String>>,
-    pokemonOtherForms: List<Triple<String, String, String>>,
+    pokemonOtherForms: List<PokemonOtherForm>,
     dominantColor: Color,
     isDarkTheme: Boolean,
     currentLang: String,
@@ -44,7 +45,7 @@ fun PokemonDetailTab(
     onEggGroupClick: (item: NamedResourceApi) -> Unit,
     onAbilityClick: (item: Ability) -> Unit,
     onSpriteClick: (item: String) -> Unit,
-    onOtherFormsClick: (item: String) -> Unit,
+    onOtherFormsClick: (item: NamedResourceApi) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
