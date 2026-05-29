@@ -39,7 +39,9 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.button.ButtonType
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.toPokemonColor
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonDetailTab
+import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonEvolutionChainTab
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonLocationTab
+import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonStatsTab
 import com.kronos.mutliplatform.pokedex.screen_config.DeviceScreenConfiguration
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -74,11 +76,14 @@ fun PokemonDetailScreen(
     val pokemonEncounters by viewModel.pokemonEncounterList.collectAsStateWithLifecycle()
     val pokemonSpritesUrl by viewModel.pokemonSpritesUrl.collectAsStateWithLifecycle()
     val pokemonOtherFormsUrl by viewModel.pokemonOtherFormsUrl.collectAsStateWithLifecycle()
+    val pokemonEvolutionChain by viewModel.pokemonEvolutionList.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     val detailListState = rememberLazyGridState()
     val locationListState = rememberLazyGridState()
+    val evolutionListState = rememberLazyGridState()
+    val statsListState = rememberLazyGridState()
 
     val stringSpriteHome = stringResource(Res.string.home)
     val stringSpriteHomeShiny = stringResource(Res.string.home_shiny)
@@ -195,7 +200,18 @@ fun PokemonDetailScreen(
             Icons.EvolutionChains,
             index = 3
         ) {
-            //todo add screen
+            PokemonEvolutionChainTab(
+                pokemonEvolutionChain = pokemonEvolutionChain,
+                dominantColor = dominantColor,
+                isDarkTheme = isDarkTheme,
+                currentLang = currentLang,
+                listState = evolutionListState,
+                onChainClick = {
+                    viewModel.setCurrentPokemon(it)
+                    navHost.navigate("${Destinations.POKEMON_DETAIL.name}/${it.name}")
+                },
+                urlProvider = viewModel.urlProvider
+            )
         },
 
         TabItem(
@@ -204,7 +220,13 @@ fun PokemonDetailScreen(
             Icons.Stats,
             index = 4
         ) {
-            //todo add screen
+            PokemonStatsTab(
+                pokemonStats = pokemonInfo.stats,
+                dominantColor = dominantColor,
+                isDarkTheme = isDarkTheme,
+                currentLang = currentLang,
+                listState = statsListState,
+            )
         },
 
         TabItem(

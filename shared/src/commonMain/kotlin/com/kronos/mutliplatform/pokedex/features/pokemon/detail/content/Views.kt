@@ -1,9 +1,14 @@
 package com.kronos.mutliplatform.pokedex.features.pokemon.detail.content
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,28 +25,35 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.BeachAccess
 import androidx.compose.material.icons.filled.CardGiftcard
 import androidx.compose.material.icons.filled.CatchingPokemon
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.CloudQueue
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Egg
 import androidx.compose.material.icons.filled.Forest
 import androidx.compose.material.icons.filled.Grass
+import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Hiking
+import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LocalFlorist
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.NaturePeople
+import androidx.compose.material.icons.filled.NightShelter
 import androidx.compose.material.icons.filled.Park
 import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material.icons.filled.Phishing
@@ -50,14 +62,19 @@ import androidx.compose.material.icons.filled.Pool
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.QuestionMark
+import androidx.compose.material.icons.filled.ScreenRotation
 import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.SportsKabaddi
 import androidx.compose.material.icons.filled.Stars
 import androidx.compose.material.icons.filled.Straight
 import androidx.compose.material.icons.filled.Terrain
 import androidx.compose.material.icons.filled.TravelExplore
+import androidx.compose.material.icons.filled.Umbrella
 import androidx.compose.material.icons.filled.VideogameAsset
 import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.filled.Wifi
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -67,19 +84,29 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import coil3.compose.AsyncImage
 import com.kronos.mutliplatform.pokedex.components.icon.Bolt
 import com.kronos.mutliplatform.pokedex.components.icon.Bug
@@ -109,6 +136,7 @@ import com.kronos.mutliplatform.pokedex.components.icon.Psychic
 import com.kronos.mutliplatform.pokedex.components.icon.Rock
 import com.kronos.mutliplatform.pokedex.components.icon.Scale
 import com.kronos.mutliplatform.pokedex.components.icon.Steel
+import com.kronos.mutliplatform.pokedex.components.icon.TmDisk
 import com.kronos.mutliplatform.pokedex.components.icon.UpArrow
 import com.kronos.mutliplatform.pokedex.components.icon.Water
 import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
@@ -116,6 +144,7 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
 import com.kronos.mutliplatform.pokedex.core.ui.components.LabelText
 import com.kronos.mutliplatform.pokedex.core.ui.components.TitleText
+import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.ratingColorContainerLight
 import com.kronos.mutliplatform.pokedex.core.util.format
@@ -123,6 +152,8 @@ import com.kronos.mutliplatform.pokedex.domain.model.FlavorText
 import com.kronos.mutliplatform.pokedex.domain.model.Name
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.ability.Ability
+import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.ChainLink
+import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.EvolutionDetail
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.Encounter
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterDetail
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonInfo
@@ -131,14 +162,19 @@ import com.kronos.mutliplatform.pokedex.domain.model.specie.GenderPossibility
 import com.kronos.mutliplatform.pokedex.domain.model.specie.PokemonGenera
 import com.kronos.mutliplatform.pokedex.domain.model.specie.SpecieInfo
 import com.kronos.mutliplatform.pokedex.domain.model.sprite.Sprite
+import com.kronos.mutliplatform.pokedex.domain.model.stat.Stat
 import com.kronos.mutliplatform.pokedex.domain.model.type.Type
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.domain.PokemonOtherForm
+import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonStatsTab
 import org.jetbrains.compose.resources.stringResource
 import pokedex.shared.generated.resources.Res
+import pokedex.shared.generated.resources.attack
 import pokedex.shared.generated.resources.baby_pokemon
 import pokedex.shared.generated.resources.base_exp
 import pokedex.shared.generated.resources.capture_rate
 import pokedex.shared.generated.resources.capture_rate_value
+import pokedex.shared.generated.resources.defense
+import pokedex.shared.generated.resources.ev_yield
 import pokedex.shared.generated.resources.game_version
 import pokedex.shared.generated.resources.genderless
 import pokedex.shared.generated.resources.growth_rate
@@ -148,14 +184,20 @@ import pokedex.shared.generated.resources.hatch_counter
 import pokedex.shared.generated.resources.hatch_counter_value
 import pokedex.shared.generated.resources.height
 import pokedex.shared.generated.resources.high_happiness
+import pokedex.shared.generated.resources.hp
 import pokedex.shared.generated.resources.legendary_pokemon
 import pokedex.shared.generated.resources.lower_happiness
 import pokedex.shared.generated.resources.max_chance
 import pokedex.shared.generated.resources.max_level
+import pokedex.shared.generated.resources.max_stats
+import pokedex.shared.generated.resources.max_stats_tooltip
 import pokedex.shared.generated.resources.min_level
 import pokedex.shared.generated.resources.mythical_pokemon
 import pokedex.shared.generated.resources.no_info_available
 import pokedex.shared.generated.resources.normal_happiness
+import pokedex.shared.generated.resources.special_attack
+import pokedex.shared.generated.resources.special_defense
+import pokedex.shared.generated.resources.speed
 import pokedex.shared.generated.resources.weight
 
 /* -------------------------------------------------------------------------- */
@@ -801,11 +843,11 @@ fun PokemonOtherFormsCard(
                 BaseCardView(
                     modifier = Modifier
                         .fillMaxWidth(.48f)
-                        .aspectRatio(1f)
-                        .clickable {
-                            onOtherFormsClick(NamedResourceApi(sprite.name, sprite.url))
-                        },
-                    shape = RoundedCornerShape(24.dp)
+                        .aspectRatio(1f),
+                    shape = RoundedCornerShape(24.dp),
+                    onClick = {
+                        onOtherFormsClick(NamedResourceApi(sprite.name, sprite.url))
+                    }
                 ) {
 
                     Column(
@@ -874,7 +916,7 @@ fun TypeChip(
 }
 
 /* -------------------------------------------------------------------------- */
-/* Ecounter grid item                                                               */
+/* ENCOUNTERS                                                               */
 /* -------------------------------------------------------------------------- */
 
 private val ColorVersion = Color(0xFF534AB7)   // purple
@@ -991,6 +1033,563 @@ fun VersionItem(
                     item = info,
                     modifier = Modifier.fillMaxWidth(.48f)
                 )
+            }
+        }
+    }
+}
+
+/* -------------------------------------------------------------------------- */
+/* EVOLUTION CHAINS                                                                 */
+/* -------------------------------------------------------------------------- */
+
+@Composable
+fun EvolutionChainItem(
+    sprite: String?,
+    chain: ChainLink,
+    detail: EvolutionDetail?,
+    dominantColor: Color = MaterialTheme.colorScheme.primary,
+    modifier: Modifier = Modifier,
+    onChainClick: ((item: NamedResourceApi) -> Unit)? = null,
+) {
+    val isSelected = chain.isCurrentSelected
+    val hasDetails = chain.evolutionDetails.isNotEmpty() && detail != null
+
+    BaseCardView(
+        modifier = modifier.fillMaxWidth(),
+        cardBackgroundColor = if (isSelected)
+            dominantColor.copy(alpha = .08f)
+        else
+            MaterialTheme.colorScheme.surfaceContainer,
+        elevation = 0.dp,
+        onClick = {
+            onChainClick?.invoke(chain.species)
+        }
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+
+            // ── Sprite ───────────────────────────────────────────────────────
+            EvolutionArtwork(
+                imageUrl = sprite,
+                dominantColor = dominantColor,
+                isSelected = isSelected
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // ── Name ─────────────────────────────────────────────────────────
+            TitleText(
+                text = chain.species.name.prettyName(),
+                fontWeight = FontWeight.Bold,
+                textColor = if (isSelected) dominantColor
+                else MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                textOverflow = TextOverflow.Ellipsis,
+            )
+
+            // ── Evolution details ─────────────────────────────────────────────
+            AnimatedVisibility(visible = hasDetails) {
+                if (detail != null) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 14.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        HorizontalDivider(
+                            color = dominantColor.copy(alpha = .12f),
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        EvolutionDetails(chain = chain, detail = detail)
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ─── Sprite ───────────────────────────────────────────────────────────────────
+
+@Composable
+private fun EvolutionArtwork(
+    imageUrl: String?,
+    dominantColor: Color,
+    isSelected: Boolean
+) {
+    val scale by animateFloatAsState(
+        targetValue = 1f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = "evo_artwork_scale"
+    )
+
+    Box(
+        modifier = Modifier
+            .size(80.dp)
+            .clip(CircleShape)
+            .background(dominantColor.copy(alpha = if (isSelected) .14f else .07f)),
+        contentAlignment = Alignment.Center
+    ) {
+        AsyncImage(
+            model = imageUrl,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize(.85f)
+                .scale(scale),
+            contentScale = ContentScale.Fit
+        )
+    }
+}
+
+// ─── Details rows ─────────────────────────────────────────────────────────────
+
+@Composable
+private fun EvolutionDetails(
+    chain: ChainLink,
+    detail: EvolutionDetail
+) {
+    // Evolves from
+    chain.evolvesFrom.takeIf { it.isNotBlank() }?.let {
+        EvolutionDetailRow(
+            icon = Icons.Pokeball,
+            label = "Evolves from",
+            value = it.prettyName()
+        )
+    }
+
+    // Trigger
+    detail.trigger?.name?.takeIf { it.isNotBlank() }?.let {
+        EvolutionDetailRow(
+            icon = Icons.Bolt,
+            label = "Trigger",
+            value = it.prettyName()
+        )
+    }
+
+    // Min level
+    detail.minLevel?.let {
+        EvolutionDetailRow(
+            icon = Icons.LevelUp,
+            label = "Level",
+            value = "Lv. $it"
+        )
+    }
+
+    // Use item
+    detail.item?.name?.takeIf { it.isNotBlank() }?.let {
+        EvolutionDetailRow(
+            icon = Icons.Default.Inventory2,
+            iconTint = Color(0xFFC22E28),
+            label = "Use item",
+            value = it.prettyName()
+        )
+    }
+
+    // Held item
+    detail.heldItem?.name?.takeIf { it.isNotBlank() }?.let {
+        EvolutionDetailRow(
+            icon = Icons.Default.Inventory2,
+            iconTint = Color(0xFFC22E28),
+            label = "Held item",
+            value = it.prettyName()
+        )
+    }
+
+    // Min happiness
+    detail.minHappiness?.takeIf { it > 0 }?.let {
+        EvolutionDetailRow(
+            icon = Icons.Heart,
+            label = "Happiness",
+            value = "≥ $it"
+        )
+    }
+
+    // Min affection
+    detail.minAffection?.takeIf { it > 0 }?.let {
+        EvolutionDetailRow(
+            icon = Icons.Heart,
+            label = "Affection",
+            value = "≥ $it"
+        )
+    }
+
+    // Min beauty
+    detail.minBeauty?.takeIf { it > 0 }?.let {
+        EvolutionDetailRow(
+            icon = Icons.Default.AutoAwesome,
+            iconTint = Color(0xFFF7D02C),
+            label = "Beauty",
+            value = "≥ $it"
+        )
+    }
+
+    // Gender
+    detail.gender?.let { genderId ->
+        val (icon, label) = when (genderId) {
+            1 -> Icons.Female to "Female"
+            else -> Icons.Male to "Male"
+        }
+        EvolutionDetailRow(
+            icon = icon,
+            label = "Gender",
+            value = label
+        )
+    }
+
+    // Known move
+    detail.knownMove?.name?.takeIf { it.isNotBlank() }?.let {
+        EvolutionDetailRow(
+            icon = Icons.Default.SportsKabaddi,
+            iconTint = Color(0xFF444441),
+            label = "Know move",
+            value = it.prettyName()
+        )
+    }
+
+    // Known move type
+    detail.knownMoveType?.name?.takeIf { it.isNotBlank() }?.let {
+        EvolutionDetailRow(
+            icon = Icons.TmDisk,
+            label = "Move type",
+            value = it.prettyName()
+        )
+    }
+
+    // Location
+    detail.location?.name?.takeIf { it.isNotBlank() }?.let {
+        EvolutionDetailRow(
+            icon = Icons.Default.Place,
+            iconTint = Color(0xFFA8A77A),
+            label = "Location",
+            value = it.prettyName()
+        )
+    }
+
+    // Party species
+    detail.partySpecies?.name?.takeIf { it.isNotBlank() }?.let {
+        EvolutionDetailRow(
+            icon = Icons.Default.Group,
+            iconTint = Color(0xFFA8A77A),
+            label = "Party member",
+            value = it.prettyName()
+        )
+    }
+
+    // Party type
+    detail.partyType?.name?.takeIf { it.isNotBlank() }?.let {
+        EvolutionDetailRow(
+            icon = Icons.Default.Category,
+            iconTint = Color(0xFFC22E28),
+            label = "Party type",
+            value = it.prettyName()
+        )
+    }
+
+    // Time of day
+    detail.timeOfDay?.takeIf { it.isNotBlank() }?.let {
+        val icon = when (it.lowercase()) {
+            "day" -> Icons.Default.WbSunny
+            "night" -> Icons.Default.NightShelter
+            else -> Icons.Default.AccessTime
+        }
+        val iconTint = when (it.lowercase()) {
+            "day" -> Color(0xFFF7D02C)
+            "night" -> Color(0xFF444441)
+            else -> Color(0xFF2C2C2A)
+        }
+
+        EvolutionDetailRow(
+            icon = icon,
+            iconTint = iconTint,
+            label = "Time of day",
+            value = it.prettyName()
+        )
+    }
+
+    // Needs rain
+    if (detail.needsOverworldRain) {
+        EvolutionDetailRow(
+            icon = Icons.Default.Umbrella,
+            iconTint = Color(0xFF185FA5),
+            label = "Raining",
+            value = "Required"
+        )
+    }
+
+    // Turn upside down
+    if (detail.turnUpsideDown) {
+        EvolutionDetailRow(
+            icon = Icons.Default.ScreenRotation,
+            iconTint = Color(0xFF993C1D),
+            label = "Turn upside down",
+            value = "Required"
+        )
+    }
+}
+
+// ─── Single detail row ────────────────────────────────────────────────────────
+
+@Composable
+private fun EvolutionDetailRow(
+    label: String,
+    value: String,
+    icon: ImageVector,
+    iconTint: Color = Color.Unspecified,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = iconTint,
+                modifier = Modifier.size(16.dp)
+            )
+            LabelText(
+                text = label,
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                .padding(horizontal = 10.dp, vertical = 4.dp)
+        ) {
+            LabelText(
+                text = value,
+                fontWeight = FontWeight.Bold,
+            )
+        }
+    }
+}
+
+/* -------------------------------------------------------------------------- */
+/* STATS                                                                 */
+/* -------------------------------------------------------------------------- */
+
+// StatCircleItem.kt
+@Composable
+fun StatCircleItem(
+    stat: Stat,
+    statTotal: Int,
+    modifier: Modifier = Modifier
+) {
+    val statColor = statColor(stat.statName)
+    val animatedProgress = remember { Animatable(0f) }
+    val progress = if (statTotal > 0) stat.baseStat.toFloat() / statTotal.toFloat() else 0f
+
+    LaunchedEffect(stat.baseStat) {
+        animatedProgress.animateTo(
+            targetValue = progress,
+            animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
+        )
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.size(72.dp)
+        ) {
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val strokeWidth = 6.dp.toPx()
+                val radius = (size.minDimension - strokeWidth) / 2
+                val center = Offset(size.width / 2, size.height / 2)
+                // Track
+                drawCircle(
+                    color = statColor.copy(alpha = 0.15f),
+                    radius = radius,
+                    center = center,
+                    style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                )
+                // Progress
+                drawArc(
+                    color = statColor,
+                    startAngle = -90f,
+                    sweepAngle = 360f * animatedProgress.value,
+                    useCenter = false,
+                    style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
+                    topLeft = Offset(center.x - radius, center.y - radius),
+                    size = Size(radius * 2, radius * 2)
+                )
+            }
+            Text(
+                text = stat.baseStat.toString(),
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                color = statColor
+            )
+        }
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Text(
+            text = statShortName(stat.statName),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            maxLines = 1
+        )
+    }
+}
+
+@Composable
+fun MaxStatsSection(
+    pokemonStats: List<Stat>,
+) {
+    var showTooltip by remember { mutableStateOf(false) }
+
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            TitleText(
+                text = stringResource(Res.string.max_stats),
+                size = ComponentSize.MEDIUM,
+                fontWeight = FontWeight.Bold,
+                textColor = MaterialTheme.colorScheme.onBackground
+            )
+            Box {
+                IconButton(
+                    onClick = { showTooltip = !showTooltip },
+                    icon = Icons.Outlined.Info,
+                    modifier = Modifier.size(24.dp)
+                )
+                if (showTooltip) {
+                    Popup(
+                        alignment = Alignment.TopStart,
+                        offset = IntOffset(0, -120),
+                        onDismissRequest = { showTooltip = false }
+                    ) {
+                        Surface(
+                            shape = MaterialTheme.shapes.medium,
+                            color = MaterialTheme.colorScheme.inverseSurface,
+                            tonalElevation = 4.dp,
+                            modifier = Modifier.widthIn(max = 240.dp)
+                        ) {
+                            BodyText(
+                                text = stringResource(Res.string.max_stats_tooltip),
+                                size = ComponentSize.SMALL,
+                                textColor = MaterialTheme.colorScheme.inverseOnSurface,
+                                modifier = Modifier.padding(12.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        pokemonStats.forEach { stat ->
+            MaxStatRow(stat = stat)
+        }
+    }
+}
+
+@Composable
+fun MaxStatRow(
+    stat: Stat
+) {
+    val statColor = statColor(stat.statName)
+    val maxValue = stat.calculateMaxStat()
+    val animatedProgress = remember { Animatable(0f) }
+
+    // máximo teórico absoluto para escalar la barra (HP ~714, otros ~526)
+    val absoluteMax = if (stat.statName.lowercase() == "hp") 714f else 526f
+
+    LaunchedEffect(maxValue) {
+        animatedProgress.animateTo(
+            targetValue = maxValue / absoluteMax,
+            animationSpec = tween(1000, easing = FastOutSlowInEasing)
+        )
+    }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        LabelText(
+            text = statShortName(stat.statName),
+            size = ComponentSize.SMALL,
+            textColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.width(52.dp)
+        )
+        LinearProgressIndicator(
+            progress = { animatedProgress.value },
+            modifier = Modifier
+                .weight(1f)
+                .height(8.dp)
+                .clip(CircleShape),
+            color = statColor,
+            trackColor = statColor.copy(alpha = 0.15f),
+            strokeCap = StrokeCap.Round
+        )
+        LabelText(
+            text = maxValue.toString(),
+            size = ComponentSize.MEDIUM,
+            fontWeight = FontWeight.Bold,
+            textColor = statColor,
+            modifier = Modifier.width(36.dp),
+            textAlign = TextAlign.End
+        )
+    }
+}
+
+@Composable
+fun EvYieldSection(
+    evYield: List<Stat>,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        TitleText(
+            text = stringResource(Res.string.ev_yield),
+            size = ComponentSize.MEDIUM,
+            fontWeight = FontWeight.Bold,
+            textColor = MaterialTheme.colorScheme.onBackground
+        )
+        evYield.forEach { stat ->
+            val statColor = statColor(stat.statName)
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                color = statColor.copy(alpha = 0.10f),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    BodyText(
+                        text = statShortName(stat.statName),
+                        size = ComponentSize.MEDIUM,
+                        fontWeight = FontWeight.Medium,
+                        textColor = statColor
+                    )
+                    Surface(
+                        color = statColor.copy(alpha = 0.20f),
+                        shape = CircleShape
+                    ) {
+                        LabelText(
+                            text = "+${stat.statEffort}",
+                            size = ComponentSize.LARGE,
+                            fontWeight = FontWeight.Bold,
+                            textColor = statColor,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                        )
+                    }
+                }
             }
         }
     }
@@ -1145,8 +1744,6 @@ fun String.toEggGroupColor(): Color {
         else -> MaterialTheme.colorScheme.primary
     }
 }
-
-// ─── Colores ───────────────────────────────────────────────────────────────
 
 private data class EncounterColors(val bg: Color, val fg: Color)
 
@@ -1339,6 +1936,32 @@ fun Double.formatHeight(): String {
 
 fun Double.formatWeight(): String {
     return "${this / 10} kg"
+}
+
+@Composable
+fun statColor(statName: String): Color {
+    return when (statName.lowercase()) {
+        "hp" -> Color(0xFFFF5959)
+        "attack" -> Color(0xFFF08030)
+        "defense" -> Color(0xFFF8D030)
+        "special-attack" -> Color(0xFF6890F0)
+        "special-defense" -> Color(0xFF78C850)
+        "speed" -> Color(0xFFF85888)
+        else -> MaterialTheme.colorScheme.primary
+    }
+}
+
+@Composable
+fun statShortName(statName: String): String {
+    return when (statName.lowercase()) {
+        "hp" -> stringResource(Res.string.hp)
+        "attack" -> stringResource(Res.string.attack)
+        "defense" -> stringResource(Res.string.defense)
+        "special-attack" -> stringResource(Res.string.special_attack)
+        "special-defense" -> stringResource(Res.string.special_defense)
+        "speed" -> stringResource(Res.string.speed)
+        else -> statName.take(6).uppercase()
+    }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -1623,5 +2246,251 @@ private fun PokemonEncounterGridItemMultipleVersionsPreview() {
                 modifier = Modifier.padding(16.dp)
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EvolutionChainItemPreview_Selected() {
+    AppTheme {
+        EvolutionChainItem(
+            sprite = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png",
+            dominantColor = Color(0xFFEE8130),
+            chain = ChainLink(
+                evolvesFrom = "charmeleon",
+                isCurrentSelected = true,
+                species = NamedResourceApi(
+                    name = "charizard"
+                ),
+                evolutionDetails = listOf(
+                    EvolutionDetail(
+                        trigger = NamedResourceApi(name = "level-up"),
+                        minLevel = 36
+                    )
+                )
+            ),
+            detail = EvolutionDetail(
+                trigger = NamedResourceApi(name = "level-up"),
+                minLevel = 36
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EvolutionChainItemPreview_WithManyDetails() {
+    AppTheme {
+        EvolutionChainItem(
+            sprite = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png",
+            dominantColor = Color(0xFFA8A77A),
+            chain = ChainLink(
+                evolvesFrom = "eevee",
+                isCurrentSelected = false,
+                species = NamedResourceApi(
+                    name = "umbreon"
+                ),
+                evolutionDetails = listOf(
+                    EvolutionDetail(
+                        trigger = NamedResourceApi(name = "level-up"),
+                        minHappiness = 220,
+                        timeOfDay = "night"
+                    )
+                )
+            ),
+            detail = EvolutionDetail(
+                trigger = NamedResourceApi(name = "level-up"),
+                minHappiness = 220,
+                timeOfDay = "night",
+                knownMove = NamedResourceApi(name = "bite"),
+                location = NamedResourceApi(name = "eterna-forest"),
+                needsOverworldRain = true
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EvolutionChainItemPreview_ItemEvolution() {
+    AppTheme {
+        EvolutionChainItem(
+            sprite = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/61.png",
+            dominantColor = Color(0xFF6390F0),
+            chain = ChainLink(
+                evolvesFrom = "poliwhirl",
+                species = NamedResourceApi(
+                    name = "poliwrath"
+                ),
+                evolutionDetails = listOf(
+                    EvolutionDetail(
+                        trigger = NamedResourceApi(name = "use-item"),
+                        item = NamedResourceApi(name = "water-stone")
+                    )
+                )
+            ),
+            detail = EvolutionDetail(
+                trigger = NamedResourceApi(name = "use-item"),
+                item = NamedResourceApi(name = "water-stone")
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EvolutionDetailRowPreview() {
+    AppTheme {
+        EvolutionDetailRow(
+            label = "Level",
+            value = "Lv. 36",
+            icon = Icons.LevelUp
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+private fun CharizardEvolutionChainPreview() {
+
+    val charmander = ChainLink(
+        species = NamedResourceApi(name = "charmander"),
+        isCurrentSelected = false,
+        evolutionDetails = emptyList()
+    )
+
+    val charmeleonDetail = EvolutionDetail(
+        trigger = NamedResourceApi(name = "level-up"),
+        minLevel = 16
+    )
+
+    val charmeleon = ChainLink(
+        evolvesFrom = "charmander",
+        species = NamedResourceApi(name = "charmeleon"),
+        isCurrentSelected = false,
+        evolutionDetails = listOf(charmeleonDetail)
+    )
+
+    val charizardDetail = EvolutionDetail(
+        trigger = NamedResourceApi(name = "level-up"),
+        minLevel = 36
+    )
+
+    val charizard = ChainLink(
+        evolvesFrom = "charmeleon",
+        species = NamedResourceApi(name = "charizard"),
+        isCurrentSelected = true,
+        evolutionDetails = listOf(charizardDetail)
+    )
+
+    AppTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+
+            EvolutionChainItem(
+                sprite = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
+                chain = charmander,
+                detail = null,
+                dominantColor = Color(0xFFEE8130)
+            )
+
+            EvolutionChainItem(
+                sprite = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png",
+                chain = charmeleon,
+                detail = charmeleonDetail,
+                dominantColor = Color(0xFFEE8130)
+            )
+
+            EvolutionChainItem(
+                sprite = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png",
+                chain = charizard,
+                detail = charizardDetail,
+                dominantColor = Color(0xFFEE8130)
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun StatCircleItemPreview() {
+    MaterialTheme {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            listOf(
+                Stat(baseStat = 45, statName = "hp",               statEffort = 0),
+                Stat(baseStat = 49, statName = "attack",           statEffort = 0),
+                Stat(baseStat = 49, statName = "defense",          statEffort = 0),
+                Stat(baseStat = 65, statName = "special-attack",   statEffort = 1),
+                Stat(baseStat = 65, statName = "special-defense",  statEffort = 0),
+                Stat(baseStat = 45, statName = "speed",            statEffort = 0),
+            ).forEach { stat ->
+                StatCircleItem(stat = stat, statTotal = 318)
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun MaxStatsSectionPreview() {
+    val sampleStats = listOf(
+        Stat(baseStat = 45,  statName = "hp",               statEffort = 0),
+        Stat(baseStat = 49,  statName = "attack",           statEffort = 0),
+        Stat(baseStat = 49,  statName = "defense",          statEffort = 0),
+        Stat(baseStat = 65,  statName = "special-attack",   statEffort = 1),
+        Stat(baseStat = 65,  statName = "special-defense",  statEffort = 0),
+        Stat(baseStat = 45,  statName = "speed",            statEffort = 0),
+    )
+    MaterialTheme {
+        Column(modifier = Modifier.padding(16.dp)) {
+            MaxStatsSection(pokemonStats = sampleStats)
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EvYieldSectionPreview() {
+    val evStats = listOf(
+        Stat(baseStat = 65, statName = "special-attack", statEffort = 1)
+    )
+    MaterialTheme {
+        Column(modifier = Modifier.padding(16.dp)) {
+            EvYieldSection(evYield = evStats)
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PokemonStatsTabPreview() {
+    val bulbasaurStats = listOf(
+        Stat(baseStat = 45,  statName = "hp",               statEffort = 0),
+        Stat(baseStat = 49,  statName = "attack",           statEffort = 0),
+        Stat(baseStat = 49,  statName = "defense",          statEffort = 0),
+        Stat(baseStat = 65,  statName = "special-attack",   statEffort = 1),
+        Stat(baseStat = 65,  statName = "special-defense",  statEffort = 0),
+        Stat(baseStat = 45,  statName = "speed",            statEffort = 0),
+    )
+    AppTheme {
+        PokemonStatsTab(
+            pokemonStats = bulbasaurStats,
+            dominantColor = Color(0xFF78C850),
+            isDarkTheme = true,
+            currentLang = "es",
+            listState = rememberLazyGridState()
+        )
     }
 }

@@ -20,6 +20,8 @@
     <string name="empty_pokedex_list">No Pokedex found</string>
     <string name="empty_pokemon_list">No Pokémon found in this Pokédex</string>
     <string name="empty_pokemon_encounter_list">No encounter location found</string>
+    <string name="empty_pokemon_evolution_list">No evolutions found</string>
+    <string name="empty_pokemon_stats_list">No stats available</string>
     <string name="refresh_list">Click the button below to refresh</string>
 
     <string name="pokemon_detail_tab_info">Info</string>
@@ -51,4 +53,9 @@
     <string name="max_level">Max Level</string>
     <string name="max_chance">Max Chance</string>
     <string name="game_version">Game Version</string>
+    <string name="base_stats">Base Stats</string>
+    <string name="max_stats">Max Stats</string>
+    <string name="max_stats_tooltip">Stats calculated at level 100 with 31 IVs and 252 EVs in each stat, neutral nature.</string>
+    <string name="stats_total">Total</string>
+    <string name="ev_yield">EV Yield</string>
 </resources>

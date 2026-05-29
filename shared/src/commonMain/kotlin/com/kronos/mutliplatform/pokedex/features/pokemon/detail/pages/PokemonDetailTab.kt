@@ -48,9 +48,6 @@ fun PokemonDetailTab(
     onOtherFormsClick: (item: NamedResourceApi) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(gridColumns),
         state = listState,

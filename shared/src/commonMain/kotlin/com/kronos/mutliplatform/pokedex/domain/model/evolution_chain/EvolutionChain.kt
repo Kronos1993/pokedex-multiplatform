@@ -12,24 +12,33 @@ data class EvolutionChain(
     fun getEvolutionChain(
         pokemonName: String,
         evoList: MutableList<ChainLink>,
+        chain: ChainLink
     ): MutableList<ChainLink> {
-        if (evoList.size==1){
-            evoList[0].run {
-                if(pokemonName == this.species.name)
-                    this.isCurrentSelected = true
-                this
+
+        if (evoList.size == 1) {
+            if (pokemonName == chain.species.name) {
+                chain.isCurrentSelected = true
             }
         }
-        return if (chain!=null || chain?.evolvesTo?.isNotEmpty() == true) {
-            for (item in chain!!.evolvesTo) {
-                item.evolvesFrom = chain!!.species.name
-                if(pokemonName == item.species.name)
+
+        if (chain.evolvesTo.isNotEmpty()) {
+
+            for (item in chain.evolvesTo) {
+
+                item.evolvesFrom = chain.species.name
+
+                if (pokemonName == item.species.name) {
                     item.isCurrentSelected = true
+                }
                 evoList.add(item)
+                getEvolutionChain(
+                    pokemonName = pokemonName,
+                    evoList = evoList,
+                    chain = item
+                )
             }
-            getEvolutionChain(pokemonName,evoList)
-        } else {
-            evoList
         }
+
+        return evoList
     }
 }

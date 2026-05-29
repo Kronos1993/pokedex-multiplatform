@@ -120,7 +120,10 @@ class PokemonDetailScreenViewModel(
             if (it.pokemon.name.isNotEmpty() && pokemon.name != it.pokemon.name) {
                 pokemonOtherForms.add(
                     PokemonOtherForm(
-                        imgUrl = urlProvider.getImageUrl(ImageType.POKEMON, urlProvider.extractIdFromUrl(it.pokemon.url).toString()),
+                        imgUrl = urlProvider.getImageUrl(
+                            ImageType.POKEMON,
+                            urlProvider.extractIdFromUrl(it.pokemon.url).toString()
+                        ),
                         nameFormatted = it.pokemon.name.replace("-".toRegex(), " ").uppercase(),
                         name = it.pokemon.name,
                         url = it.pokemon.url
@@ -145,43 +148,42 @@ class PokemonDetailScreenViewModel(
 
         _pokemon.value = updatedPokemon
 
-        /*if (pokemonInfo.specieInfo.name.isNotEmpty()) {
-            val genderPossibility = GenderPossibility()
-            genderPossibility.getPossibilities(pokemonInfo.specieInfo.genderRate)
-            pokemonGenderPossibility.set(genderPossibility)
-            postSpecieInfo(pokemonInfo.specieInfo)
-
-        } else {
-            pokemonName.set(pokemonInfo.name)
-            pokemonInfo.specieInfo = SpecieInfo()
-            postPokemonEvolutionChain(EvolutionChain())
-            postPokemonEvolutionChainList(listOf())
-        }
-
-        postPokemonInfo(pokemonInfo)
-        postPokemonMoves(pokemonInfo.moves)
-        groupMoves(pokemonInfo.moves)
-        postPokemonStats(pokemonInfo.stats)
-        postPokemonGames(pokemonInfo.games)
-
-
-        statsTotal.set(pokemonInfo.totalStat())
-        loading.postValue(false)*/
-
     }
 
     private fun postPokemonEncounters(list: List<Encounter>) {
         _pokemonEncounterList.value = (list)
     }
 
+    private fun postPokemonEvolutionChain(
+        evolutionChain: EvolutionChain
+    ) {
+        _pokemonEvolutionChain.value = evolutionChain
+
+        val evolutionList = evolutionChain.getEvolutionChain(
+            pokemonName = pokemon.value.name,
+            evoList = mutableListOf(evolutionChain.chain!!),
+            chain = evolutionChain.chain!!
+        )
+
+        postPokemonEvolutionChainList(evolutionList)
+    }
+
+    private fun postPokemonEvolutionChainList(evolutionChainList: List<ChainLink>) {
+        _pokemonEvolutionList.value = (evolutionChainList)
+    }
+
     fun loadPokemonInfo() {
         viewModelScope.launch(Dispatchers.IO) {
             loading = (true)
 
-            pokemonRemoteRepository.getPokemonInfo(urlProvider.extractIdFromUrl(appCache._currentPokemon.value?.url.orEmpty()).toString())
+            pokemonRemoteRepository.getPokemonInfo(
+                urlProvider.extractIdFromUrl(appCache._currentPokemon.value?.url.orEmpty())
+                    .toString()
+            )
                 .onSuccess {
                     loading = (false)
                     postPokemon(it)
+                    getPokemonEvolution(it)
                 }
                 .onError {
                     val err = HashMap<String, String>()
@@ -197,9 +199,12 @@ class PokemonDetailScreenViewModel(
         }
     }
 
-    fun getPokemonEncounters(){
-        viewModelScope.launch (Dispatchers.IO){
-            pokemonRemoteRepository.getPokemonEncountersInfo(urlProvider.extractIdFromUrl(appCache._currentPokemon.value?.url.orEmpty()).toString())
+    fun getPokemonEncounters() {
+        viewModelScope.launch(Dispatchers.IO) {
+            pokemonRemoteRepository.getPokemonEncountersInfo(
+                urlProvider.extractIdFromUrl(appCache._currentPokemon.value?.url.orEmpty())
+                    .toString()
+            )
                 .onSuccess {
                     postPokemonEncounters(it)
                 }
@@ -212,6 +217,34 @@ class PokemonDetailScreenViewModel(
                     }
                     message = (err)
                 }
+        }
+    }
+
+    fun getPokemonEvolution(pokemonInfo: PokemonInfo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (!pokemonInfo.specieInfo?.evolutionChain?.url.isNullOrEmpty()) {
+                pokemonEvolutionChainRemoteRepository.getEvolutionChain(
+                    urlProvider.extractIdFromUrl(pokemonInfo.specieInfo?.evolutionChain.let {
+                        if (it != null && it.url.isNotEmpty())
+                            it.url
+                        else
+                            "0"
+                    })
+                )
+                    .onSuccess {
+                        postPokemonEvolutionChain(it)
+                    }
+                    .onError {
+                        val err = HashMap<String, String>()
+                        if (it is FullNetworkError) {
+                            err["error"] = it.errorMessage
+                        } else {
+                            err["error"] = it.toString()
+                        }
+                        message = (err)
+                    }
+
+            }
         }
     }
 
