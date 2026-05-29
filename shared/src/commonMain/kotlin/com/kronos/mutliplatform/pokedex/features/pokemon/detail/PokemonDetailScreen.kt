@@ -41,6 +41,7 @@ import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.toPokemo
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonDetailTab
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonEvolutionChainTab
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonLocationTab
+import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonMovesTab
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonStatsTab
 import com.kronos.mutliplatform.pokedex.screen_config.DeviceScreenConfiguration
 import kotlinx.coroutines.launch
@@ -84,6 +85,7 @@ fun PokemonDetailScreen(
     val locationListState = rememberLazyGridState()
     val evolutionListState = rememberLazyGridState()
     val statsListState = rememberLazyGridState()
+    val movesListState = rememberLazyGridState()
 
     val stringSpriteHome = stringResource(Res.string.home)
     val stringSpriteHomeShiny = stringResource(Res.string.home_shiny)
@@ -235,7 +237,28 @@ fun PokemonDetailScreen(
             Icons.TmDisk,
             index = 5
         ) {
-            //todo add screen
+            PokemonMovesTab(
+                moves = pokemonInfo.moves,
+                dominantColor = dominantColor,
+                isDarkTheme = isDarkTheme,
+                currentLang = currentLang,
+                listState = movesListState,
+                gridColumns = when (deviceScreenConfiguration) {
+                    DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
+                        1
+                    }
+
+                    DeviceScreenConfiguration.MOBILE_LANDSCAPE,
+                    DeviceScreenConfiguration.TABLET_PORTRAIT -> {
+                        2
+                    }
+
+                    DeviceScreenConfiguration.TABLET_LANDSCAPE,
+                    DeviceScreenConfiguration.DESKTOP -> {
+                        3
+                    }
+                }
+            )
         },
 
         TabItem(
