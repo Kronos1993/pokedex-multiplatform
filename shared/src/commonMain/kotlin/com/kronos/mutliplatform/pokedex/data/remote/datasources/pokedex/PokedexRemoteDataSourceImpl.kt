@@ -265,7 +265,7 @@ class PokedexRemoteDataSourceImpl(
                         }
                         val list =
                             json.decodeFromString<PokedexDto>(result)
-                        Result.Success(list.toPokedex())
+                        Result.Success(list.toPokedex(urlProvider))
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Result.Error(
@@ -433,7 +433,7 @@ class PokedexRemoteDataSourceImpl(
                         }
                         val list =
                             json.decodeFromString<PokedexDto>(result)
-                        Result.Success(list.toPokedex())
+                        Result.Success(list.toPokedex(urlProvider))
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Result.Error(

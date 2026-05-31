@@ -1,6 +1,7 @@
 package com.kronos.mutliplatform.pokedex.features.move.list
 
 import androidx.lifecycle.viewModelScope
+import com.kronos.mutliplatform.pokedex.core.Platform
 import com.kronos.mutliplatform.pokedex.core.result.onError
 import com.kronos.mutliplatform.pokedex.core.result.onSuccess
 import com.kronos.mutliplatform.pokedex.core.util.IAppInfo
@@ -17,7 +18,8 @@ import kotlinx.coroutines.launch
 
 class MoveListScreenViewModel(
     private val appInfo: IAppInfo,
-    private val moveRemoteRepository: MoveRemoteRepository
+    private val moveRemoteRepository: MoveRemoteRepository,
+    val platform: Platform
 ): ParentViewModel() {
 
     private var _moves = MutableStateFlow(listOf<NamedResourceApi>())

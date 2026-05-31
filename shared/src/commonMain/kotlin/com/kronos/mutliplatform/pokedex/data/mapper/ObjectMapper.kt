@@ -39,6 +39,7 @@ import com.kronos.mutliplatform.pokedex.domain.model.ResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.ResponseList
 import com.kronos.mutliplatform.pokedex.data.remote.dto.EvolutionChainDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.EvolutionTriggerDto
+import com.kronos.mutliplatform.pokedex.data.remote.ktor.UrlProvider
 import com.kronos.mutliplatform.pokedex.domain.model.EffectEntry
 import com.kronos.mutliplatform.pokedex.domain.model.FlavorText
 import com.kronos.mutliplatform.pokedex.domain.model.Name
@@ -305,13 +306,13 @@ fun NatureDetailDto.toNatureDetail(): NatureDetail =
         likesFlavor = likesFlavor.let { it?.name },
     )
 
-fun PokedexDto.toPokedex(): Pokedex =
+fun PokedexDto.toPokedex(urlProvider: UrlProvider): Pokedex =
     Pokedex(
         id = id,
         name = name,
         names = names.map { Name(it.name,it.language) },
         pokemons = pokemons.map {
-            it.toPokemonDexEntry()
+            it.toPokemonDexEntry(urlProvider.extractIdFromUrl(it.pokemon.url))
         }
 
     )
@@ -342,9 +343,10 @@ fun EncounterDetailDto.toEncounterDetail(): EncounterDetail =
         method.toNamedResource()
     )
 
-fun PokemonDexEntryDto.toPokemonDexEntry(): PokemonDexEntry =
+fun PokemonDexEntryDto.toPokemonDexEntry(pokemonId:Int): PokemonDexEntry =
     PokemonDexEntry(
         dexEntry = entry_number,
+        pokemonId = pokemonId,
         pokemon = pokemon.toNamedResource()
 
     )

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <path d="M0,0 H24 V48 H0 Z" fill="#CC1100"/>
+  <path d="M24,0 H48 V48 H24 Z" fill="#0044BB"/>
+  <!-- Ruby gem left -->
+  <polygon points="12,8 18,14 18,22 12,26 6,22 6,14" fill="#FF4444" stroke="#FFAAAA" stroke-width="0.8"/>
+  <line x1="12" y1="8" x2="12" y2="14" stroke="#FFCCCC" stroke-width="0.8"/>
+  <line x1="6" y1="14" x2="18" y2="14" stroke="#FFCCCC" stroke-width="0.8"/>
+  <!-- Sapphire gem right -->
+  <polygon points="36,8 42,14 42,22 36,26 30,22 30,14" fill="#4488FF" stroke="#AACCFF" stroke-width="0.8"/>
+  <line x1="36" y1="8" x2="36" y2="14" stroke="#CCDDFF" stroke-width="0.8"/>
+  <line x1="30" y1="14" x2="42" y2="14" stroke="#CCDDFF" stroke-width="0.8"/>
+  <!-- Pokeball line -->
+  <rect x="0" y="31" width="48" height="5" fill="#222222"/>
+  <!-- Pokeball center -->
+  <circle cx="24" cy="33.5" r="6" fill="#222222"/>
+  <circle cx="24" cy="33.5" r="4" fill="#EEEEEE"/>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <rect width="48" height="48" fill="#110022" rx="4"/>
+  <!-- Dark aura swirls -->
+  <path d="M24,4 Q36,10 40,24 Q36,38 24,44 Q12,38 8,24 Q12,10 24,4 Z" fill="#220044" opacity="0.8"/>
+  <!-- XD letters -->
+  <text x="6" y="30" font-family="sans-serif" font-weight="bold" font-size="20" fill="#8800CC">X</text>
+  <text x="26" y="30" font-family="sans-serif" font-weight="bold" font-size="20" fill="#AA00FF">D</text>
+  <!-- Shadow Lugia silhouette -->
+  <path d="M16,10 Q10,8 8,14 Q6,20 12,22 Q10,18 14,16 Q14,22 18,22 Q16,18 18,14 Z" fill="#6600AA" opacity="0.8"/>
+  <path d="M32,10 Q38,8 40,14 Q42,20 36,22 Q38,18 34,16 Q34,22 30,22 Q32,18 30,14 Z" fill="#6600AA" opacity="0.8"/>
+  <!-- Glow effect center -->
+  <circle cx="24" cy="36" r="5" fill="#AA00FF" opacity="0.4"/>
+  <circle cx="24" cy="36" r="3" fill="#CC44FF" opacity="0.6"/>
+  <circle cx="24" cy="36" r="1.5" fill="#EECCFF"/>
+</svg>

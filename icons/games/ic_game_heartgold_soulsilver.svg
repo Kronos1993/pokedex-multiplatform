@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <path d="M0,0 H24 V48 H0 Z" fill="#DDAA00"/>
+  <path d="M24,0 H48 V48 H24 Z" fill="#8888CC"/>
+  <!-- Heart gold left -->
+  <path d="M12,10 Q8,6 4,10 Q4,14 12,20 Q20,14 20,10 Q16,6 12,10 Z" fill="#FF4444"/>
+  <path d="M12,10 Q9,7 6,10 Q6,13 12,18 Q18,13 18,10 Q15,7 12,10 Z" fill="#FF8888" opacity="0.5"/>
+  <!-- Soul lugia wing right -->
+  <path d="M28,8 Q34,5 40,10 Q44,16 40,22 Q36,26 30,24 Q26,20 28,14 Z" fill="#AAAAFF" opacity="0.9"/>
+  <path d="M30,10 Q35,8 39,12 Q42,17 39,21 Q36,24 31,22 Q28,19 30,14 Z" fill="#CCCCFF" opacity="0.6"/>
+  <!-- Pokeball divider -->
+  <rect x="0" y="33" width="48" height="5" fill="#333322"/>
+  <circle cx="24" cy="35.5" r="5.5" fill="#333322"/>
+  <circle cx="24" cy="35.5" r="3.5" fill="#EEEECC"/>
+</svg>

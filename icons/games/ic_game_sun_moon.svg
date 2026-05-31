@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <path d="M0,0 H24 V48 H0 Z" fill="#FF8800"/>
+  <path d="M24,0 H48 V48 H24 Z" fill="#002266"/>
+  <!-- Sun left -->
+  <circle cx="12" cy="24" r="8" fill="#FFEE00"/>
+  <line x1="12" y1="10" x2="12" y2="14" stroke="#FFEE00" stroke-width="2" stroke-linecap="round"/>
+  <line x1="12" y1="34" x2="12" y2="38" stroke="#FFEE00" stroke-width="2" stroke-linecap="round"/>
+  <line x1="0" y1="24" x2="4" y2="24" stroke="#FFEE00" stroke-width="2" stroke-linecap="round"/>
+  <line x1="20" y1="24" x2="23" y2="24" stroke="#FFEE00" stroke-width="2" stroke-linecap="round"/>
+  <line x1="3" y1="13" x2="6" y2="16" stroke="#FFEE00" stroke-width="2" stroke-linecap="round"/>
+  <line x1="18" y1="16" x2="21" y2="13" stroke="#FFEE00" stroke-width="2" stroke-linecap="round"/>
+  <line x1="3" y1="35" x2="6" y2="32" stroke="#FFEE00" stroke-width="2" stroke-linecap="round"/>
+  <line x1="18" y1="32" x2="21" y2="35" stroke="#FFEE00" stroke-width="2" stroke-linecap="round"/>
+  <!-- Moon right -->
+  <path d="M44,14 Q34,16 32,24 Q34,32 44,34 Q36,32 36,24 Q36,16 44,14 Z" fill="#EEEEFF"/>
+  <!-- Stars right -->
+  <circle cx="28" cy="10" r="1.2" fill="#FFFFFF"/>
+  <circle cx="44" cy="20" r="1" fill="#FFFFFF"/>
+  <circle cx="30" cy="38" r="1.2" fill="#FFFFFF"/>
+  <circle cx="42" cy="42" r="0.8" fill="#FFFFFF"/>
+</svg>

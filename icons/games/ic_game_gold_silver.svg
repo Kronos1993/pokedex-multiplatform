@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <path d="M0,0 H24 V48 H0 Z" fill="#C8A400"/>
+  <path d="M24,0 H48 V48 H24 Z" fill="#A8A8A8"/>
+  <!-- Pokeball line -->
+  <rect x="0" y="21" width="48" height="6" fill="#333333"/>
+  <!-- Pokeball center -->
+  <circle cx="24" cy="24" r="7" fill="#333333"/>
+  <circle cx="24" cy="24" r="5" fill="#EEEEEE"/>
+  <!-- Ho-Oh wing hint top-left -->
+  <path d="M3,8 Q10,3 18,10 Q12,14 6,12 Z" fill="#FF4400" opacity="0.9"/>
+  <path d="M3,8 Q10,3 18,10 Q12,14 6,12 Z" fill="none" stroke="#FFD700" stroke-width="0.8"/>
+  <!-- Lugia wing hint top-right -->
+  <path d="M45,8 Q38,3 30,10 Q36,14 42,12 Z" fill="#8888FF" opacity="0.9"/>
+  <path d="M45,8 Q38,3 30,10 Q36,14 42,12 Z" fill="none" stroke="#AAAAFF" stroke-width="0.8"/>
+  <!-- G / S labels -->
+  <text x="8" y="20" font-family="sans-serif" font-weight="bold" font-size="9" fill="#FFFFFF">G</text>
+  <text x="32" y="20" font-family="sans-serif" font-weight="bold" font-size="9" fill="#FFFFFF">S</text>
+</svg>

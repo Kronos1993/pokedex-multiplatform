@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <!-- Pokeball default -->
+  <circle cx="24" cy="24" r="22" fill="#DDDDDD" stroke="#888888" stroke-width="1.5"/>
+  <path d="M2,24 A22,22 0 0,1 46,24 L38,24 A14,14 0 0,0 10,24 Z" fill="#CC2200"/>
+  <path d="M2,24 A22,22 0 0,0 46,24 L38,24 A14,14 0 0,1 10,24 Z" fill="#EEEEEE"/>
+  <rect x="2" y="22" width="44" height="4" fill="#222222"/>
+  <circle cx="24" cy="24" r="7" fill="#222222"/>
+  <circle cx="24" cy="24" r="5" fill="#EEEEEE"/>
+</svg>

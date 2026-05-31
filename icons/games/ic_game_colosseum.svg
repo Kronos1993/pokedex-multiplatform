@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <rect width="48" height="48" fill="#332200" rx="4"/>
+  <!-- Colosseum arches -->
+  <rect x="4" y="28" width="40" height="16" fill="#886633"/>
+  <path d="M4,28 Q4,18 10,18 Q16,18 16,28" fill="#664422"/>
+  <path d="M16,28 Q16,18 22,18 Q28,18 28,28" fill="#664422"/>
+  <path d="M28,28 Q28,18 34,18 Q40,18 40,28" fill="#664422"/>
+  <!-- Colosseum top wall -->
+  <rect x="4" y="14" width="40" height="6" fill="#886633"/>
+  <!-- Battlements -->
+  <rect x="4" y="10" width="5" height="6" fill="#886633"/>
+  <rect x="12" y="10" width="5" height="6" fill="#886633"/>
+  <rect x="20" y="10" width="5" height="6" fill="#886633"/>
+  <rect x="28" y="10" width="5" height="6" fill="#886633"/>
+  <rect x="36" y="10" width="5" height="6" fill="#886633"/>
+  <!-- Snag machine hint -->
+  <rect x="18" y="4" width="12" height="8" fill="#AAAAAA" rx="2"/>
+  <circle cx="24" cy="8" r="3" fill="#CC2200"/>
+  <circle cx="24" cy="8" r="1.5" fill="#FF4444"/>
+  <!-- Shadow hint -->
+  <ellipse cx="24" cy="44" rx="18" ry="3" fill="#000000" opacity="0.3"/>
+</svg>

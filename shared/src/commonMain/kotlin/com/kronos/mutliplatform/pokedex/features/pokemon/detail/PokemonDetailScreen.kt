@@ -40,6 +40,7 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.toPokemonColor
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonDetailTab
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonEvolutionChainTab
+import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonGamesTab
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonLocationTab
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonMovesTab
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonStatsTab
@@ -103,8 +104,8 @@ fun PokemonDetailScreen(
             stringSpriteFrontShiny = stringSpriteFrontShiny,
             stringSpriteFemaleShiny = stringSpriteFemaleShiny
         )
-        viewModel.loadPokemonInfo()
-        viewModel.getPokemonEncounters()
+        viewModel.loadPokemonInfo(pokemon)
+        viewModel.getPokemonEncounters(pokemon)
     }
 
     val typeName = remember(pokemonInfo.types) {
@@ -160,7 +161,6 @@ fun PokemonDetailScreen(
                 },
                 onSpriteClick = {},
                 onOtherFormsClick = {
-                    viewModel.setCurrentPokemon(it)
                     navHost.navigate("${Destinations.POKEMON_DETAIL.name}/${it.name}")
                 },
             )
@@ -209,7 +209,6 @@ fun PokemonDetailScreen(
                 currentLang = currentLang,
                 listState = evolutionListState,
                 onChainClick = {
-                    viewModel.setCurrentPokemon(it)
                     navHost.navigate("${Destinations.POKEMON_DETAIL.name}/${it.name}")
                 },
                 urlProvider = viewModel.urlProvider
@@ -267,7 +266,28 @@ fun PokemonDetailScreen(
             Icons.GameBoy,
             index = 6
         ) {
-            //todo add screen
+            PokemonGamesTab(
+                games = pokemonInfo.games,
+                dominantColor = dominantColor,
+                isDarkTheme = isDarkTheme,
+                currentLang = currentLang,
+                listState = movesListState,
+                gridColumns = when (deviceScreenConfiguration) {
+                    DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
+                        1
+                    }
+
+                    DeviceScreenConfiguration.MOBILE_LANDSCAPE,
+                    DeviceScreenConfiguration.TABLET_PORTRAIT -> {
+                        2
+                    }
+
+                    DeviceScreenConfiguration.TABLET_LANDSCAPE,
+                    DeviceScreenConfiguration.DESKTOP -> {
+                        3
+                    }
+                }
+            )
         },
     )
 
@@ -278,7 +298,7 @@ fun PokemonDetailScreen(
         Scaffold(
             topBar = {
                 AppTopAppBar(
-                    title = pokemon.replaceFirstChar { it.uppercase() }.replace("-", " "),
+                    title = pokemonInfo.name.replaceFirstChar { it.uppercase() }.replace("-", " "),
                     navIconButton = {
                         IconButton(
                             icon = Icons.AutoMirrored.Filled.ArrowBack,

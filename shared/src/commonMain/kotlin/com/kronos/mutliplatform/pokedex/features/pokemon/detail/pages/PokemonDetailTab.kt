@@ -66,7 +66,7 @@ fun PokemonDetailTab(
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        item(span = { GridItemSpan(maxLineSpan) }) {
+        item(span = { GridItemSpan(gridColumns) }) {
             PokemonDetailItem(
                 pokemon = pokemon,
                 dominantColor = dominantColor,
@@ -76,11 +76,11 @@ fun PokemonDetailTab(
             )
         }
 
-        item(span = { GridItemSpan(maxLineSpan) }) {
+        item {
             PokemonBasicInfoCard(pokemon)
         }
 
-        item(span = { GridItemSpan(maxLineSpan) }) {
+        item {
 
             AnimatedVisibility(
                 visible = pokemon.specieInfo?.eggGroup?.isNotEmpty() == true
@@ -92,7 +92,7 @@ fun PokemonDetailTab(
             }
         }
 
-        item(span = { GridItemSpan(maxLineSpan) }) {
+        item {
             AnimatedVisibility(
                 visible = pokemon.abilities.isNotEmpty()
             ) {
@@ -104,14 +104,14 @@ fun PokemonDetailTab(
             }
         }
 
-        item(span = { GridItemSpan(maxLineSpan) }) {
+        item {
             PokemonSpritesCard(
                 pokemonSprites = pokemonSprites,
                 onSpriteClick = onSpriteClick
             )
         }
 
-        item(span = { GridItemSpan(maxLineSpan) }) {
+        item {
             PokemonOtherFormsCard(
                 pokemonOtherForms = pokemonOtherForms,
                 onOtherFormsClick = onOtherFormsClick

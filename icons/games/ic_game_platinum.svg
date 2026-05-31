@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <rect width="48" height="48" fill="#444466" rx="4"/>
+  <!-- Distortion world swirl -->
+  <circle cx="24" cy="24" r="20" fill="none" stroke="#8888BB" stroke-width="1" opacity="0.5"/>
+  <circle cx="24" cy="24" r="14" fill="none" stroke="#AAAACC" stroke-width="1" opacity="0.6"/>
+  <circle cx="24" cy="24" r="8" fill="none" stroke="#CCCCEE" stroke-width="1" opacity="0.7"/>
+  <!-- Giratina origin wings hint -->
+  <path d="M4,18 Q10,14 14,20 Q10,22 4,22 Z" fill="#8844AA" opacity="0.8"/>
+  <path d="M44,18 Q38,14 34,20 Q38,22 44,22 Z" fill="#8844AA" opacity="0.8"/>
+  <path d="M4,26 Q10,22 14,28 Q10,30 4,30 Z" fill="#6633AA" opacity="0.7"/>
+  <path d="M44,26 Q38,22 34,28 Q38,30 44,30 Z" fill="#6633AA" opacity="0.7"/>
+  <!-- Platinum gem center -->
+  <polygon points="24,10 30,17 30,24 24,30 18,24 18,17" fill="#AAAACC" stroke="#CCCCEE" stroke-width="1"/>
+  <polygon points="24,10 30,17 24,17 18,17" fill="#CCCCEE" opacity="0.7"/>
+  <line x1="24" y1="17" x2="24" y2="30" stroke="#CCCCEE" stroke-width="0.5" opacity="0.6"/>
+</svg>

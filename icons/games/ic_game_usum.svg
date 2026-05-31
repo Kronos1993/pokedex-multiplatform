@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <path d="M0,0 H24 V48 H0 Z" fill="#CC5500"/>
+  <path d="M24,0 H48 V48 H24 Z" fill="#000044"/>
+  <!-- Ultra wormhole ring left -->
+  <circle cx="12" cy="24" r="10" fill="none" stroke="#FFAA00" stroke-width="2"/>
+  <circle cx="12" cy="24" r="6" fill="none" stroke="#FFCC44" stroke-width="1.5"/>
+  <circle cx="12" cy="24" r="3" fill="#FFEE88"/>
+  <!-- Necrozma prism hint left -->
+  <polygon points="12,14 16,22 12,18 8,22" fill="#FFDD00" opacity="0.7"/>
+  <!-- Ultra wormhole ring right -->
+  <circle cx="36" cy="24" r="10" fill="none" stroke="#4444FF" stroke-width="2"/>
+  <circle cx="36" cy="24" r="6" fill="none" stroke="#6666FF" stroke-width="1.5"/>
+  <circle cx="36" cy="24" r="3" fill="#AAAAFF"/>
+  <!-- Necrozma prism hint right -->
+  <polygon points="36,14 40,22 36,18 32,22" fill="#8888FF" opacity="0.7"/>
+  <!-- Ultra text -->
+  <text x="6" y="42" font-family="sans-serif" font-weight="bold" font-size="6" fill="#FFEE00">ULTRA</text>
+</svg>

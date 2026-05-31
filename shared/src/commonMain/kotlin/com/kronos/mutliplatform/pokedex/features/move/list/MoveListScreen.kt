@@ -32,8 +32,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.kronos.mutliplatform.pokedex.AppViewModel
 import com.kronos.mutliplatform.pokedex.components.EmptyList
 import com.kronos.mutliplatform.pokedex.components.icon.AppIcon
+import com.kronos.mutliplatform.pokedex.core.PlatformType
 import com.kronos.mutliplatform.pokedex.core.ui.components.AppTopAppBar
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
 import com.kronos.mutliplatform.pokedex.core.ui.components.DrawerHeader
@@ -64,6 +66,7 @@ fun MoveListScreen(
     deviceScreenConfiguration: DeviceScreenConfiguration,
 ) {
     val viewModel = koinViewModel<MoveListScreenViewModel>()
+    val appViewModel = koinViewModel<AppViewModel>()
 
     val moves by viewModel.moves.collectAsStateWithLifecycle()
     val appVersion by viewModel.appVersion.collectAsStateWithLifecycle()
@@ -75,11 +78,10 @@ fun MoveListScreen(
     val listState = rememberLazyGridState()
 
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         viewModel.getAppVersion()
         viewModel.loadMoves()
     }
-
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -87,7 +89,12 @@ fun MoveListScreen(
     ) {
         NavDrawer(
             navigationItems = getNavDestinations(
-                navHost,),
+                navHost,
+                isDesktop = viewModel.platform.platformType == PlatformType.DESKTOP,
+                onExitClicked = {
+                    appViewModel.showExitDialog(true)
+                }
+            ),
             selectedIndex = selectedItem,
             drawerState = drawerState,
             drawerHeader = {

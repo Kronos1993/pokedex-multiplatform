@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <path d="M0,0 H24 V48 H0 Z" fill="#3355BB"/>
+  <path d="M24,0 H48 V48 H24 Z" fill="#CC6699"/>
+  <!-- Brilliant diamond left gem -->
+  <polygon points="12,6 20,16 20,28 12,36 4,28 4,16" fill="#55AAFF" stroke="#AADDFF" stroke-width="1"/>
+  <polygon points="12,6 20,16 12,16 4,16" fill="#88CCFF" opacity="0.8"/>
+  <polygon points="4,16 12,16 12,36 4,28" fill="#3388EE" opacity="0.7"/>
+  <polygon points="20,16 12,16 12,36 20,28" fill="#66AAFF" opacity="0.7"/>
+  <!-- Sparkle on diamond -->
+  <line x1="12" y1="4" x2="12" y2="8" stroke="#FFFFFF" stroke-width="1.5"/>
+  <line x1="10" y1="6" x2="14" y2="6" stroke="#FFFFFF" stroke-width="1.5"/>
+  <!-- Shining pearl right gem -->
+  <circle cx="36" cy="21" r="14" fill="#FFDDEE" stroke="#FFBBCC" stroke-width="1"/>
+  <circle cx="32" cy="17" r="4" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="36" cy="21" r="10" fill="none" stroke="#FFCCDD" stroke-width="0.5"/>
+  <circle cx="36" cy="21" r="6" fill="none" stroke="#FFCCDD" stroke-width="0.5"/>
+  <!-- Sparkle on pearl -->
+  <line x1="36" y1="5" x2="36" y2="9" stroke="#FFFFFF" stroke-width="1.5"/>
+  <line x1="34" y1="7" x2="38" y2="7" stroke="#FFFFFF" stroke-width="1.5"/>
+</svg>

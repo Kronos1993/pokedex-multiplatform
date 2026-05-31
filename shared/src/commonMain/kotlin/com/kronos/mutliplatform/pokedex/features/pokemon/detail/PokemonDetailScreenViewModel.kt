@@ -8,7 +8,6 @@ import com.kronos.mutliplatform.pokedex.core.viewmodel.ParentViewModel
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.ImageType
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.UrlProvider
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.util.FullNetworkError
-import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.ChainLink
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.EvolutionChain
 import com.kronos.mutliplatform.pokedex.domain.model.game.Game
@@ -172,14 +171,11 @@ class PokemonDetailScreenViewModel(
         _pokemonEvolutionList.value = (evolutionChainList)
     }
 
-    fun loadPokemonInfo() {
+    fun loadPokemonInfo(pokemon: String) {
         viewModelScope.launch(Dispatchers.IO) {
             loading = (true)
 
-            pokemonRemoteRepository.getPokemonInfo(
-                urlProvider.extractIdFromUrl(appCache._currentPokemon.value?.url.orEmpty())
-                    .toString()
-            )
+            pokemonRemoteRepository.getPokemonInfo(pokemon)
                 .onSuccess {
                     loading = (false)
                     postPokemon(it)
@@ -199,12 +195,9 @@ class PokemonDetailScreenViewModel(
         }
     }
 
-    fun getPokemonEncounters() {
+    fun getPokemonEncounters(pokemon: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            pokemonRemoteRepository.getPokemonEncountersInfo(
-                urlProvider.extractIdFromUrl(appCache._currentPokemon.value?.url.orEmpty())
-                    .toString()
-            )
+            pokemonRemoteRepository.getPokemonEncountersInfo(pokemon)
                 .onSuccess {
                     postPokemonEncounters(it)
                 }
@@ -246,10 +239,6 @@ class PokemonDetailScreenViewModel(
 
             }
         }
-    }
-
-    fun setCurrentPokemon(pokemon: NamedResourceApi) {
-        appCache._currentPokemon.value = pokemon
     }
 }
 

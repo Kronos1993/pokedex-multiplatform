@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <path d="M0,0 H24 V48 H0 Z" fill="#DDAA00"/>
+  <path d="M24,0 H48 V48 H24 Z" fill="#CC8844"/>
+  <!-- Pikachu tail left -->
+  <path d="M4,36 Q8,28 14,32 Q10,26 16,22 Q14,28 20,28" fill="none" stroke="#FFCC00" stroke-width="3" stroke-linecap="round"/>
+  <!-- Pikachu ear left -->
+  <polygon points="6,18 10,6 14,18" fill="#FFDD00"/>
+  <polygon points="8,18 10,9 12,18" fill="#222222"/>
+  <!-- Eevee tail right -->
+  <path d="M44,36 Q40,28 34,30 Q38,24 34,18" fill="none" stroke="#CC8844" stroke-width="3" stroke-linecap="round"/>
+  <!-- Eevee fur collar right -->
+  <path d="M28,26 Q32,22 36,24 Q38,28 36,32 Q32,34 28,32 Q26,28 28,26 Z" fill="#FFCCAA" opacity="0.8"/>
+  <!-- Pokeball center divider -->
+  <rect x="0" y="36" width="48" height="4" fill="#CC4444"/>
+  <rect x="0" y="36" width="48" height="1" fill="#882222"/>
+  <circle cx="24" cy="38" r="4" fill="#CC4444" stroke="#882222" stroke-width="1"/>
+  <circle cx="24" cy="38" r="2" fill="#FFFFFF"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <!-- Fondo amarillo -->
+  <rect width="48" height="48" fill="#FFD700" rx="6"/>
+  <!-- Pikachu ears -->
+  <polygon points="8,20 13,6 18,20" fill="#FFD700" stroke="#222" stroke-width="1"/>
+  <polygon points="30,20 35,6 40,20" fill="#FFD700" stroke="#222" stroke-width="1"/>
+  <polygon points="10,20 13,9 16,20" fill="#222222"/>
+  <polygon points="32,20 35,9 38,20" fill="#222222"/>
+  <!-- Pikachu face -->
+  <circle cx="24" cy="30" r="14" fill="#FFD700" stroke="#222222" stroke-width="1.5"/>
+  <!-- Eyes -->
+  <circle cx="19" cy="27" r="2.5" fill="#222222"/>
+  <circle cx="29" cy="27" r="2.5" fill="#222222"/>
+  <circle cx="19.8" cy="26.2" r="0.8" fill="#FFFFFF"/>
+  <circle cx="29.8" cy="26.2" r="0.8" fill="#FFFFFF"/>
+  <!-- Cheeks -->
+  <circle cx="14" cy="31" r="3" fill="#FF6666" opacity="0.8"/>
+  <circle cx="34" cy="31" r="3" fill="#FF6666" opacity="0.8"/>
+  <!-- Mouth -->
+  <path d="M20,33 Q24,37 28,33" fill="none" stroke="#222222" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Nose -->
+  <ellipse cx="24" cy="30" rx="1.2" ry="0.8" fill="#222222"/>
+</svg>

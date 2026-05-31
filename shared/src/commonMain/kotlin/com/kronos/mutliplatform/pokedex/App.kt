@@ -1,6 +1,9 @@
 package com.kronos.mutliplatform.pokedex
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -20,6 +23,7 @@ import com.kronos.mutliplatform.pokedex.components.icon.Settings
 import com.kronos.mutliplatform.pokedex.components.icon.TmDisk
 import com.kronos.mutliplatform.pokedex.core.preferences.PreferenceViewModel
 import com.kronos.mutliplatform.pokedex.core.ui.ConfigureSystemBars
+import com.kronos.mutliplatform.pokedex.core.ui.components.ConfirmDialog
 import com.kronos.mutliplatform.pokedex.core.ui.components.Destinations
 import com.kronos.mutliplatform.pokedex.core.ui.components.NavigationItem
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
@@ -33,8 +37,13 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import pokedex.shared.generated.resources.Res
 import pokedex.shared.generated.resources.default_lang_key
+import pokedex.shared.generated.resources.exit_dialog_body
+import pokedex.shared.generated.resources.exit_dialog_no
+import pokedex.shared.generated.resources.exit_dialog_title
+import pokedex.shared.generated.resources.exit_dialog_yes
 import pokedex.shared.generated.resources.lang_preference_default_value
 import pokedex.shared.generated.resources.menu_about
+import pokedex.shared.generated.resources.menu_exit
 import pokedex.shared.generated.resources.menu_moves
 import pokedex.shared.generated.resources.menu_pokedex
 import pokedex.shared.generated.resources.menu_settings
@@ -46,6 +55,9 @@ import pokedex.shared.generated.resources.theme_preference_key
 fun App() {
     val navController = rememberNavController()
     val viewModel = koinViewModel<PreferenceViewModel>()
+    val appViewModel = koinViewModel<AppViewModel>()
+
+    val showExitDialog by appViewModel.showExitDialog.collectAsStateWithLifecycle()
 
     val ready by viewModel.isReady.collectAsStateWithLifecycle()
     val themePreferenceKey = stringResource(Res.string.theme_preference_key)
@@ -165,6 +177,19 @@ fun App() {
                     }
                 }
             }
+
+            ConfirmDialog(
+                title = stringResource(Res.string.exit_dialog_title),
+                body = stringResource(Res.string.exit_dialog_body),
+                confirmText = stringResource(Res.string.exit_dialog_yes),
+                onConfirm = {
+                    appViewModel.closeApp()
+                },
+                cancelText = stringResource(Res.string.exit_dialog_no),
+                onCancel = { appViewModel.showExitDialog(false) },
+                showDialog = showExitDialog
+            )
+
         }
     }
 }
@@ -172,46 +197,73 @@ fun App() {
 @Composable
 fun getNavDestinations(
     navController: NavHostController,
-) = listOf(
+    isDesktop: Boolean = false,
+    onExitClicked: () -> Unit = {}
+) = buildList {
 
-    NavigationItem(
-        title = stringResource(Res.string.menu_pokedex),
-        destination = Destinations.POKEDEX,
-        selectedIcon = Icons.PokedexSvg,
-        unselectedIcon = Icons.PokedexSvg,
-        onClick = { pos, navItem ->
-            navController.navigate(navItem.destination.name)
-        }
-    ),
-
-    NavigationItem(
-        title = stringResource(Res.string.menu_moves),
-        destination = Destinations.MOVES,
-        selectedIcon = Icons.TmDisk,
-        unselectedIcon = Icons.TmDisk,
-        onClick = { pos, navItem ->
-            navController.navigate(navItem.destination.name)
-        }
-    ),
-
-    NavigationItem(
-        title = stringResource(Res.string.menu_settings),
-        destination = Destinations.SETTINGS,
-        selectedIcon = Icons.Settings,
-        unselectedIcon = Icons.Settings,
-        isPrimary = false,
-        onClick = { pos, navItem ->
-            navController.navigate(navItem.destination.name)
-        }
-    ),
-    NavigationItem(
-        title = stringResource(Res.string.menu_about),
-        destination = Destinations.ABOUT,
-        selectedIcon = Icons.Info,
-        unselectedIcon = Icons.Info,
-        isPrimary = false,
-        onClick = { pos, navItem ->
-            navController.navigate(navItem.destination.name)
-        }
+    add(
+        NavigationItem(
+            title = stringResource(Res.string.menu_pokedex),
+            destination = Destinations.POKEDEX,
+            selectedIcon = Icons.PokedexSvg,
+            unselectedIcon = Icons.PokedexSvg,
+            onClick = { pos, navItem ->
+                navController.navigate(navItem.destination.name)
+            }
+        )
     )
-)
+
+    add(
+        NavigationItem(
+            title = stringResource(Res.string.menu_moves),
+            destination = Destinations.MOVES,
+            selectedIcon = Icons.TmDisk,
+            unselectedIcon = Icons.TmDisk,
+            onClick = { pos, navItem ->
+                navController.navigate(navItem.destination.name)
+            }
+        )
+    )
+
+    add(
+        NavigationItem(
+            title = stringResource(Res.string.menu_settings),
+            destination = Destinations.SETTINGS,
+            selectedIcon = Icons.Settings,
+            unselectedIcon = Icons.Settings,
+            isPrimary = false,
+            onClick = { pos, navItem ->
+                navController.navigate(navItem.destination.name)
+            }
+        )
+    )
+
+    add(
+        NavigationItem(
+            title = stringResource(Res.string.menu_about),
+            destination = Destinations.ABOUT,
+            selectedIcon = Icons.Info,
+            unselectedIcon = Icons.Info,
+            isPrimary = false,
+            onClick = { pos, navItem ->
+                navController.navigate(navItem.destination.name)
+            }
+        )
+    )
+
+    if (isDesktop) {
+        add(
+            NavigationItem(
+                title = stringResource(Res.string.menu_exit),
+                destination = Destinations.EXIT, // Cambia esto si tienes un Destinations.EXIT
+                selectedIcon = Icons.Filled.Close,
+                unselectedIcon = Icons.Outlined.Close,
+                iconTint = MaterialTheme.colorScheme.onSurface,
+                isPrimary = false,
+                onClick = { pos, navItem ->
+                    onExitClicked()
+                }
+            )
+        )
+    }
+}

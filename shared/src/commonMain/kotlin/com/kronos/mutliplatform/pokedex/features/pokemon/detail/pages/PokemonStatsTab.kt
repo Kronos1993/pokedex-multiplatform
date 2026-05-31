@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
@@ -79,7 +80,7 @@ fun PokemonStatsTab(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // — Stats base en grid circular —
-            item {
+            item(span = { GridItemSpan(gridColumns) }) {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     TitleText(
                         text = stringResource(Res.string.base_stats),
@@ -125,7 +126,7 @@ fun PokemonStatsTab(
             }
 
             // — Stats máximos —
-            item {
+            item(span = { GridItemSpan(gridColumns) }) {
                 MaxStatsSection(
                     pokemonStats = pokemonStats,
                 )
@@ -133,7 +134,7 @@ fun PokemonStatsTab(
 
             // — EV yield —
             if (evYield.isNotEmpty()) {
-                item {
+                item(span = { GridItemSpan(gridColumns) }) {
                     EvYieldSection(
                         evYield = evYield,
                     )

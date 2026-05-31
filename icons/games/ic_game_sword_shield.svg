@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <path d="M0,0 H24 V48 H0 Z" fill="#0044AA"/>
+  <path d="M24,0 H48 V48 H24 Z" fill="#CC3300"/>
+  <!-- Sword left -->
+  <rect x="11" y="6" width="2.5" height="28" fill="#DDDDDD" rx="1"/>
+  <polygon points="12.25,6 9,10 15.5,10" fill="#DDDDDD"/>
+  <rect x="7" y="28" width="10.5" height="3" fill="#AAAAAA" rx="1"/>
+  <rect x="10.5" y="31" width="3.5" height="6" fill="#AAAAAA" rx="1"/>
+  <!-- Shield right -->
+  <path d="M36,6 Q42,6 44,10 L44,26 Q44,34 36,40 Q28,34 28,26 L28,10 Q30,6 36,6 Z" fill="#CC3300" stroke="#FF6644" stroke-width="1.2"/>
+  <path d="M36,10 Q40,10 42,13 L42,25 Q42,32 36,37 Q30,32 30,25 L30,13 Q32,10 36,10 Z" fill="#EE4422" opacity="0.5"/>
+  <!-- Shield cross -->
+  <rect x="34.5" y="14" width="3" height="18" fill="#FFCC00" rx="1"/>
+  <rect x="29" y="22" width="14" height="3" fill="#FFCC00" rx="1"/>
+</svg>

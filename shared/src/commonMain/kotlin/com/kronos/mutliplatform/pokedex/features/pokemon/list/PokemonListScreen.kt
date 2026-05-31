@@ -148,8 +148,7 @@ fun PokemonListScreen(
                         listState = listState,
                         pokemonList = pokemonList,
                         onClick = { pokemon ->
-                            viewModel.appCache._currentPokemon.value = pokemon.pokemon
-                            navHost.navigate("${Destinations.POKEMON_DETAIL.name}/${pokemon.pokemon.name}")
+                            navHost.navigate("${Destinations.POKEMON_DETAIL.name}/${pokemon.pokemonId}")
                         },
                         modifier = rootModifier
                     )

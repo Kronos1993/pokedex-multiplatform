@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <!-- Fondo azul cristal -->
+  <rect width="48" height="48" fill="#0066BB" rx="4"/>
+  <!-- Crystal gem shape -->
+  <polygon points="24,4 38,16 38,32 24,44 10,32 10,16" fill="#44CCFF" opacity="0.3"/>
+  <polygon points="24,4 38,16 38,32 24,44 10,32 10,16" fill="none" stroke="#88EEFF" stroke-width="1.5"/>
+  <!-- Inner crystal -->
+  <polygon points="24,10 34,19 34,29 24,38 14,29 14,19" fill="#88DDFF" opacity="0.25"/>
+  <!-- Suicune ribbon hints -->
+  <path d="M6,22 Q12,18 18,22 Q12,26 6,26 Z" fill="#FFFFFF" opacity="0.8"/>
+  <path d="M42,22 Q36,18 30,22 Q36,26 42,26 Z" fill="#FFFFFF" opacity="0.8"/>
+  <!-- Crystal sparkles -->
+  <line x1="24" y1="6" x2="24" y2="12" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9"/>
+  <line x1="21" y1="9" x2="27" y2="9" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9"/>
+  <line x1="10" y1="14" x2="13" y2="17" stroke="#AADDFF" stroke-width="1" opacity="0.8"/>
+  <line x1="38" y1="14" x2="35" y2="17" stroke="#AADDFF" stroke-width="1" opacity="0.8"/>
+  <!-- Center pokeball -->
+  <circle cx="24" cy="28" r="8" fill="#003388" stroke="#88CCFF" stroke-width="1"/>
+  <rect x="16" y="26.5" width="16" height="3" fill="#88CCFF"/>
+  <circle cx="24" cy="28" r="3.5" fill="#003388" stroke="#88CCFF" stroke-width="1"/>
+  <circle cx="24" cy="28" r="2" fill="#AADDFF"/>
+</svg>

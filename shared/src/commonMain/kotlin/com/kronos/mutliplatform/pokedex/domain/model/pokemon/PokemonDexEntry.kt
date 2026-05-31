@@ -11,6 +11,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PokemonDexEntry(
     var dexEntry:Int = 0,
+    val pokemonId:Int = 0,
     var pokemon:NamedResourceApi = NamedResourceApi(),
     var imageUrl:String = ""
 )

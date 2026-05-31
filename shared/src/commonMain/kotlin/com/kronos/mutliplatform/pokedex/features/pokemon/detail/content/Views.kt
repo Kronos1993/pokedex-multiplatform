@@ -9,6 +9,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -139,6 +140,31 @@ import com.kronos.mutliplatform.pokedex.components.icon.Steel
 import com.kronos.mutliplatform.pokedex.components.icon.TmDisk
 import com.kronos.mutliplatform.pokedex.components.icon.UpArrow
 import com.kronos.mutliplatform.pokedex.components.icon.Water
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameBdsp
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameBlack2White2
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameBlackWhite
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameColosseum
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameCrystal
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameDiamondPearl
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameEmerald
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameFireredLeafgreen
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameGoldSilver
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameHeartgoldSoulsilver
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameLegendsArceus
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameLgpe
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameOras
+import com.kronos.mutliplatform.pokedex.components.icon.games.GamePlatinum
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameRedBlue
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameRubySapphire
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameScarletViolet
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameSunMoon
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameSwordShield
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameUsum
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameXd
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameXy
+import com.kronos.mutliplatform.pokedex.components.icon.games.GameYellow
+import com.kronos.mutliplatform.pokedex.components.icon.games.Games
+import com.kronos.mutliplatform.pokedex.components.icon.games.Pokemon
 import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
 import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
@@ -154,6 +180,7 @@ import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.ability.Ability
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.ChainLink
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.EvolutionDetail
+import com.kronos.mutliplatform.pokedex.domain.model.game.Game
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.Encounter
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterDetail
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonInfo
@@ -1596,8 +1623,96 @@ fun EvYieldSection(
 }
 
 /* -------------------------------------------------------------------------- */
+/* GAME                                                                 */
+/* -------------------------------------------------------------------------- */
+
+
+@Composable
+fun PokemonGameGridItem(
+    item: Game,
+    modifier: Modifier = Modifier
+) {
+    BaseCardView(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Image(
+                imageVector = gameIcon(item.name),
+                contentDescription = item.name,
+                modifier = Modifier.size(48.dp).clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            )
+
+            BodyText(
+                text = item.name
+                    .replace("-", " ")
+                    .replaceFirstChar { it.uppercase() },
+                size = ComponentSize.LARGE,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+/* -------------------------------------------------------------------------- */
 /* EXTENSIONS                                                                 */
 /* -------------------------------------------------------------------------- */
+
+fun gameIcon(gameName: String): ImageVector {
+    return when (gameName.lowercase()) {
+        "red" -> Games.GameRedBlue
+        "blue" -> Games.GameRedBlue
+        "yellow" -> Games.GameYellow
+        "gold" -> Games.GameGoldSilver
+        "silver" -> Games.GameGoldSilver
+        "crystal" -> Games.GameCrystal
+        "ruby" -> Games.GameRubySapphire
+        "sapphire" -> Games.GameRubySapphire
+        "emerald" -> Games.GameEmerald
+        "firered" -> Games.GameFireredLeafgreen
+        "leafgreen" -> Games.GameFireredLeafgreen
+        "diamond" -> Games.GameDiamondPearl
+        "pearl" -> Games.GameDiamondPearl
+        "platinum" -> Games.GamePlatinum
+        "heartgold" -> Games.GameHeartgoldSoulsilver
+        "soulsilver" -> Games.GameHeartgoldSoulsilver
+        "black" -> Games.GameBlackWhite
+        "white" -> Games.GameBlackWhite
+        "colosseum" -> Games.GameColosseum
+        "xd" -> Games.GameXd
+        "black-2" -> Games.GameBlack2White2
+        "white-2" -> Games.GameBlack2White2
+        "x" -> Games.GameXy
+        "y" -> Games.GameXy
+        "omega-ruby" -> Games.GameOras
+        "alpha-sapphire" -> Games.GameOras
+        "sun" -> Games.GameSunMoon
+        "moon" -> Games.GameSunMoon
+        "ultra-sun" -> Games.GameUsum
+        "ultra-moon" -> Games.GameUsum
+        "lets-go-pikachu" -> Games.GameLgpe
+        "lets-go-eevee" -> Games.GameLgpe
+        "sword" -> Games.GameSwordShield
+        "shield" -> Games.GameSwordShield
+        "the-isle-of-armor" -> Games.GameSwordShield
+        "the-crown-tundra" -> Games.GameSwordShield
+        "brilliant-diamond" -> Games.GameBdsp
+        "shining-pearl" -> Games.GameBdsp
+        "legends-arceus" -> Games.GameLegendsArceus
+        "scarlet" -> Games.GameScarletViolet
+        "violet" -> Games.GameScarletViolet
+        "the-teal-mask" -> Games.GameScarletViolet
+        "the-indigo-disk" -> Games.GameScarletViolet
+        else -> Games.Pokemon
+    }
+}
 
 @Composable
 fun String.toPokemonColor(): Color {
@@ -2429,12 +2544,12 @@ private fun StatCircleItemPreview() {
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             listOf(
-                Stat(baseStat = 45, statName = "hp",               statEffort = 0),
-                Stat(baseStat = 49, statName = "attack",           statEffort = 0),
-                Stat(baseStat = 49, statName = "defense",          statEffort = 0),
-                Stat(baseStat = 65, statName = "special-attack",   statEffort = 1),
-                Stat(baseStat = 65, statName = "special-defense",  statEffort = 0),
-                Stat(baseStat = 45, statName = "speed",            statEffort = 0),
+                Stat(baseStat = 45, statName = "hp", statEffort = 0),
+                Stat(baseStat = 49, statName = "attack", statEffort = 0),
+                Stat(baseStat = 49, statName = "defense", statEffort = 0),
+                Stat(baseStat = 65, statName = "special-attack", statEffort = 1),
+                Stat(baseStat = 65, statName = "special-defense", statEffort = 0),
+                Stat(baseStat = 45, statName = "speed", statEffort = 0),
             ).forEach { stat ->
                 StatCircleItem(stat = stat, statTotal = 318)
             }
@@ -2446,12 +2561,12 @@ private fun StatCircleItemPreview() {
 @Composable
 private fun MaxStatsSectionPreview() {
     val sampleStats = listOf(
-        Stat(baseStat = 45,  statName = "hp",               statEffort = 0),
-        Stat(baseStat = 49,  statName = "attack",           statEffort = 0),
-        Stat(baseStat = 49,  statName = "defense",          statEffort = 0),
-        Stat(baseStat = 65,  statName = "special-attack",   statEffort = 1),
-        Stat(baseStat = 65,  statName = "special-defense",  statEffort = 0),
-        Stat(baseStat = 45,  statName = "speed",            statEffort = 0),
+        Stat(baseStat = 45, statName = "hp", statEffort = 0),
+        Stat(baseStat = 49, statName = "attack", statEffort = 0),
+        Stat(baseStat = 49, statName = "defense", statEffort = 0),
+        Stat(baseStat = 65, statName = "special-attack", statEffort = 1),
+        Stat(baseStat = 65, statName = "special-defense", statEffort = 0),
+        Stat(baseStat = 45, statName = "speed", statEffort = 0),
     )
     MaterialTheme {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -2477,12 +2592,12 @@ private fun EvYieldSectionPreview() {
 @Composable
 private fun PokemonStatsTabPreview() {
     val bulbasaurStats = listOf(
-        Stat(baseStat = 45,  statName = "hp",               statEffort = 0),
-        Stat(baseStat = 49,  statName = "attack",           statEffort = 0),
-        Stat(baseStat = 49,  statName = "defense",          statEffort = 0),
-        Stat(baseStat = 65,  statName = "special-attack",   statEffort = 1),
-        Stat(baseStat = 65,  statName = "special-defense",  statEffort = 0),
-        Stat(baseStat = 45,  statName = "speed",            statEffort = 0),
+        Stat(baseStat = 45, statName = "hp", statEffort = 0),
+        Stat(baseStat = 49, statName = "attack", statEffort = 0),
+        Stat(baseStat = 49, statName = "defense", statEffort = 0),
+        Stat(baseStat = 65, statName = "special-attack", statEffort = 1),
+        Stat(baseStat = 65, statName = "special-defense", statEffort = 0),
+        Stat(baseStat = 45, statName = "speed", statEffort = 0),
     )
     AppTheme {
         PokemonStatsTab(
@@ -2492,5 +2607,36 @@ private fun PokemonStatsTabPreview() {
             currentLang = "es",
             listState = rememberLazyGridState()
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun GameItemCardPreview() {
+    AppTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            listOf(
+                "red",
+                "blue",
+                "gold",
+                "silver",
+                "ruby",
+                "diamond",
+                "black",
+                "x",
+                "y",
+                "sun",
+                "sword",
+                "scarlet"
+            )
+                .forEach { name ->
+                    PokemonGameGridItem(item = Game(name = name))
+                }
+        }
     }
 }

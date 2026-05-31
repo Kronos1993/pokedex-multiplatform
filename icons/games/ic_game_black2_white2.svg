@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <path d="M0,0 H24 V48 H0 Z" fill="#111111"/>
+  <path d="M24,0 H48 V48 H24 Z" fill="#DDDDDD"/>
+  <!-- Black Kyurem left -->
+  <path d="M4,8 Q10,6 14,12 Q16,18 12,24 Q8,28 4,24 Z" fill="#2244AA" opacity="0.9"/>
+  <path d="M4,26 Q10,24 14,30 Q12,36 6,36 Z" fill="#1133AA" opacity="0.7"/>
+  <!-- White Kyurem right -->
+  <path d="M44,8 Q38,6 34,12 Q32,18 36,24 Q40,28 44,24 Z" fill="#88AAFF" opacity="0.9"/>
+  <path d="M44,26 Q38,24 34,30 Q36,36 42,36 Z" fill="#AACCFF" opacity="0.7"/>
+  <!-- Ice crystal center -->
+  <polygon points="24,8 28,16 24,20 20,16" fill="#88CCFF" stroke="#AADDFF" stroke-width="0.8"/>
+  <polygon points="24,20 28,28 24,36 20,28" fill="#66AAFF" stroke="#AADDFF" stroke-width="0.8"/>
+  <!-- "2" labels -->
+  <text x="6" y="46" font-family="sans-serif" font-weight="bold" font-size="9" fill="#4466FF">2</text>
+  <text x="36" y="46" font-family="sans-serif" font-weight="bold" font-size="9" fill="#4466FF">2</text>
+</svg>

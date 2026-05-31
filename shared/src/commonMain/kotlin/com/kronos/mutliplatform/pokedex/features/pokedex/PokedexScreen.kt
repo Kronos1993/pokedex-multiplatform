@@ -23,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -33,11 +32,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.kronos.mutliplatform.pokedex.AppViewModel
 import com.kronos.mutliplatform.pokedex.components.EmptyList
 import com.kronos.mutliplatform.pokedex.components.icon.AppIcon
+import com.kronos.mutliplatform.pokedex.core.PlatformType
 import com.kronos.mutliplatform.pokedex.core.ui.components.AppTopAppBar
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
-import com.kronos.mutliplatform.pokedex.core.ui.components.ConfirmDialog
 import com.kronos.mutliplatform.pokedex.core.ui.components.Destinations
 import com.kronos.mutliplatform.pokedex.core.ui.components.DrawerHeader
 import com.kronos.mutliplatform.pokedex.core.ui.components.LoadingDialog
@@ -55,10 +55,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import pokedex.shared.generated.resources.Res
 import pokedex.shared.generated.resources.app_name
 import pokedex.shared.generated.resources.empty_pokedex_list
-import pokedex.shared.generated.resources.exit_dialog_body
-import pokedex.shared.generated.resources.exit_dialog_no
-import pokedex.shared.generated.resources.exit_dialog_title
-import pokedex.shared.generated.resources.exit_dialog_yes
 import pokedex.shared.generated.resources.loading_dialog_text
 import pokedex.shared.generated.resources.loading_dialog_title
 import pokedex.shared.generated.resources.menu_pokedex
@@ -72,10 +68,10 @@ fun PokedexScreen(
     deviceScreenConfiguration: DeviceScreenConfiguration,
 ) {
     val viewModel = koinViewModel<PokedexScreenViewModel>()
+    val appViewModel = koinViewModel<AppViewModel>()
 
     val pokedexList by viewModel.pokedex.collectAsStateWithLifecycle()
     val appVersion by viewModel.appVersion.collectAsStateWithLifecycle()
-    var showExitDialog by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -83,8 +79,7 @@ fun PokedexScreen(
     var selectedItem by remember { mutableIntStateOf(0) }
     val listState = rememberLazyGridState()
 
-
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         viewModel.loadPokedex()
         viewModel.getAppVersion()
     }
@@ -92,7 +87,7 @@ fun PokedexScreen(
     BackPressHandlerEffect(
         enabled = navHost.currentBackStackEntry?.destination?.route == Destinations.POKEDEX.name
     ) {
-        showExitDialog = true
+        appViewModel.showExitDialog(true)
     }
 
     Surface(
@@ -101,7 +96,12 @@ fun PokedexScreen(
     ) {
         NavDrawer(
             navigationItems = getNavDestinations(
-                navHost,),
+                navHost,
+                isDesktop = viewModel.platform.platformType == PlatformType.DESKTOP,
+                onExitClicked = {
+                    appViewModel.showExitDialog(true)
+                }
+            ),
             selectedIndex = selectedItem,
             drawerState = drawerState,
             drawerHeader = {
@@ -198,7 +198,6 @@ fun PokedexScreen(
                             listState = listState,
                             pokedexList = pokedexList,
                             onClick = {
-                                viewModel.appCache._currentPokedex.value = it
                                 navHost.navigate("${Destinations.POKEMON_LIST.name}/${it.name}")
                             },
                             modifier = rootModifier
@@ -211,20 +210,6 @@ fun PokedexScreen(
                     Res.string.loading_dialog_title,
                     Res.string.loading_dialog_text,
                     showDialog = viewModel.loading
-                )
-
-                ConfirmDialog(
-                    title = stringResource(Res.string.exit_dialog_title),
-                    body = stringResource(Res.string.exit_dialog_body),
-                    confirmText = stringResource(Res.string.exit_dialog_yes),
-                    onConfirm = {
-
-                        viewModel.closeApp()
-                        showExitDialog = false
-                    },
-                    cancelText = stringResource(Res.string.exit_dialog_no),
-                    onCancel = { showExitDialog = false },
-                    showDialog = showExitDialog
                 )
 
                 // Mostrar Snackbar en caso de error

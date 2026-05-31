@@ -63,7 +63,7 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
 import kotlinx.coroutines.launch
 
 enum class Destinations {
-    POKEDEX, POKEMON_LIST, POKEMON_DETAIL, MOVES, MOVE_DETAIL, SETTINGS, ABOUT
+    POKEDEX, POKEMON_LIST, POKEMON_DETAIL, MOVES, MOVE_DETAIL, SETTINGS, ABOUT,EXIT
 }
 
 data class NavigationItem(
@@ -71,6 +71,7 @@ data class NavigationItem(
     val destination: Destinations,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
+    val iconTint:Color = Color.Unspecified,
     val isPrimary: Boolean = true,
     val isSelected: Boolean = false,
     var badgeCount: Int? = null,
@@ -138,7 +139,7 @@ fun NavDrawer(
                                 Icon(
                                     imageVector = if (index == selectedIndex) item.selectedIcon else item.unselectedIcon,
                                     contentDescription = item.title,
-                                    tint = Color.Unspecified,
+                                    tint = item.iconTint,
                                     modifier = Modifier.size(24.dp)
                                 )
                             },
