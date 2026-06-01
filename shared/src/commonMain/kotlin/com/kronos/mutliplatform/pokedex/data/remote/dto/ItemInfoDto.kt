@@ -17,7 +17,7 @@ data class ItemInfoDto(
     @SerialName("flavor_text_entries")
     var descriptions:List<FlavorTextDto> = listOf(),
     @SerialName("fling_effect")
-    var flingEffect:NamedResourceApiDto = NamedResourceApiDto(),
+    var flingEffect:NamedResourceApiDto? = NamedResourceApiDto(),
     @SerialName("fling_power")
     var flingPower:Int = 0,
     @SerialName("held_by_pokemon")

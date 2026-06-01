@@ -109,6 +109,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import coil3.compose.AsyncImage
+import com.kronos.mutliplatform.pokedex.components.EmptyList
 import com.kronos.mutliplatform.pokedex.components.icon.Bolt
 import com.kronos.mutliplatform.pokedex.components.icon.Bug
 import com.kronos.mutliplatform.pokedex.components.icon.Dark
@@ -195,37 +196,38 @@ import com.kronos.mutliplatform.pokedex.features.pokemon.detail.domain.PokemonOt
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonStatsTab
 import org.jetbrains.compose.resources.stringResource
 import pokedex.shared.generated.resources.Res
-import pokedex.shared.generated.resources.attack
 import pokedex.shared.generated.resources.baby_pokemon
-import pokedex.shared.generated.resources.base_exp
-import pokedex.shared.generated.resources.capture_rate
-import pokedex.shared.generated.resources.capture_rate_value
-import pokedex.shared.generated.resources.defense
-import pokedex.shared.generated.resources.ev_yield
-import pokedex.shared.generated.resources.game_version
-import pokedex.shared.generated.resources.genderless
-import pokedex.shared.generated.resources.growth_rate
-import pokedex.shared.generated.resources.habitat
-import pokedex.shared.generated.resources.happiness
-import pokedex.shared.generated.resources.hatch_counter
-import pokedex.shared.generated.resources.hatch_counter_value
-import pokedex.shared.generated.resources.height
-import pokedex.shared.generated.resources.high_happiness
-import pokedex.shared.generated.resources.hp
+import pokedex.shared.generated.resources.empty_pokemon_ability_list
 import pokedex.shared.generated.resources.legendary_pokemon
-import pokedex.shared.generated.resources.lower_happiness
-import pokedex.shared.generated.resources.max_chance
-import pokedex.shared.generated.resources.max_level
-import pokedex.shared.generated.resources.max_stats
-import pokedex.shared.generated.resources.max_stats_tooltip
-import pokedex.shared.generated.resources.min_level
 import pokedex.shared.generated.resources.mythical_pokemon
-import pokedex.shared.generated.resources.no_info_available
-import pokedex.shared.generated.resources.normal_happiness
-import pokedex.shared.generated.resources.special_attack
-import pokedex.shared.generated.resources.special_defense
-import pokedex.shared.generated.resources.speed
-import pokedex.shared.generated.resources.weight
+import pokedex.shared.generated.resources.pokemon_detail_tab_encounter_game_version
+import pokedex.shared.generated.resources.pokemon_detail_tab_encounter_max_chance
+import pokedex.shared.generated.resources.pokemon_detail_tab_encounter_max_level
+import pokedex.shared.generated.resources.pokemon_detail_tab_encounter_min_level
+import pokedex.shared.generated.resources.pokemon_detail_tab_info_base_exp
+import pokedex.shared.generated.resources.pokemon_detail_tab_info_capture_rate
+import pokedex.shared.generated.resources.pokemon_detail_tab_info_capture_rate_value
+import pokedex.shared.generated.resources.pokemon_detail_tab_info_genderless
+import pokedex.shared.generated.resources.pokemon_detail_tab_info_growth_rate
+import pokedex.shared.generated.resources.pokemon_detail_tab_info_habitat
+import pokedex.shared.generated.resources.pokemon_detail_tab_info_happiness
+import pokedex.shared.generated.resources.pokemon_detail_tab_info_hatch_counter
+import pokedex.shared.generated.resources.pokemon_detail_tab_info_hatch_counter_value
+import pokedex.shared.generated.resources.pokemon_detail_tab_info_height
+import pokedex.shared.generated.resources.pokemon_detail_tab_info_high_happiness
+import pokedex.shared.generated.resources.pokemon_detail_tab_info_lower_happiness
+import pokedex.shared.generated.resources.pokemon_detail_tab_info_no_info_available
+import pokedex.shared.generated.resources.pokemon_detail_tab_info_normal_happiness
+import pokedex.shared.generated.resources.pokemon_detail_tab_info_weight
+import pokedex.shared.generated.resources.pokemon_detail_tab_stats_attack
+import pokedex.shared.generated.resources.pokemon_detail_tab_stats_defense
+import pokedex.shared.generated.resources.pokemon_detail_tab_stats_ev_yield
+import pokedex.shared.generated.resources.pokemon_detail_tab_stats_hp
+import pokedex.shared.generated.resources.pokemon_detail_tab_stats_max_stats
+import pokedex.shared.generated.resources.pokemon_detail_tab_stats_max_stats_tooltip
+import pokedex.shared.generated.resources.pokemon_detail_tab_stats_special_attack
+import pokedex.shared.generated.resources.pokemon_detail_tab_stats_special_defense
+import pokedex.shared.generated.resources.pokemon_detail_tab_stats_speed
 
 /* -------------------------------------------------------------------------- */
 /* HERO CARD                                                                  */
@@ -471,57 +473,57 @@ fun PokemonBasicInfoCard(
 
     val items = listOf(
         PokemonInfoItem(
-            title = stringResource(Res.string.base_exp),
+            title = stringResource(Res.string.pokemon_detail_tab_info_base_exp),
             value = "${pokemon.baseExperience}",
             icon = Icons.Bolt,
             iconTint = Color.Unspecified
         ),
         PokemonInfoItem(
-            title = stringResource(Res.string.height),
+            title = stringResource(Res.string.pokemon_detail_tab_info_height),
             value = pokemon.height.formatHeight(),
             icon = Icons.UpArrow,
             iconTint = Color.Unspecified
         ),
         PokemonInfoItem(
-            title = stringResource(Res.string.weight),
+            title = stringResource(Res.string.pokemon_detail_tab_info_weight),
             value = pokemon.weight.formatWeight(),
             icon = Icons.Scale,
             iconTint = Color.Unspecified
         ),
         PokemonInfoItem(
-            title = stringResource(Res.string.happiness),
+            title = stringResource(Res.string.pokemon_detail_tab_info_happiness),
             value =
                 when {
                     (pokemon.specieInfo?.baseHappiness ?: 0) in 0..<50 -> {
-                        stringResource(Res.string.lower_happiness)
+                        stringResource(Res.string.pokemon_detail_tab_info_lower_happiness)
                     }
 
                     (pokemon.specieInfo?.baseHappiness ?: 0) in 50..<100 -> {
-                        stringResource(Res.string.normal_happiness)
+                        stringResource(Res.string.pokemon_detail_tab_info_normal_happiness)
                     }
 
                     (pokemon.specieInfo?.baseHappiness ?: 0) >= 100 -> {
-                        stringResource(Res.string.high_happiness)
+                        stringResource(Res.string.pokemon_detail_tab_info_high_happiness)
                     }
 
                     else -> {
-                        stringResource(Res.string.no_info_available)
+                        stringResource(Res.string.pokemon_detail_tab_info_no_info_available)
                     }
                 },
             icon = Icons.Heart,
             iconTint = Color.Unspecified
         ),
         PokemonInfoItem(
-            title = stringResource(Res.string.growth_rate),
+            title = stringResource(Res.string.pokemon_detail_tab_info_growth_rate),
             value = pokemon.specieInfo?.growthRate?.name?.takeIf { it.isNotBlank() }
-                ?: stringResource(Res.string.no_info_available),
+                ?: stringResource(Res.string.pokemon_detail_tab_info_no_info_available),
             icon = Icons.LevelUp,
             iconTint = Color.Unspecified
         ),
         PokemonInfoItem(
-            title = stringResource(Res.string.habitat),
+            title = stringResource(Res.string.pokemon_detail_tab_info_habitat),
             value = pokemon.specieInfo?.habitat?.name?.takeIf { it.isNotBlank() }
-                ?: stringResource(Res.string.no_info_available),
+                ?: stringResource(Res.string.pokemon_detail_tab_info_no_info_available),
             icon = Icons.Natures,
             iconTint = Color.Unspecified
         )
@@ -643,8 +645,8 @@ fun PokemonBreedingCard(
             PokemonInfoGridItem(
                 modifier = Modifier.weight(1f),
                 item = PokemonInfoItem(
-                    title = stringResource(Res.string.capture_rate),
-                    value = stringResource(Res.string.capture_rate_value).format(
+                    title = stringResource(Res.string.pokemon_detail_tab_info_capture_rate),
+                    value = stringResource(Res.string.pokemon_detail_tab_info_capture_rate_value).format(
                         pokemon.specieInfo?.captureRate ?: 0,
                         pokemon.specieInfo?.calculateCaptureRate() ?: 0
                     ),
@@ -655,8 +657,8 @@ fun PokemonBreedingCard(
             PokemonInfoGridItem(
                 modifier = Modifier.weight(1f),
                 item = PokemonInfoItem(
-                    title = stringResource(Res.string.hatch_counter),
-                    value = stringResource(Res.string.hatch_counter_value).format(
+                    title = stringResource(Res.string.pokemon_detail_tab_info_hatch_counter),
+                    value = stringResource(Res.string.pokemon_detail_tab_info_hatch_counter_value).format(
                         pokemon.specieInfo?.hatchCounter ?: 0,
                         pokemon.specieInfo?.calculateHatchCounter() ?: 0
                     ),
@@ -700,7 +702,7 @@ fun GenderRateBar(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             if (genderPossibility?.genderless == true) {
-                BodyText(stringResource(Res.string.genderless))
+                BodyText(stringResource(Res.string.pokemon_detail_tab_info_genderless))
             } else {
                 LabelText(
                     "${genderPossibility?.male}%",
@@ -728,46 +730,54 @@ fun PokemonAbilitiesCard(
 ) {
 
     PokemonSectionCard(
-        title = "Abilities"
+        title = "Abilities",
     ) {
 
-        FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(
-                8.dp,
-                alignment = Alignment.CenterHorizontally
-            ),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+        if (pokemon.abilities.isEmpty()){
+            EmptyList(
+                icon = null,
+                title = stringResource(Res.string.empty_pokemon_ability_list),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }else{
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(
+                    8.dp,
+                    alignment = Alignment.CenterHorizontally
+                ),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
 
-            pokemon.abilities.forEach { ability ->
+                pokemon.abilities.forEach { ability ->
 
-                BaseCardView(
-                    modifier = Modifier.clickable {
-                        onAbilityClick(ability)
-                    },
-                    shape = RoundedCornerShape(20.dp)
-                ) {
-
-                    Row(
-                        modifier = Modifier.padding(
-                            horizontal = 14.dp,
-                            vertical = 10.dp
-                        ),
-                        verticalAlignment = Alignment.CenterVertically
+                    BaseCardView(
+                        modifier = Modifier.clickable {
+                            onAbilityClick(ability)
+                        },
+                        shape = RoundedCornerShape(20.dp)
                     ) {
 
-                        Icon(
-                            imageVector = if (ability.isHidden) Icons.Default.AutoAwesome else Icons.Default.Psychology,
-                            contentDescription = null,
-                            tint = if (ability.isHidden) ratingColorContainerLight else MaterialTheme.colorScheme.primary,
-                        )
+                        Row(
+                            modifier = Modifier.padding(
+                                horizontal = 14.dp,
+                                vertical = 10.dp
+                            ),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
 
-                        Spacer(modifier = Modifier.width(8.dp))
+                            Icon(
+                                imageVector = if (ability.isHidden) Icons.Default.AutoAwesome else Icons.Default.Psychology,
+                                contentDescription = null,
+                                tint = if (ability.isHidden) ratingColorContainerLight else MaterialTheme.colorScheme.primary,
+                            )
 
-                        Text(
-                            text = ability.ability.name.prettyName()
-                        )
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            Text(
+                                text = ability.ability.name.prettyName()
+                            )
+                        }
                     }
                 }
             }
@@ -1025,25 +1035,25 @@ fun VersionItem(
 
         val infoItems = listOf(
             PokemonInfoItem(
-                title = stringResource(Res.string.game_version),
+                title = stringResource(Res.string.pokemon_detail_tab_encounter_game_version),
                 value = item.version.name.prettyName(),
                 icon = Icons.Default.VideogameAsset,
                 iconTint = ColorVersion
             ),
             PokemonInfoItem(
-                title = stringResource(Res.string.min_level),
+                title = stringResource(Res.string.pokemon_detail_tab_encounter_min_level),
                 value = item.encounterDetail.minLevel.toString(),
                 icon = Icons.Default.KeyboardArrowDown,
                 iconTint = ColorMinLevel
             ),
             PokemonInfoItem(
-                title = stringResource(Res.string.max_level),
+                title = stringResource(Res.string.pokemon_detail_tab_encounter_max_level),
                 value = item.encounterDetail.maxLevel.toString(),
                 icon = Icons.Default.KeyboardArrowUp,
                 iconTint = ColorMaxLevel
             ),
             PokemonInfoItem(
-                title = stringResource(Res.string.max_chance),
+                title = stringResource(Res.string.pokemon_detail_tab_encounter_max_chance),
                 value = "${item.encounterDetail.chance}%",
                 icon = Icons.Default.Percent,
                 iconTint = ColorChance
@@ -1484,7 +1494,7 @@ fun MaxStatsSection(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             TitleText(
-                text = stringResource(Res.string.max_stats),
+                text = stringResource(Res.string.pokemon_detail_tab_stats_max_stats),
                 size = ComponentSize.MEDIUM,
                 fontWeight = FontWeight.Bold,
                 textColor = MaterialTheme.colorScheme.onBackground
@@ -1508,7 +1518,7 @@ fun MaxStatsSection(
                             modifier = Modifier.widthIn(max = 240.dp)
                         ) {
                             BodyText(
-                                text = stringResource(Res.string.max_stats_tooltip),
+                                text = stringResource(Res.string.pokemon_detail_tab_stats_max_stats_tooltip),
                                 size = ComponentSize.SMALL,
                                 textColor = MaterialTheme.colorScheme.inverseOnSurface,
                                 modifier = Modifier.padding(12.dp)
@@ -1533,7 +1543,6 @@ fun MaxStatRow(
     val maxValue = stat.calculateMaxStat()
     val animatedProgress = remember { Animatable(0f) }
 
-    // máximo teórico absoluto para escalar la barra (HP ~714, otros ~526)
     val absoluteMax = if (stat.statName.lowercase() == "hp") 714f else 526f
 
     LaunchedEffect(maxValue) {
@@ -1581,7 +1590,7 @@ fun EvYieldSection(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         TitleText(
-            text = stringResource(Res.string.ev_yield),
+            text = stringResource(Res.string.pokemon_detail_tab_stats_ev_yield),
             size = ComponentSize.MEDIUM,
             fontWeight = FontWeight.Bold,
             textColor = MaterialTheme.colorScheme.onBackground
@@ -2068,12 +2077,12 @@ fun statColor(statName: String): Color {
 @Composable
 fun statShortName(statName: String): String {
     return when (statName.lowercase()) {
-        "hp" -> stringResource(Res.string.hp)
-        "attack" -> stringResource(Res.string.attack)
-        "defense" -> stringResource(Res.string.defense)
-        "special-attack" -> stringResource(Res.string.special_attack)
-        "special-defense" -> stringResource(Res.string.special_defense)
-        "speed" -> stringResource(Res.string.speed)
+        "hp" -> stringResource(Res.string.pokemon_detail_tab_stats_hp)
+        "attack" -> stringResource(Res.string.pokemon_detail_tab_stats_attack)
+        "defense" -> stringResource(Res.string.pokemon_detail_tab_stats_defense)
+        "special-attack" -> stringResource(Res.string.pokemon_detail_tab_stats_special_attack)
+        "special-defense" -> stringResource(Res.string.pokemon_detail_tab_stats_special_defense)
+        "speed" -> stringResource(Res.string.pokemon_detail_tab_stats_speed)
         else -> statName.take(6).uppercase()
     }
 }
@@ -2140,7 +2149,7 @@ fun PreviewPokemonAbilitiesCard() {
         Surface {
 
             PokemonAbilitiesCard(
-                pokemon = previewPokemon(),
+                pokemon = previewPokemonNoAbility(),
                 onAbilityClick = {}
             )
         }
@@ -2217,6 +2226,86 @@ private fun previewPokemon(): PokemonInfo {
                 ),
                 isHidden = true
             )
+        ),
+
+        sprites = Sprite(
+            frontDefault = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png",
+            backDefault = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/6.png",
+            frontShiny = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/6.png",
+            backShiny = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/shiny/6.png"
+        ),
+
+        specieInfo = SpecieInfo(
+
+            baseHappiness = 50,
+            captureRate = 45,
+            genderRate = 1,
+            hatchCounter = 20,
+
+            growthRate = NamedResourceApi(
+                name = "medium-slow"
+            ),
+
+            habitat = NamedResourceApi(
+                name = "mountain"
+            ),
+
+            isLegendary = false,
+            isMythical = false,
+            isBaby = false,
+
+            eggGroup = listOf(
+                NamedResourceApi(name = "monster"),
+                NamedResourceApi(name = "dragon")
+            ),
+
+            genera = listOf(
+                PokemonGenera(
+                    genus = "Flame Pokémon",
+                    language = "en"
+                )
+            ),
+
+            flavorText = listOf(
+                FlavorText(
+                    description = "Charizard flies around the sky in search of powerful opponents.",
+                    language = "en"
+                )
+            ),
+
+            names = listOf(
+                Name(
+                    name = "Charizard",
+                    language = NamedResourceApi(
+                        name = "en"
+                    )
+                )
+            )
+        )
+    )
+}
+private fun previewPokemonNoAbility(): PokemonInfo {
+
+    return PokemonInfo(
+        id = 6,
+        name = "charizard",
+        baseExperience = 240,
+        height = 17.0,
+        weight = 905.0,
+
+        types = listOf(
+            Type(
+                slot = 1,
+                name = "fire"
+            ),
+            Type(
+                slot = 2,
+                name = "dragon"
+            )
+        ),
+
+        abilities = listOf(
+
         ),
 
         sprites = Sprite(

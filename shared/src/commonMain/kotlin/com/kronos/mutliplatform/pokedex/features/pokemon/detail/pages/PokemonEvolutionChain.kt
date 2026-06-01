@@ -43,8 +43,6 @@ fun PokemonEvolutionChainTab(
     if (pokemonEvolutionChain.isEmpty()){
         EmptyList(
             title = stringResource(Res.string.empty_pokemon_evolution_list),
-            subtitle = "",
-            showRetryButton = false,
             modifier = modifier
         )
     }else{

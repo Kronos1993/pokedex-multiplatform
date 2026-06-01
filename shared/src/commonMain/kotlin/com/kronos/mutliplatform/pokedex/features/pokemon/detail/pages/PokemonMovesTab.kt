@@ -80,8 +80,6 @@ fun PokemonMovesTab(
     if (moves.isEmpty()) {
         EmptyList(
             title = stringResource(Res.string.empty_pokemon_moves_list),
-            subtitle = "",
-            showRetryButton = false,
             modifier = modifier
         )
     } else {

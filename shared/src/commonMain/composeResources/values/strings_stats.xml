@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="pokemon_detail_tab_stats_base_stats">Base Stats</string>
+    <string name="pokemon_detail_tab_stats_max_stats">Max Stats</string>
+    <string name="pokemon_detail_tab_stats_max_stats_tooltip">Stats calculated at level 100 with 31 IVs and 252 EVs in each stat, beneficial nature.</string>
+    <string name="pokemon_detail_tab_stats_stats_total">Total</string>
+    <string name="pokemon_detail_tab_stats_ev_yield">EV Yield</string>
 
-    <string name="hp">HP</string>
-    <string name="attack">ATK</string>
-    <string name="defense">DEF</string>
-    <string name="special_attack">SP.ATK</string>
-    <string name="special_defense">SP.DEF</string>
-    <string name="speed">SPD</string>
+    <string name="pokemon_detail_tab_stats_hp">HP</string>
+    <string name="pokemon_detail_tab_stats_attack">ATK</string>
+    <string name="pokemon_detail_tab_stats_defense">DEF</string>
+    <string name="pokemon_detail_tab_stats_special_attack">SP.ATK</string>
+    <string name="pokemon_detail_tab_stats_special_defense">SP.DEF</string>
+    <string name="pokemon_detail_tab_stats_speed">SPD</string>
 </resources>

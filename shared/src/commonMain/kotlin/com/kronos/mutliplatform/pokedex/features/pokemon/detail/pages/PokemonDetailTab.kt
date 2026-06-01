@@ -93,15 +93,15 @@ fun PokemonDetailTab(
         }
 
         item {
-            AnimatedVisibility(
-                visible = pokemon.abilities.isNotEmpty()
-            ) {
+                AnimatedVisibility(
+                    visible =true
+                ) {
 
-                PokemonAbilitiesCard(
-                    pokemon = pokemon,
-                    onAbilityClick = onAbilityClick
-                )
-            }
+                    PokemonAbilitiesCard(
+                        pokemon = pokemon,
+                        onAbilityClick = onAbilityClick
+                    )
+                }
         }
 
         item {

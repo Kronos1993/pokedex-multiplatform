@@ -40,7 +40,6 @@ fun PokemonLocationTab(
     if (pokemonEncounters.isEmpty()){
         EmptyList(
             title = stringResource(Res.string.empty_pokemon_encounter_list),
-            subtitle = "",
             showRetryButton = false,
             modifier = modifier
         )

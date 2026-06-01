@@ -92,7 +92,7 @@ fun MoveInfoScreen(
         if (!moveInfo?.getMoveEffect(lang).isNullOrBlank()) {
             MoveSectionCard(title = stringResource(Res.string.move_detail_info_screen_effect_title)) {
                 MoveTextContent(
-                    text = moveInfo.getMoveEffect(lang).orEmpty().replace("\n"," "),
+                    text = moveInfo.getMoveEffect(lang).replace("\n"," "),
                     maxHeight = 120.dp,
                     scrollable = true,
                 )
@@ -313,7 +313,6 @@ fun PokemonFlowRow(
     if (pokemonList.isEmpty()) {
         EmptyList(
             title = stringResource(Res.string.empty_pokemon_by_move_list),
-            subtitle = "",
             modifier = modifier.fillMaxSize(),
         )
     } else {

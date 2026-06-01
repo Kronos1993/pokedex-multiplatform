@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -27,8 +28,9 @@ import pokedex.shared.generated.resources.button_text_refresh
 
 @Composable
 fun EmptyList(
+    icon: ImageVector? = Icons.Pokeball,
     title: String,
-    subtitle: String,
+    subtitle: String? = null,
     showRetryButton: Boolean = false,
     onRetryClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
@@ -38,23 +40,28 @@ fun EmptyList(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Icon(
-            imageVector = Icons.Pokeball,
-            contentDescription = null,
-            modifier = Modifier.size(80.dp),
-            tint = Color.Unspecified
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+        if (icon!=null){
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(80.dp),
+                tint = Color.Unspecified
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
         TitleText(
             text = title,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        BodyText(
-            text = subtitle,
-            textAlign = TextAlign.Center
-        )
+        if (subtitle.orEmpty().isNotEmpty()){
+            Spacer(modifier = Modifier.height(8.dp))
+            BodyText(
+                text = subtitle.orEmpty(),
+                textAlign = TextAlign.Center
+            )
+        }
+
         if (showRetryButton){
             Spacer(modifier = Modifier.height(16.dp))
             Button(

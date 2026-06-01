@@ -40,8 +40,6 @@ fun PokemonGamesTab(
     if (games.isEmpty()){
         EmptyList(
             title = stringResource(Res.string.empty_pokemon_games_list),
-            subtitle = "",
-            showRetryButton = false,
             modifier = modifier
         )
     }else{

@@ -37,9 +37,9 @@ import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.MaxStats
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.StatCircleItem
 import org.jetbrains.compose.resources.stringResource
 import pokedex.shared.generated.resources.Res
-import pokedex.shared.generated.resources.base_stats
+import pokedex.shared.generated.resources.pokemon_detail_tab_stats_base_stats
 import pokedex.shared.generated.resources.empty_pokemon_stats_list
-import pokedex.shared.generated.resources.stats_total
+import pokedex.shared.generated.resources.pokemon_detail_tab_stats_stats_total
 
 @Composable
 fun PokemonStatsTab(
@@ -54,9 +54,6 @@ fun PokemonStatsTab(
     if (pokemonStats.isEmpty()) {
         EmptyList(
             title = stringResource(Res.string.empty_pokemon_stats_list),
-            subtitle = "",
-            showRetryButton = false,
-            modifier = modifier
         )
     } else {
         val statTotal = pokemonStats.sumOf { it.baseStat }
@@ -83,7 +80,7 @@ fun PokemonStatsTab(
             item(span = { GridItemSpan(gridColumns) }) {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     TitleText(
-                        text = stringResource(Res.string.base_stats),
+                        text = stringResource(Res.string.pokemon_detail_tab_stats_base_stats),
                         size = ComponentSize.MEDIUM,
                         fontWeight = FontWeight.Bold,
                         textColor = MaterialTheme.colorScheme.onBackground
@@ -91,7 +88,7 @@ fun PokemonStatsTab(
                     // Total badge
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         BodyText(
-                            text = stringResource(Res.string.stats_total),
+                            text = stringResource(Res.string.pokemon_detail_tab_stats_stats_total),
                             size = ComponentSize.SMALL,
                         )
                         Spacer(Modifier.width(8.dp))

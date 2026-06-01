@@ -10,7 +10,9 @@ import com.kronos.mutliplatform.pokedex.data.remote.dto.EffectEntryDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.EggGroupInfoDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.EncounterDetailDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.EncounterDto
+import com.kronos.mutliplatform.pokedex.data.remote.dto.EvolutionChainDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.EvolutionDetailDto
+import com.kronos.mutliplatform.pokedex.data.remote.dto.EvolutionTriggerDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.FlavorTextDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.FlavorTextEntryDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.GameIndexDto
@@ -34,15 +36,12 @@ import com.kronos.mutliplatform.pokedex.data.remote.dto.StatDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.TypeDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.TypeInfoDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.VersionDetailDto
-import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
-import com.kronos.mutliplatform.pokedex.domain.model.ResourceApi
-import com.kronos.mutliplatform.pokedex.domain.model.ResponseList
-import com.kronos.mutliplatform.pokedex.data.remote.dto.EvolutionChainDto
-import com.kronos.mutliplatform.pokedex.data.remote.dto.EvolutionTriggerDto
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.UrlProvider
 import com.kronos.mutliplatform.pokedex.domain.model.EffectEntry
 import com.kronos.mutliplatform.pokedex.domain.model.FlavorText
 import com.kronos.mutliplatform.pokedex.domain.model.Name
+import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
+import com.kronos.mutliplatform.pokedex.domain.model.ResponseList
 import com.kronos.mutliplatform.pokedex.domain.model.ability.Ability
 import com.kronos.mutliplatform.pokedex.domain.model.ability.AbilityInfo
 import com.kronos.mutliplatform.pokedex.domain.model.ability.PokemonWithAbility
@@ -160,58 +159,34 @@ fun ChainLinkDto.toChainLink(): ChainLink =
             it.map { it.toChainLink() }
         } ?: listOf(),
         isBaby = isBaby,
-        species = species?.let {
-            it.toNamedResource()
-        } ?: NamedResourceApi()
+        species = species?.toNamedResource() ?: NamedResourceApi()
     )
 
 fun EvolutionChainDto.toEvolutionChain(): EvolutionChain =
     EvolutionChain(
         id = id,
-        babyTriggerItem = babyFriggerItem?.let {
-            it.toNamedResource()
-        } ?: NamedResourceApi(),
-        chain = chain?.let {
-            it.toChainLink()
-        },
+        babyTriggerItem = babyFriggerItem?.toNamedResource() ?: NamedResourceApi(),
+        chain = chain?.toChainLink(),
     )
 
 fun EvolutionDetailDto.toEvolutionDetail(): EvolutionDetail =
     EvolutionDetail(
-        trigger = trigger?.let {
-            it.toNamedResource()
-        } ?: NamedResourceApi(),
-        item = item?.let {
-            it.toNamedResource()
-        } ?: NamedResourceApi(),
+        trigger = trigger?.toNamedResource() ?: NamedResourceApi(),
+        item = item?.toNamedResource() ?: NamedResourceApi(),
         gender = gender,
-        heldItem = heldItem?.let {
-            it.toNamedResource()
-        } ?: NamedResourceApi(),
-        knownMove = knownMove?.let {
-            it.toNamedResource()
-        } ?: NamedResourceApi(),
-        knownMoveType = knownMoveType?.let {
-            it.toNamedResource()
-        } ?: NamedResourceApi(),
-        location = location?.let {
-            it.toNamedResource()
-        } ?: NamedResourceApi(),
+        heldItem = heldItem?.toNamedResource() ?: NamedResourceApi(),
+        knownMove = knownMove?.toNamedResource() ?: NamedResourceApi(),
+        knownMoveType = knownMoveType?.toNamedResource() ?: NamedResourceApi(),
+        location = location?.toNamedResource() ?: NamedResourceApi(),
         minLevel = minLevel,
         minHappiness = minHappiness,
         minBeauty = minBeauty,
         minAffection = minAffection,
-        partySpecies = partySpecies?.let {
-            it.toNamedResource()
-        } ?: NamedResourceApi(),
-        partyType = partyType?.let {
-            it.toNamedResource()
-        } ?: NamedResourceApi(),
+        partySpecies = partySpecies?.toNamedResource() ?: NamedResourceApi(),
+        partyType = partyType?.toNamedResource() ?: NamedResourceApi(),
         relativePhysicalStats = relativePhysicalStats,
         timeOfDay = timeOfDay,
-        tradeSpecies = tradeSpecies?.let {
-            it.toNamedResource()
-        } ?: NamedResourceApi(),
+        tradeSpecies = tradeSpecies?.toNamedResource() ?: NamedResourceApi(),
         needsOverworldRain = needsOverworldRain,
         turnUpsideDown = turnUpsideDown
     )
@@ -237,7 +212,7 @@ fun ItemInfoDto.toItemInfo(): ItemInfo =
         id = id,
         attributes = attributes.map { it.toNamedResource() },
         sprites = sprites.toSprite(),
-        babyTriggerFor = babyTriggerFor.let { if (it != null) it else ResourceApi() },
+        babyTriggerFor = babyTriggerFor,
         category = category.toNamedResource(),
         cost = cost,
         descriptions = descriptions.map { it.toFlavorText() },
@@ -288,7 +263,7 @@ fun MoveListDto.toMoveList(): MoveList =
             it.toMoveDetail()
         },
         order = moveDetails.let {
-            if (!it.isNullOrEmpty()) {
+            if (it.isNotEmpty()) {
                 it[0].levelLearned
             } else {
                 0
@@ -472,10 +447,7 @@ fun PokemonGeneraDto.toPokemonGenera(): PokemonGenera =
 fun SpriteDto.toSprite(): Sprite =
     Sprite(
         default.let {
-            if(it.isNullOrEmpty())
-                ""
-            else
-                it
+            it.ifEmpty { "" }
         },
         backDefault.let {
             if(it.isNullOrEmpty())
