@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MoveInfoDto(
-    var accuracy: Int = 0,
+    var accuracy: Int?= 0,
     @SerialName("damage_class")
     var moveCategory: NamedResourceApiDto = NamedResourceApiDto(),
     @SerialName("flavor_text_entries")
@@ -18,9 +18,9 @@ data class MoveInfoDto(
     @SerialName("name")
     var moveName: String = "",
     val names: List<NameDto>,
-    var power: Int = 0,
-    var pp: Int = 0,
-    var priority: Int = 0,
+    var power: Int? = 0,
+    var pp: Int? = 0,
+    var priority: Int? = 0,
     var type: NamedResourceApiDto = NamedResourceApiDto(),
     @SerialName("effect_chance")
     var effectChance: Int? = 0,

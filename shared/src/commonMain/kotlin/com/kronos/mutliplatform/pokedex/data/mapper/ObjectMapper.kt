@@ -263,13 +263,13 @@ fun MoveDetailDto.toMoveDetail(): MoveDetail =
 
 fun MoveInfoDto.toMoveInfo(): MoveInfo =
     MoveInfo(
-        accuracy = accuracy,
-        power = power,
-        pp = pp,
+        accuracy = accuracy?:0,
+        power = power?:0,
+        pp = pp?:0,
         moveName = moveName,
         names = names.map { Name(it.name, it.language) },
         moveCategory = moveCategory.name,
-        priority = priority,
+        priority = priority?:0,
         type = type.toNamedResource(),
         moveFlavorText = moveDescription.map {
             it.toFlavorText()
