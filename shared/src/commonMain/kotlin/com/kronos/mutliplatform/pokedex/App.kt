@@ -27,6 +27,7 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.ConfirmDialog
 import com.kronos.mutliplatform.pokedex.core.ui.components.Destinations
 import com.kronos.mutliplatform.pokedex.core.ui.components.NavigationItem
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
+import com.kronos.mutliplatform.pokedex.features.about.AboutScreen
 import com.kronos.mutliplatform.pokedex.features.move.detail.MoveDetailScreen
 import com.kronos.mutliplatform.pokedex.features.move.list.MoveListScreen
 import com.kronos.mutliplatform.pokedex.features.pokedex.PokedexScreen
@@ -191,6 +192,16 @@ fun App() {
                             onLanguageChange = {
                                 viewModel.updateAppLanguage(it)
                             }
+                        )
+                    }
+
+                    composable(
+                        route = Destinations.ABOUT.name,
+                    ) { backStackEntry ->
+                        AboutScreen(
+                            navController,
+                            isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            deviceScreenConfiguration = deviceScreenConfiguration,
                         )
                     }
                 }

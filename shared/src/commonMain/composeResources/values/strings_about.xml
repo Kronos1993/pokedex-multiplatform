@@ -1,18 +1,19 @@
 <resources>
     <!-- About Screen -->
-    <string name="about_app_description">Weather App is a cross-platform application developed with Kotlin Multiplatform that allows you to check current weather and forecasts accurately and elegantly. With a modern interface and real-time data, stay informed about weather conditions wherever you are.</string>
-    <string name="about_developer">Kronos Tech</string>
-    <string name="about_github">GitHub</string>
-    <string name="about_version">Version: %s</string>
-    <string name="about_copyright">2024 Kronos Tech. All rights reserved.</string>
+    <string name="about_app_description">Pokédex is a multiplatform app to browse detailed information about Pokémon species, including stats, abilities, moves, and evolutions. Data is provided by the official PokéAPI (pokeapi.co).</string>
+    <string name="about_menu">About</string>
     <string name="about_features_title">Features</string>
-    <string name="about_feature_1">• Real-time current weather</string>
-    <string name="about_feature_2">• Extended forecasts</string>
-    <string name="about_feature_3">• Cross-platform (Android e iOS)</string>
-    <string name="about_feature_4">• Modern and intuitive interface</string>
-    <string name="about_technologies">Technologies used</string>
-    <string name="about_tech_1">• Kotlin Multiplatform</string>
-    <string name="about_tech_2">• Clean Architecture</string>
-    <string name="about_tech_3">• Material Design 3</string>
-    <string name="about_tech_4">• Weather APIs</string>
+    <string name="about_feature_1">Browse the complete Pokémon list</string>
+    <string name="about_feature_2">View detailed stats, abilities and evolutions</string>
+    <string name="about_feature_3">Move details and learned-by Pokémon</string>
+    <string name="about_feature_4">Multi-language support</string>
+    <string name="about_technologies">Technologies</string>
+    <string name="about_tech_1">Kotlin Multiplatform (Android + iOS + Desktop)</string>
+    <string name="about_tech_2">Compose Multiplatform UI</string>
+    <string name="about_tech_3">Clean Architecture + Koin</string>
+    <string name="about_links_title">Links</string>
+    <string name="about_pokeapi">PokéAPI — pokeapi.co</string>
+    <string name="about_github">GitHub — source code</string>
+    <string name="about_version">Version %1$s · Compose Multiplatform</string>
+    <string name="about_copyright">Copyright © 2025 Kronos Tech.</string>
 </resources>

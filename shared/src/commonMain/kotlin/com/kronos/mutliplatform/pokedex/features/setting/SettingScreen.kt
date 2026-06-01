@@ -155,8 +155,6 @@ fun SettingsScreen(
                 }
             },
             modifier = Modifier.fillMaxSize(),
-            containerColor = MaterialTheme.colorScheme.onPrimary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
         ) { innerPadding ->
             Column(
                 modifier = Modifier
