@@ -40,6 +40,7 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonDexEntry
+import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.prettyName
 
 @Composable
 fun PokemonsContent(
@@ -128,7 +129,7 @@ fun PokemonItemCard(
                     fontWeight = FontWeight.Bold
                 )
                 BodyText(
-                    text = item.pokemon.name.replaceFirstChar { it.uppercase() },
+                    text = item.pokemon.name.prettyName().replaceFirstChar { it.uppercase() },
                     size = ComponentSize.SMALL,
                     fontWeight = FontWeight.Bold
                 )

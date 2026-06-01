@@ -38,6 +38,7 @@ import com.kronos.mutliplatform.pokedex.components.icon.AppIcon
 import com.kronos.mutliplatform.pokedex.core.PlatformType
 import com.kronos.mutliplatform.pokedex.core.ui.components.AppTopAppBar
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
+import com.kronos.mutliplatform.pokedex.core.ui.components.Destinations
 import com.kronos.mutliplatform.pokedex.core.ui.components.DrawerHeader
 import com.kronos.mutliplatform.pokedex.core.ui.components.LoadingDialog
 import com.kronos.mutliplatform.pokedex.core.ui.components.NavDrawer
@@ -52,7 +53,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import pokedex.shared.generated.resources.Res
 import pokedex.shared.generated.resources.app_name
-import pokedex.shared.generated.resources.empty_pokedex_list
+import pokedex.shared.generated.resources.empty_move_list
 import pokedex.shared.generated.resources.loading_dialog_text
 import pokedex.shared.generated.resources.loading_dialog_title
 import pokedex.shared.generated.resources.menu_moves
@@ -77,6 +78,15 @@ fun MoveListScreen(
     var selectedItem by remember { mutableIntStateOf(1) }
     val listState = rememberLazyGridState()
 
+    val gridColumns = remember(deviceScreenConfiguration) {
+        when (deviceScreenConfiguration) {
+            DeviceScreenConfiguration.MOBILE_PORTRAIT -> 2
+            DeviceScreenConfiguration.MOBILE_LANDSCAPE,
+            DeviceScreenConfiguration.TABLET_PORTRAIT -> 3
+            DeviceScreenConfiguration.TABLET_LANDSCAPE,
+            DeviceScreenConfiguration.DESKTOP -> 4
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.getAppVersion()
@@ -163,7 +173,7 @@ fun MoveListScreen(
 
                     if (moves.isEmpty()) {
                         EmptyList(
-                            title = stringResource(Res.string.empty_pokedex_list),
+                            title = stringResource(Res.string.empty_move_list),
                             subtitle = stringResource(Res.string.refresh_list),
                             showRetryButton = true,
                             onRetryClick = {
@@ -173,25 +183,11 @@ fun MoveListScreen(
                         )
                     } else {
                         MovesContent(
-                            gridColumns = when (deviceScreenConfiguration) {
-                                DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
-                                    2
-                                }
-
-                                DeviceScreenConfiguration.MOBILE_LANDSCAPE,
-                                DeviceScreenConfiguration.TABLET_PORTRAIT -> {
-                                    3
-                                }
-
-                                DeviceScreenConfiguration.TABLET_LANDSCAPE,
-                                DeviceScreenConfiguration.DESKTOP -> {
-                                    4
-                                }
-                            },
+                            gridColumns = gridColumns,
                             listState = listState,
                             moves = moves,
                             onClick = {
-
+                                navHost.navigate("${Destinations.MOVE_DETAIL.name}/${it.name}")
                             },
                             modifier = rootModifier
                         )

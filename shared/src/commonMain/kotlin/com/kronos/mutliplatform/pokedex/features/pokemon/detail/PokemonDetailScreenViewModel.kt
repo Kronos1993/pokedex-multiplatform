@@ -144,7 +144,6 @@ class PokemonDetailScreenViewModel(
         val updatedPokemon = pokemon.copy(
             sprites = updatedSprites
         )
-
         _pokemon.value = updatedPokemon
 
     }
@@ -191,7 +190,6 @@ class PokemonDetailScreenViewModel(
                     message = (err)
                     loading = (false)
                 }
-
         }
     }
 

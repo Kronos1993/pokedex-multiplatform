@@ -37,6 +37,7 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.ScrollableTabView
 import com.kronos.mutliplatform.pokedex.core.ui.components.TabItem
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.ButtonType
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
+import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.prettyName
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.toPokemonColor
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonDetailTab
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonEvolutionChainTab
@@ -95,7 +96,7 @@ fun PokemonDetailScreen(
     val stringSpriteFrontShiny = stringResource(Res.string.front_shiny)
     val stringSpriteFemaleShiny = stringResource(Res.string.female_shiny)
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(pokemon) {
         viewModel.initStrings(
             stringSpriteHome = stringSpriteHome,
             stringSpriteHomeShiny = stringSpriteHomeShiny,
@@ -123,6 +124,20 @@ fun PokemonDetailScreen(
         label = "dominantColorAnimation"
     )
 
+    val screenTitle = remember(pokemonInfo) {
+        pokemonInfo.name.prettyName()
+    }
+
+    val gridColumns = remember(deviceScreenConfiguration) {
+        when (deviceScreenConfiguration) {
+            DeviceScreenConfiguration.MOBILE_PORTRAIT -> 1
+            DeviceScreenConfiguration.MOBILE_LANDSCAPE,
+            DeviceScreenConfiguration.TABLET_PORTRAIT -> 2
+            DeviceScreenConfiguration.TABLET_LANDSCAPE,
+            DeviceScreenConfiguration.DESKTOP -> 3
+        }
+    }
+
     val tabs = listOf(
         TabItem(
             stringResource(Res.string.pokemon_detail_tab_info),
@@ -138,21 +153,7 @@ fun PokemonDetailScreen(
                 isDarkTheme = isDarkTheme,
                 currentLang = currentLang,
                 listState = detailListState,
-                gridColumns = when (deviceScreenConfiguration) {
-                    DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
-                        1
-                    }
-
-                    DeviceScreenConfiguration.MOBILE_LANDSCAPE,
-                    DeviceScreenConfiguration.TABLET_PORTRAIT -> {
-                        2
-                    }
-
-                    DeviceScreenConfiguration.TABLET_LANDSCAPE,
-                    DeviceScreenConfiguration.DESKTOP -> {
-                        3
-                    }
-                },
+                gridColumns = gridColumns,
                 onTypeClick = {
                 },
                 onEggGroupClick = {
@@ -178,21 +179,7 @@ fun PokemonDetailScreen(
                 isDarkTheme = isDarkTheme,
                 currentLang = currentLang,
                 listState = locationListState,
-                gridColumns = when (deviceScreenConfiguration) {
-                    DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
-                        1
-                    }
-
-                    DeviceScreenConfiguration.MOBILE_LANDSCAPE,
-                    DeviceScreenConfiguration.TABLET_PORTRAIT -> {
-                        2
-                    }
-
-                    DeviceScreenConfiguration.TABLET_LANDSCAPE,
-                    DeviceScreenConfiguration.DESKTOP -> {
-                        3
-                    }
-                }
+                gridColumns = gridColumns
             )
         },
 
@@ -242,20 +229,9 @@ fun PokemonDetailScreen(
                 isDarkTheme = isDarkTheme,
                 currentLang = currentLang,
                 listState = movesListState,
-                gridColumns = when (deviceScreenConfiguration) {
-                    DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
-                        1
-                    }
-
-                    DeviceScreenConfiguration.MOBILE_LANDSCAPE,
-                    DeviceScreenConfiguration.TABLET_PORTRAIT -> {
-                        2
-                    }
-
-                    DeviceScreenConfiguration.TABLET_LANDSCAPE,
-                    DeviceScreenConfiguration.DESKTOP -> {
-                        3
-                    }
+                gridColumns = gridColumns,
+                onMoveClick = {
+                    navHost.navigate("${Destinations.MOVE_DETAIL.name}/${it}")
                 }
             )
         },
@@ -298,7 +274,7 @@ fun PokemonDetailScreen(
         Scaffold(
             topBar = {
                 AppTopAppBar(
-                    title = pokemonInfo.name.replaceFirstChar { it.uppercase() }.replace("-", " "),
+                    title = screenTitle,
                     navIconButton = {
                         IconButton(
                             icon = Icons.AutoMirrored.Filled.ArrowBack,

@@ -37,6 +37,7 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.LoadingDialog
 import com.kronos.mutliplatform.pokedex.core.ui.components.PullToRefreshContainer
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.ButtonType
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
+import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.prettyName
 import com.kronos.mutliplatform.pokedex.features.pokemon.list.content.PokemonsContent
 import com.kronos.mutliplatform.pokedex.screen_config.DeviceScreenConfiguration
 import kotlinx.coroutines.launch
@@ -64,7 +65,21 @@ fun PokemonListScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val listState = rememberLazyGridState()
 
-    LaunchedEffect(Unit) {
+    val screenTitle = remember(pokedexName) {
+        pokedexName.prettyName()
+    }
+
+    val gridColumns = remember(deviceScreenConfiguration) {
+        when (deviceScreenConfiguration) {
+            DeviceScreenConfiguration.MOBILE_PORTRAIT -> 1
+            DeviceScreenConfiguration.MOBILE_LANDSCAPE,
+            DeviceScreenConfiguration.TABLET_PORTRAIT -> 2
+            DeviceScreenConfiguration.TABLET_LANDSCAPE,
+            DeviceScreenConfiguration.DESKTOP -> 3
+        }
+    }
+
+    LaunchedEffect(pokedex) {
         viewModel.loadPokemons(pokedex)
         pokedexName = pokedex.removePrefix("updated-")
             .removePrefix("extended-")
@@ -79,7 +94,7 @@ fun PokemonListScreen(
         Scaffold(
             topBar = {
                 AppTopAppBar(
-                    title = pokedexName.replace("-", " ").replaceFirstChar { it.uppercase() },
+                    title = screenTitle.replaceFirstChar { it.uppercase() },
                     navIconButton = {
                         IconButton(
                             icon = Icons.AutoMirrored.Filled.ArrowBack,
@@ -130,21 +145,7 @@ fun PokemonListScreen(
                     )
                 } else {
                     PokemonsContent(
-                        gridColumns = when (deviceScreenConfiguration) {
-                            DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
-                                2
-                            }
-
-                            DeviceScreenConfiguration.MOBILE_LANDSCAPE,
-                            DeviceScreenConfiguration.TABLET_PORTRAIT -> {
-                                3
-                            }
-
-                            DeviceScreenConfiguration.TABLET_LANDSCAPE,
-                            DeviceScreenConfiguration.DESKTOP -> {
-                                4
-                            }
-                        },
+                        gridColumns = gridColumns,
                         listState = listState,
                         pokemonList = pokemonList,
                         onClick = { pokemon ->

@@ -49,6 +49,7 @@ fun PokemonMovesTab(
     currentLang: String,
     listState: LazyGridState,
     gridColumns: Int = 1,
+    onMoveClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val viewModel = koinViewModel<PokemonMovesTabViewModel>()
@@ -118,7 +119,9 @@ fun PokemonMovesTab(
                     MoveInfoItemCard(
                         item = move,
                         icon = move.learnMethodIcon(),
-                        onClick = { /* todo */ },
+                        onClick = {
+                            onMoveClick(it.name)
+                        },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }

@@ -20,6 +20,8 @@
 
     <string name="empty_pokedex_list">No Pokedex found</string>
     <string name="empty_pokemon_list">No Pokémon found in this Pokédex</string>
+    <string name="empty_pokemon_by_move_list">No Pokémon found</string>
+    <string name="empty_move_list">No moves found</string>
     <string name="empty_pokemon_encounter_list">No encounter location found</string>
     <string name="empty_pokemon_evolution_list">No evolutions found</string>
     <string name="empty_pokemon_stats_list">No stats available</string>
@@ -68,5 +70,17 @@
     <string name="move_detail_tab_info_tm">TM</string>
     <string name="move_detail_tab_info_other">OTHER</string>
     <string name="move_detail_tab_info_all">All</string>
+
+
+    <string name="move_detail_info_screen_info_title">INFO</string>
+    <string name="move_detail_info_screen_accuracy">Accuracy</string>
+    <string name="move_detail_info_screen_pp">PP</string>
+    <string name="move_detail_info_screen_power">Power</string>
+    <string name="move_detail_info_screen_type">Type</string>
+    <string name="move_detail_info_screen_priority">Priority</string>
+    <string name="move_detail_info_screen_description_title">DESCRIPTION</string>
+    <string name="move_detail_info_screen_category_title">CATEGORY</string>
+    <string name="move_detail_info_screen_effect_title">EFFECT</string>
+
 
 </resources>

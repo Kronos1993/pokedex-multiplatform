@@ -27,6 +27,7 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.ConfirmDialog
 import com.kronos.mutliplatform.pokedex.core.ui.components.Destinations
 import com.kronos.mutliplatform.pokedex.core.ui.components.NavigationItem
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
+import com.kronos.mutliplatform.pokedex.features.move.detail.MoveDetailScreen
 import com.kronos.mutliplatform.pokedex.features.move.list.MoveListScreen
 import com.kronos.mutliplatform.pokedex.features.pokedex.PokedexScreen
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.PokemonDetailScreen
@@ -140,6 +141,23 @@ fun App() {
                         val pokemon = savedStateHandle.get<String>("pokemon") ?: ""
                         PokemonDetailScreen(
                             pokemon = pokemon,
+                            navController,
+                            isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            currentLang = currentLang,
+                            deviceScreenConfiguration = deviceScreenConfiguration,
+                        )
+                    }
+
+                    composable(
+                        route = "${Destinations.MOVE_DETAIL}/{move}",
+                        arguments = listOf(navArgument("move") {
+                            type = NavType.StringType
+                        })
+                    ) { backStackEntry ->
+                        val savedStateHandle = backStackEntry.savedStateHandle
+                        val move = savedStateHandle.get<String>("move") ?: ""
+                        MoveDetailScreen(
+                            move = move,
                             navController,
                             isDarkTheme == stringResource(Res.string.theme_preference_default_value),
                             currentLang = currentLang,

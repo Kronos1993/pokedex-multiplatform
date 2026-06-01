@@ -1626,7 +1626,6 @@ fun EvYieldSection(
 /* GAME                                                                 */
 /* -------------------------------------------------------------------------- */
 
-
 @Composable
 fun PokemonGameGridItem(
     item: Game,
