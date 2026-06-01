@@ -31,7 +31,7 @@ class MoveDetailScreenViewModel(
 
     fun loadMoveInfo(move: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            loading = true
+            _loading.value = true
             try {
                 moveRemoteRepository.getMove(move)
                     .onSuccess { moveData ->
@@ -50,20 +50,20 @@ class MoveDetailScreenViewModel(
                         }
                     }
                     .onError { error ->
-                        message = hashMapOf(
+                        _message.value = hashMapOf(
                             "error" to if (error is FullNetworkError) error.errorMessage
                             else error.toString()
                         )
                     }
             } finally {
-                loading = false
+                _loading.value = false
             }
         }
     }
 
     fun refreshMove(move: String) {
         _moveInfo.value = MoveInfo()
-        message = hashMapOf()
+        _message.value = hashMapOf()
         loadMoveInfo(move)
     }
 }

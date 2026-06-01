@@ -63,7 +63,16 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
 import kotlinx.coroutines.launch
 
 enum class Destinations {
-    POKEDEX, POKEMON_LIST, POKEMON_DETAIL, MOVES, MOVE_DETAIL, SETTINGS, ABOUT,EXIT
+    POKEDEX,
+    POKEMON_LIST,
+    POKEMON_DETAIL,
+    MOVES,
+    MOVE_DETAIL,
+    TYPES,
+    TYPES_DETAIL,
+    SETTINGS,
+    ABOUT,
+    EXIT
 }
 
 data class NavigationItem(
@@ -71,7 +80,7 @@ data class NavigationItem(
     val destination: Destinations,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-    val iconTint:Color = Color.Unspecified,
+    val iconTint: Color = Color.Unspecified,
     val isPrimary: Boolean = true,
     val isSelected: Boolean = false,
     var badgeCount: Int? = null,
@@ -117,13 +126,11 @@ fun NavDrawer(
                 ) {
                     navigationItems.forEachIndexed { index, item ->
                         if (index > 0 && navigationItems[index - 1].isPrimary && !item.isPrimary) {
-                            Spacer(modifier = Modifier.padding(2.dp))
                             HorizontalDivider(
-                                modifier = Modifier
-                                    .height(5.dp)
-                                    .padding(top = 5.dp, bottom = 5.dp)
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                thickness = 1.dp,
+                                color = MaterialTheme.colorScheme.outlineVariant // Color estándar de la guía de diseño
                             )
-                            Spacer(modifier = Modifier.padding(2.dp))
                         }
 
                         NavigationDrawerItem(
@@ -160,13 +167,16 @@ fun NavDrawer(
                                 }
                             },
                             colors = NavigationDrawerItemDefaults.colors(
-                                selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                                selectedContainerColor = MaterialTheme.colorScheme.primary.copy(
+                                    alpha = 0.2f
+                                ),
                                 selectedIconColor = MaterialTheme.colorScheme.primary,
                                 selectedTextColor = MaterialTheme.colorScheme.primary,
                                 unselectedIconColor = MaterialTheme.colorScheme.onSurface,
                                 unselectedTextColor = MaterialTheme.colorScheme.onSurface,
                             ),
-                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding).padding(vertical = 4.dp)
+                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                                .padding(vertical = 4.dp)
                         )
                     }
                 }

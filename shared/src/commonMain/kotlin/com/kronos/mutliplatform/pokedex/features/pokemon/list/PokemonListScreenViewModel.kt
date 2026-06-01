@@ -41,13 +41,13 @@ class PokemonListScreenViewModel(
     }
 
     fun loadPokemons(pokedex: String) {
-        loading = true
+        _loading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             pokedexRemoteRepository.getPokedex(
                 pokedex
             )
                 .onSuccess {
-                    loading = (false)
+                    _loading.value = (false)
                     postPokemons(it.pokemons)
                 }
                 .onError {
@@ -57,8 +57,8 @@ class PokemonListScreenViewModel(
                     } else {
                         err["error"] = it.toString()
                     }
-                    message = (err)
-                    loading = (false)
+                    _message.value = (err)
+                    _loading.value = (false)
                 }
         }
     }
@@ -66,7 +66,7 @@ class PokemonListScreenViewModel(
     fun refreshPokemons(pokedex: String) {
         _pokemons.value = listOf()
         val err = HashMap<String, String>()
-        message = (err)
+        _message.value = (err)
         loadPokemons(pokedex)
     }
 }

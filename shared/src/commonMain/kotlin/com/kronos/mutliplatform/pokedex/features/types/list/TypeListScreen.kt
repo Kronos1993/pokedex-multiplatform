@@ -1,4 +1,4 @@
-package com.kronos.mutliplatform.pokedex.features.move.list
+package com.kronos.mutliplatform.pokedex.features.types.list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
@@ -43,7 +43,7 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.NavDrawer
 import com.kronos.mutliplatform.pokedex.core.ui.components.PullToRefreshContainer
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.ButtonType
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
-import com.kronos.mutliplatform.pokedex.features.move.list.content.MovesContent
+import com.kronos.mutliplatform.pokedex.features.types.list.content.TypesContent
 import com.kronos.mutliplatform.pokedex.rememberNavDestinations
 import com.kronos.mutliplatform.pokedex.screen_config.DeviceScreenConfiguration
 import kotlinx.coroutines.launch
@@ -51,22 +51,22 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import pokedex.shared.generated.resources.Res
 import pokedex.shared.generated.resources.app_name
-import pokedex.shared.generated.resources.empty_move_list
+import pokedex.shared.generated.resources.empty_pokedex_list
 import pokedex.shared.generated.resources.loading_dialog_text
 import pokedex.shared.generated.resources.loading_dialog_title
-import pokedex.shared.generated.resources.menu_moves
+import pokedex.shared.generated.resources.menu_types
 import pokedex.shared.generated.resources.refresh_list
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MoveListScreen(
+fun TypeListScreen(
     navHost: NavHostController,
     isDarkTheme: Boolean,
     deviceScreenConfiguration: DeviceScreenConfiguration,
 ) {
-    val viewModel = koinViewModel<MoveListScreenViewModel>()
+    val viewModel = koinViewModel<TypeListScreenViewModel>()
 
-    val moves by viewModel.moves.collectAsStateWithLifecycle()
+    val typeList by viewModel.types.collectAsStateWithLifecycle()
     val appVersion by viewModel.appVersion.collectAsStateWithLifecycle()
     val isLoading by viewModel.loading.collectAsStateWithLifecycle()
     val errorMessage by viewModel.message.collectAsStateWithLifecycle()
@@ -89,19 +89,9 @@ fun MoveListScreen(
         navDestinations.indexOfFirst { it.destination.name == currentRoute }.coerceAtLeast(0)
     }
 
-    val gridColumns = remember(deviceScreenConfiguration) {
-        when (deviceScreenConfiguration) {
-            DeviceScreenConfiguration.MOBILE_PORTRAIT -> 2
-            DeviceScreenConfiguration.MOBILE_LANDSCAPE,
-            DeviceScreenConfiguration.TABLET_PORTRAIT -> 3
-            DeviceScreenConfiguration.TABLET_LANDSCAPE,
-            DeviceScreenConfiguration.DESKTOP -> 4
-        }
-    }
-
     LaunchedEffect(Unit) {
+        viewModel.loadTypes()
         viewModel.getAppVersion()
-        viewModel.loadMoves()
     }
 
     LaunchedEffect(errorMessage) {
@@ -116,7 +106,7 @@ fun MoveListScreen(
         }
     }
 
-    LaunchedEffect(listState, isLastPage, isLoading, moves) {
+    LaunchedEffect(listState, isLastPage, isLoading, typeList) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collect { lastVisibleItemIndex ->
                 val totalItems = listState.layoutInfo.totalItemsCount
@@ -124,9 +114,9 @@ fun MoveListScreen(
                     lastVisibleItemIndex >= totalItems - 3 &&
                     !isLastPage &&
                     !isLoading &&
-                    moves.isNotEmpty()
+                    typeList.isNotEmpty()
                 ) {
-                    viewModel.loadMoves()
+                    viewModel.loadTypes()
                 }
             }
     }
@@ -150,7 +140,7 @@ fun MoveListScreen(
             Scaffold(
                 topBar = {
                     AppTopAppBar(
-                        title = stringResource(Res.string.menu_moves),
+                        title = stringResource(Res.string.menu_types),
                         navIconButton = {
                             IconButton(
                                 icon = Icons.Filled.Menu,
@@ -179,7 +169,7 @@ fun MoveListScreen(
                 PullToRefreshContainer(
                     innerPadding = it,
                     isRefreshing = isLoading,
-                    onRefresh = { viewModel.loadMoves(true) }
+                    onRefresh = { viewModel.loadTypes(true) }
                 ) {
 
                     val rootModifier = Modifier
@@ -188,23 +178,37 @@ fun MoveListScreen(
                         .background(color = Color.Transparent)
                         .consumeWindowInsets(WindowInsets.navigationBars)
 
-                    if (moves.isEmpty()) {
+                    if (typeList.isEmpty()) {
                         EmptyList(
-                            title = stringResource(Res.string.empty_move_list),
+                            title = stringResource(Res.string.empty_pokedex_list),
                             subtitle = stringResource(Res.string.refresh_list),
                             showRetryButton = true,
                             onRetryClick = {
-                                viewModel.loadMoves(true)
+                                viewModel.loadTypes(true)
                             },
                             modifier = rootModifier
                         )
                     } else {
-                        MovesContent(
-                            gridColumns = gridColumns,
+                        TypesContent(
+                            gridColumns = when (deviceScreenConfiguration) {
+                                DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
+                                    2
+                                }
+
+                                DeviceScreenConfiguration.MOBILE_LANDSCAPE,
+                                DeviceScreenConfiguration.TABLET_PORTRAIT -> {
+                                    3
+                                }
+
+                                DeviceScreenConfiguration.TABLET_LANDSCAPE,
+                                DeviceScreenConfiguration.DESKTOP -> {
+                                    4
+                                }
+                            },
                             listState = listState,
-                            moves = moves,
+                            typeList = typeList,
                             onClick = {
-                                navHost.navigate("${Destinations.MOVE_DETAIL.name}/${it.name}")
+                                navHost.navigate("${Destinations.TYPES_DETAIL.name}/${it.name}")
                             },
                             modifier = rootModifier
                         )

@@ -11,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -80,6 +81,9 @@ fun PokemonDetailScreen(
     val pokemonSpritesUrl by viewModel.pokemonSpritesUrl.collectAsStateWithLifecycle()
     val pokemonOtherFormsUrl by viewModel.pokemonOtherFormsUrl.collectAsStateWithLifecycle()
     val pokemonEvolutionChain by viewModel.pokemonEvolutionList.collectAsStateWithLifecycle()
+    val isLoading by viewModel.loading.collectAsStateWithLifecycle()
+    val errorMessage by viewModel.message.collectAsStateWithLifecycle()
+
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
@@ -109,6 +113,18 @@ fun PokemonDetailScreen(
         viewModel.getPokemonEncounters(pokemon)
     }
 
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let { error ->
+            if (error.containsKey("error")) {
+                snackbarHostState.showSnackbar(
+                    message = error["error"].orEmpty(),
+                    duration = SnackbarDuration.Short
+                )
+                viewModel.clearMessage("error")
+            }
+        }
+    }
+
     val typeName = remember(pokemonInfo.types) {
         pokemonInfo.types.firstOrNull()?.name
     }
@@ -133,6 +149,7 @@ fun PokemonDetailScreen(
             DeviceScreenConfiguration.MOBILE_PORTRAIT -> 1
             DeviceScreenConfiguration.MOBILE_LANDSCAPE,
             DeviceScreenConfiguration.TABLET_PORTRAIT -> 2
+
             DeviceScreenConfiguration.TABLET_LANDSCAPE,
             DeviceScreenConfiguration.DESKTOP -> 3
         }
@@ -155,6 +172,7 @@ fun PokemonDetailScreen(
                 listState = detailListState,
                 gridColumns = gridColumns,
                 onTypeClick = {
+                    navHost.navigate("${Destinations.TYPES_DETAIL.name}/${it.name}")
                 },
                 onEggGroupClick = {
                 },
@@ -308,7 +326,7 @@ fun PokemonDetailScreen(
                 }
             }
         ) { paddingValues ->
-            if (!viewModel.loading) {
+            if (!isLoading) {
                 ScrollableTabView(
                     tabs = tabs,
                     paddingValues = paddingValues
@@ -318,7 +336,7 @@ fun PokemonDetailScreen(
             LoadingDialog(
                 Res.string.loading_dialog_title,
                 Res.string.loading_dialog_text,
-                showDialog = viewModel.loading
+                showDialog = isLoading
             )
         }
     }

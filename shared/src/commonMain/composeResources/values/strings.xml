@@ -15,6 +15,7 @@
 
     <string name="menu_pokedex">Pokedex</string>
     <string name="menu_moves">Moves</string>
+    <string name="menu_types">Types</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_about">About</string>
 
@@ -77,6 +78,16 @@
     <string name="move_detail_info_screen_description_title">DESCRIPTION</string>
     <string name="move_detail_info_screen_category_title">CATEGORY</string>
     <string name="move_detail_info_screen_effect_title">EFFECT</string>
+
+
+    <string name="type_detail_info_screen_attaking_title">Attacking</string>
+    <string name="type_detail_info_screen_attaking_supper_effective">Super effective against</string>
+    <string name="type_detail_info_screen_attaking_not_very_effective">Not very effective against</string>
+    <string name="type_detail_info_screen_attaking_no_effect">No effect on</string>
+    <string name="type_detail_info_screen_defending_title">Defending</string>
+    <string name="type_detail_info_screen_defending_double_damage">Takes 2× from</string>
+    <string name="type_detail_info_screen_defending_half_damage">Takes ½× from</string>
+    <string name="type_detail_info_screen_defending_inmune_damage">Immune to</string>
 
 
 </resources>

@@ -37,14 +37,14 @@ class MoveListScreenViewModel(
     }
 
     fun loadMoves() {
-        loading = true
+        _loading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             moveRemoteRepository.listMove(
                 limit.value,
                 offset.value,
             )
                 .onSuccess {
-                    loading = (false)
+                    _loading.value = (false)
                     setOffset(offset.value + limit.value)
                     postMoves(it.results)
                 }
@@ -55,14 +55,14 @@ class MoveListScreenViewModel(
                     } else {
                         err["error"] = it.toString()
                     }
-                    message = (err)
-                    loading = (false)
+                    _message.value = (err)
+                    _loading.value = (false)
                 }
         }
     }
 
     fun loadMoves(reset: Boolean = false) {
-        loading = true
+        _loading.value = true
         if (reset) {
             setLimit(50)
             setOffset(0)
@@ -74,7 +74,7 @@ class MoveListScreenViewModel(
                 offset.value,
             )
                 .onSuccess {
-                    loading = (false)
+                    _loading.value = (false)
                     if (reset)
                         _moves.value = listOf()
 
@@ -92,8 +92,8 @@ class MoveListScreenViewModel(
                     } else {
                         err["error"] = it.toString()
                     }
-                    message = (err)
-                    loading = (false)
+                    _message.value = (err)
+                    _loading.value = (false)
                 }
         }
     }

@@ -62,6 +62,7 @@ fun SettingsScreen(
     onLanguageChange: (String) -> Unit
 ) {
     val viewModel = koinViewModel<PreferenceViewModel>()
+    val errorMessage by viewModel.message.collectAsStateWithLifecycle()
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -108,14 +109,14 @@ fun SettingsScreen(
             )
         }
 
-    LaunchedEffect(viewModel.message) {
-        if (viewModel.message.orEmpty().containsKey("error")) {
-            scope.launch {
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let { error ->
+            if (error.containsKey("error")) {
                 snackbarHostState.showSnackbar(
-                    message = viewModel.message.orEmpty()["error"].orEmpty(),
+                    message = error["error"].orEmpty(),
                     duration = SnackbarDuration.Short
                 )
-                viewModel.message?.clear()
+                viewModel.clearMessage("error")
             }
         }
     }

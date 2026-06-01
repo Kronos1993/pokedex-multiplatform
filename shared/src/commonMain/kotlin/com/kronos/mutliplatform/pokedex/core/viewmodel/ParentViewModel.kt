@@ -1,8 +1,5 @@
 package com.kronos.mutliplatform.pokedex.core.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
@@ -14,8 +11,11 @@ import kotlinx.coroutines.launch
 open class ParentViewModel(
 ) : ViewModel() {
 
-    var loading by mutableStateOf(false)
-    var message by mutableStateOf<HashMap<String, String>?>(null)
+    protected var _loading = MutableStateFlow(false)
+    var loading = _loading.asStateFlow()
+
+    protected var _message = MutableStateFlow<HashMap<String, String>?>(null)
+    var message = _message.asStateFlow()
     private var _refreshing = MutableStateFlow(false)
     var refreshing: StateFlow<Boolean> = _refreshing.asStateFlow()
 
@@ -28,7 +28,7 @@ open class ParentViewModel(
     internal var _total = MutableStateFlow<Long>(0)
     val total = _total.asStateFlow()
 
-    private val _lastPage = MutableStateFlow<Boolean>(false)
+    private val _lastPage = MutableStateFlow(false)
     val lastPage = _lastPage.asStateFlow()
 
     fun setLastPage(i: Boolean) {
@@ -48,8 +48,12 @@ open class ParentViewModel(
     }
 
     init {
-        loading = false
-        message = HashMap()
+        _loading.value = false
+        _message.value = HashMap()
+    }
+
+    fun clearMessage(key: String) {
+        _message.value?.set("key", "")
     }
 
     fun log(item: String,exception: Exception? = null) {

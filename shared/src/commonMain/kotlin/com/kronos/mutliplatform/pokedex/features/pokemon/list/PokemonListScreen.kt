@@ -61,6 +61,9 @@ fun PokemonListScreen(
 
     val pokemonList by viewModel.pokemons.collectAsStateWithLifecycle()
     var pokedexName by remember { mutableStateOf(pokedex) }
+    val isLoading by viewModel.loading.collectAsStateWithLifecycle()
+    val errorMessage by viewModel.message.collectAsStateWithLifecycle()
+
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val listState = rememberLazyGridState()
@@ -85,6 +88,18 @@ fun PokemonListScreen(
             .removePrefix("extended-")
             .removePrefix("original-")
             .removePrefix("letsgo-")
+    }
+
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let { error ->
+            if (error.containsKey("error")) {
+                snackbarHostState.showSnackbar(
+                    message = error["error"].orEmpty(),
+                    duration = SnackbarDuration.Short
+                )
+                viewModel.clearMessage("error")
+            }
+        }
     }
 
     Surface(
@@ -124,7 +139,7 @@ fun PokemonListScreen(
         ) {
             PullToRefreshContainer(
                 innerPadding = it,
-                isRefreshing = viewModel.loading,
+                isRefreshing = isLoading,
                 onRefresh = { viewModel.refreshPokemons(pokedex) }
             ) {
                 val rootModifier = Modifier
@@ -161,19 +176,9 @@ fun PokemonListScreen(
             LoadingDialog(
                 Res.string.loading_dialog_title,
                 Res.string.loading_dialog_text,
-                showDialog = viewModel.loading
+                showDialog = isLoading
             )
 
-            // Mostrar Snackbar en caso de error
-            if (viewModel.message.orEmpty().containsKey("error")) {
-                scope.launch {
-                    snackbarHostState.showSnackbar(
-                        message = viewModel.message.orEmpty()["error"].orEmpty(),
-                        duration = SnackbarDuration.Short
-                    )
-                    viewModel.message?.clear()
-                }
-            }
         }
     }
 }

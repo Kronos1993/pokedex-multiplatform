@@ -172,11 +172,11 @@ class PokemonDetailScreenViewModel(
 
     fun loadPokemonInfo(pokemon: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            loading = (true)
+            _loading.value = (true)
 
             pokemonRemoteRepository.getPokemonInfo(pokemon)
                 .onSuccess {
-                    loading = (false)
+                    _loading.value = (false)
                     postPokemon(it)
                     getPokemonEvolution(it)
                 }
@@ -187,8 +187,8 @@ class PokemonDetailScreenViewModel(
                     } else {
                         err["error"] = it.toString()
                     }
-                    message = (err)
-                    loading = (false)
+                    _message.value = (err)
+                    _loading.value = (false)
                 }
         }
     }
@@ -206,7 +206,7 @@ class PokemonDetailScreenViewModel(
                     } else {
                         err["error"] = it.toString()
                     }
-                    message = (err)
+                    _message.value = (err)
                 }
         }
     }
@@ -232,7 +232,7 @@ class PokemonDetailScreenViewModel(
                         } else {
                             err["error"] = it.toString()
                         }
-                        message = (err)
+                        _message.value = (err)
                     }
 
             }

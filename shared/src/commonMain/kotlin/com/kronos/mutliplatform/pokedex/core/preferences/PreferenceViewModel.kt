@@ -53,7 +53,7 @@ class PreferenceViewModel(
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                message = hashMapOf("error" to e.message.orEmpty())
+                _message.value = hashMapOf("error" to e.message.orEmpty())
             }
         }
     }
@@ -71,7 +71,7 @@ class PreferenceViewModel(
                 e.printStackTrace()
                 val err = HashMap<String, String>()
                 err["error"] = e.message.orEmpty()
-                message = (err)
+                _message.value = (err)
             }
         }
     }

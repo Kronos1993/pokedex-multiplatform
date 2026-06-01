@@ -22,16 +22,15 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.kronos.mutliplatform.pokedex.AppViewModel
 import com.kronos.mutliplatform.pokedex.components.EmptyList
 import com.kronos.mutliplatform.pokedex.components.icon.AppIcon
@@ -47,7 +46,7 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.button.ButtonType
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
 import com.kronos.mutliplatform.pokedex.core.util.BackPressHandlerEffect
 import com.kronos.mutliplatform.pokedex.features.pokedex.content.PokedexContent
-import com.kronos.mutliplatform.pokedex.getNavDestinations
+import com.kronos.mutliplatform.pokedex.rememberNavDestinations
 import com.kronos.mutliplatform.pokedex.screen_config.DeviceScreenConfiguration
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -72,16 +71,59 @@ fun PokedexScreen(
 
     val pokedexList by viewModel.pokedex.collectAsStateWithLifecycle()
     val appVersion by viewModel.appVersion.collectAsStateWithLifecycle()
+    val isLoading by viewModel.loading.collectAsStateWithLifecycle()
+    val errorMessage by viewModel.message.collectAsStateWithLifecycle()
+    val isLastPage by viewModel.lastPage.collectAsStateWithLifecycle()
+
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    var selectedItem by remember { mutableIntStateOf(0) }
     val listState = rememberLazyGridState()
+
+
+    val navDestinations = rememberNavDestinations(
+        navController = navHost,
+        isDesktop = viewModel.platform.platformType == PlatformType.DESKTOP,
+        onExitClicked = { appViewModel.showExitDialog(true) }
+    )
+
+    val navBackStackEntry by navHost.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val selectedItem = remember(currentRoute, navDestinations) {
+        navDestinations.indexOfFirst { it.destination.name == currentRoute }.coerceAtLeast(0)
+    }
 
     LaunchedEffect(Unit) {
         viewModel.loadPokedex()
         viewModel.getAppVersion()
+    }
+
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let { error ->
+            if (error.containsKey("error")) {
+                snackbarHostState.showSnackbar(
+                    message = error["error"].orEmpty(),
+                    duration = SnackbarDuration.Short
+                )
+                viewModel.clearMessage("error")
+            }
+        }
+    }
+
+    LaunchedEffect(listState, isLastPage, isLoading, pokedexList) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+            .collect { lastVisibleItemIndex ->
+                val totalItems = listState.layoutInfo.totalItemsCount
+                if (lastVisibleItemIndex != null &&
+                    lastVisibleItemIndex >= totalItems - 3 &&
+                    !isLastPage &&
+                    !isLoading &&
+                    pokedexList.isNotEmpty()
+                ) {
+                    viewModel.loadPokedex()
+                }
+            }
     }
 
     BackPressHandlerEffect(
@@ -95,13 +137,7 @@ fun PokedexScreen(
         color = MaterialTheme.colorScheme.secondaryContainer
     ) {
         NavDrawer(
-            navigationItems = getNavDestinations(
-                navHost,
-                isDesktop = viewModel.platform.platformType == PlatformType.DESKTOP,
-                onExitClicked = {
-                    appViewModel.showExitDialog(true)
-                }
-            ),
+            navigationItems = navDestinations,
             selectedIndex = selectedItem,
             drawerState = drawerState,
             drawerHeader = {
@@ -143,7 +179,7 @@ fun PokedexScreen(
             ) {
                 PullToRefreshContainer(
                     innerPadding = it,
-                    isRefreshing = viewModel.loading,
+                    isRefreshing = isLoading,
                     onRefresh = { viewModel.loadPokedex(true) }
                 ) {
 
@@ -152,21 +188,6 @@ fun PokedexScreen(
                         .padding(4.dp)
                         .background(color = Color.Transparent)
                         .consumeWindowInsets(WindowInsets.navigationBars)
-
-                    LaunchedEffect(listState) {
-                        snapshotFlow {
-                            listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-                        }.collect { lastVisibleItemIndex ->
-                            val totalItems = listState.layoutInfo.totalItemsCount
-                            if (lastVisibleItemIndex != null &&
-                                lastVisibleItemIndex >= totalItems - 3 &&
-                                !viewModel.lastPage.value &&
-                                pokedexList.isNotEmpty()
-                            ) {
-                                viewModel.loadPokedex()
-                            }
-                        }
-                    }
 
                     if (pokedexList.isEmpty()) {
                         EmptyList(
@@ -209,19 +230,8 @@ fun PokedexScreen(
                 LoadingDialog(
                     Res.string.loading_dialog_title,
                     Res.string.loading_dialog_text,
-                    showDialog = viewModel.loading
+                    showDialog = isLoading
                 )
-
-                // Mostrar Snackbar en caso de error
-                if (viewModel.message.orEmpty().containsKey("error")) {
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = viewModel.message.orEmpty()["error"].orEmpty(),
-                            duration = SnackbarDuration.Short
-                        )
-                        viewModel.message?.clear()
-                    }
-                }
             }
         }
     }

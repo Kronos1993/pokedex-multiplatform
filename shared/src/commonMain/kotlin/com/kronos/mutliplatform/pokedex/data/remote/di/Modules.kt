@@ -20,6 +20,8 @@ import com.kronos.mutliplatform.pokedex.data.remote.datasources.pokemon.PokemonR
 import com.kronos.mutliplatform.pokedex.data.remote.datasources.pokemon.PokemonRemoteDataSourceImpl
 import com.kronos.mutliplatform.pokedex.data.remote.datasources.species.SpecieRemoteDataSource
 import com.kronos.mutliplatform.pokedex.data.remote.datasources.species.SpecieRemoteDataSourceImpl
+import com.kronos.mutliplatform.pokedex.data.remote.datasources.type.TypeRemoteDataSource
+import com.kronos.mutliplatform.pokedex.data.remote.datasources.type.TypeRemoteDataSourceImpl
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.KtorClientFactory
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.PrivateKtorClientFactoryImpl
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.PublicKtorClientFactoryImpl
@@ -140,6 +142,14 @@ val commonRemoteModules = module {
             get(),
         )
     }.bind<NatureRemoteDataSource>()
+
+    single {
+        TypeRemoteDataSourceImpl(
+            get(),
+            get(named(KtorClientFactoryType.PUBLIC)),
+            get(),
+        )
+    }.bind<TypeRemoteDataSource>()
 
     //repositories
     singleOf(::PokemonRemoteRepositoryImpl).bind<PokemonRemoteRepository>()

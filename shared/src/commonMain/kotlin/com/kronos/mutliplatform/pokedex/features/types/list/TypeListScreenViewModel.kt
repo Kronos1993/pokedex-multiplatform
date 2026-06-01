@@ -1,4 +1,4 @@
-package com.kronos.mutliplatform.pokedex.features.pokedex
+package com.kronos.mutliplatform.pokedex.features.types.list
 
 import androidx.lifecycle.viewModelScope
 import com.kronos.mutliplatform.pokedex.core.Platform
@@ -9,8 +9,7 @@ import com.kronos.mutliplatform.pokedex.core.viewmodel.ParentViewModel
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.UrlProvider
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.util.FullNetworkError
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
-import com.kronos.mutliplatform.pokedex.domain.repository.PokedexRemoteRepository
-import com.kronos.mutliplatform.pokedex.features.pokedex.domain.PokedexItem
+import com.kronos.mutliplatform.pokedex.domain.repository.TypeRemoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,71 +17,30 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class PokedexScreenViewModel(
-    private val pokedexRemoteRepository: PokedexRemoteRepository,
+class TypeListScreenViewModel(
+    private val typeRemoteRepository: TypeRemoteRepository,
     private val appInfo: IAppInfo,
-    var urlProvider: UrlProvider,
     val platform: Platform,
+    val urlProvider: UrlProvider,
 ) : ParentViewModel() {
 
-    private var _pokedex = MutableStateFlow(listOf<PokedexItem>())
-    var pokedex: StateFlow<List<PokedexItem>> = _pokedex.asStateFlow()
+    private var _types = MutableStateFlow(listOf<NamedResourceApi>())
+    var types = _types.asStateFlow()
 
     private var _appVersion = MutableStateFlow("")
     var appVersion: StateFlow<String> = _appVersion.asStateFlow()
+
 
     fun getAppVersion() {
         _appVersion.value = appInfo.getAppVersion()
     }
 
-    private fun postPokedex(newItems: List<NamedResourceApi>) {
 
-        val specialPrefixes = listOf(
-            "updated-",
-            "extended-",
-            "letsgo-",
-            "conquest-gallery"
-        )
-
-        fun normalizeName(name: String): String {
-            return name
-                .removePrefix("updated-")
-                .removePrefix("extended-")
-                .removePrefix("original-")
-                .removePrefix("letsgo-")
-        }
-
-        val result = linkedMapOf<String, PokedexItem>()
-        _pokedex.value.forEach { result[it.normalizeName] = it }
-
-        newItems.forEach { item ->
-
-            val normalizedName = normalizeName(item.name)
-
-            val pokedexItem = PokedexItem(
-                name = item.name,
-                url = item.url,
-                normalizeName = normalizedName
-            )
-
-            val isSpecial = specialPrefixes.any(item.name::contains)
-
-            if (!isSpecial) {
-                result[normalizedName] = pokedexItem
-            } else {
-                val match = result.entries.firstOrNull { (_, value) ->
-                    item.name.contains(value.normalizeName)
-                }
-                if (match != null) {
-                    result[match.key] = pokedexItem
-                }
-            }
-        }
-
-        _pokedex.value = result.values.toList()
+    private fun postType(types: List<NamedResourceApi>) {
+        _types.value = types
     }
 
-    fun loadPokedex(reset: Boolean = false) {
+    fun loadTypes(reset: Boolean = false) {
         _loading.value = true
         if (reset) {
             setLimit(50)
@@ -90,18 +48,18 @@ class PokedexScreenViewModel(
             setLastPage(false)
         }
         viewModelScope.launch(Dispatchers.IO) {
-            pokedexRemoteRepository.list(
+            typeRemoteRepository.listType(
                 limit.value,
                 offset.value,
             )
                 .onSuccess {
                     _loading.value = (false)
                     if (reset)
-                        _pokedex.value = listOf()
+                        _types.value = listOf()
 
                     if (it.results.isNotEmpty()) {
                         setOffset(offset.value + limit.value)
-                        postPokedex(it.results)
+                        postType(it.results)
                     } else
                         setLastPage(true)
 

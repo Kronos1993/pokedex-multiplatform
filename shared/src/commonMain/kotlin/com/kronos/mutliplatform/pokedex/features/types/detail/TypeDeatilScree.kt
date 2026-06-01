@@ -1,4 +1,4 @@
-package com.kronos.mutliplatform.pokedex.features.move.detail
+package com.kronos.mutliplatform.pokedex.features.types.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
@@ -33,7 +33,7 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.LoadingDialog
 import com.kronos.mutliplatform.pokedex.core.ui.components.PullToRefreshContainer
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.ButtonType
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
-import com.kronos.mutliplatform.pokedex.features.move.detail.content.MoveInfoScreen
+import com.kronos.mutliplatform.pokedex.features.types.detail.content.TypeInfoScreen
 import com.kronos.mutliplatform.pokedex.screen_config.DeviceScreenConfiguration
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
@@ -43,24 +43,23 @@ import pokedex.shared.generated.resources.loading_dialog_title
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MoveDetailScreen(
-    move: String,
+fun TypeDetailScreen(
+    type: String,
     navHost: NavHostController,
     isDarkTheme: Boolean,
     currentLang: String,
     deviceScreenConfiguration: DeviceScreenConfiguration,
 ) {
-    val viewModel = koinViewModel<MoveDetailScreenViewModel>()
-    val moveInfo by viewModel.moveInfo.collectAsStateWithLifecycle()
-    val pokemons by viewModel.pokemons.collectAsStateWithLifecycle()
+    val viewModel = koinViewModel<TypeDetailScreenViewModel>()
+    val typeInfo by viewModel.typeInfo.collectAsStateWithLifecycle()
     val isLoading by viewModel.loading.collectAsStateWithLifecycle()
     val errorMessage by viewModel.message.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(move) {
-        viewModel.loadMoveInfo(move)
+    LaunchedEffect(type) {
+        viewModel.loadTypeInfo(type)
     }
 
     LaunchedEffect(errorMessage) {
@@ -75,20 +74,10 @@ fun MoveDetailScreen(
         }
     }
 
-    val screenTitle = remember(moveInfo, currentLang) {
-        moveInfo.getName(currentLang)
+    val screenTitle = remember(typeInfo, currentLang) {
+        typeInfo.getName(currentLang)
             .replaceFirstChar { it.uppercase() }
             .replace("-", " ")
-    }
-
-    val pokemonItemsPerRow = remember(deviceScreenConfiguration) {
-        when (deviceScreenConfiguration) {
-            DeviceScreenConfiguration.MOBILE_PORTRAIT -> 2
-            DeviceScreenConfiguration.MOBILE_LANDSCAPE,
-            DeviceScreenConfiguration.TABLET_PORTRAIT -> 3
-            DeviceScreenConfiguration.TABLET_LANDSCAPE,
-            DeviceScreenConfiguration.DESKTOP -> 4
-        }
     }
 
     Surface(
@@ -130,7 +119,7 @@ fun MoveDetailScreen(
             PullToRefreshContainer(
                 innerPadding = paddingValues,
                 isRefreshing = isLoading,
-                onRefresh = { viewModel.refreshMove(move) }
+                onRefresh = { viewModel.loadTypeInfo(type) }
             ) {
                 val rootModifier = Modifier
                     .fillMaxSize()
@@ -138,13 +127,12 @@ fun MoveDetailScreen(
                     .background(color = Color.Transparent)
                     .consumeWindowInsets(WindowInsets.navigationBars)
 
-                MoveInfoScreen(
-                    moveInfo = moveInfo,
-                    lang = currentLang,
-                    pokemonList = pokemons,
-                    pokemonItemsPerRow = pokemonItemsPerRow,
-                    onPokemonClick = {
-                        navHost.navigate("${Destinations.POKEMON_DETAIL.name}/${it.pokemonId}")
+                TypeInfoScreen(
+                    typeInfo = typeInfo,
+                    onTypeClick = {
+                        scope.launch {
+                            navHost.navigate("${Destinations.TYPES_DETAIL.name}/${it}")
+                        }
                     },
                     modifier = rootModifier,
                 )
