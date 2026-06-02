@@ -32,6 +32,7 @@ data class SpecieInfo(
         return flavorText
             .firstOrNull { it.language == language }
             ?.description
+            ?: flavorText.firstOrNull { it.language == "en" }?.description
             ?: flavorText.firstOrNull()?.description
             ?: ""
     }
@@ -47,8 +48,9 @@ data class SpecieInfo(
 
     fun getPokemonGenera(language: String): String {
         return genera
-            .firstOrNull { it.language == language.substring(0,2) }
+            .firstOrNull { it.language == language.substring(0, 2) }
             ?.genus
+            ?: genera.firstOrNull { it.language == "en" }?.genus
             ?: genera.firstOrNull()?.genus
             ?: ""
     }

@@ -176,6 +176,7 @@ fun PokemonDetailScreen(
                     navHost.navigate("${Destinations.TYPES_DETAIL.name}/${it.name}")
                 },
                 onEggGroupClick = {
+                    navHost.navigate("${Destinations.EGG_GROUP_DETAIL.name}/${it.name}")
                 },
                 onAbilityClick = {
                     navHost.navigate("${Destinations.ABILITY_DETAIL.name}/${it.ability.name}")

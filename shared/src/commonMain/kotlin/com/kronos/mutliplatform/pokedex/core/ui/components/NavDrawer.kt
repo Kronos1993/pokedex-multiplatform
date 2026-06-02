@@ -74,6 +74,13 @@ enum class Destinations {
     ABILITY_DETAIL,
     NATURES,
     NATURE_DETAIL,
+    EGG_GROUPS,
+    EGG_GROUP_DETAIL,
+    ITEMS,
+    ITEMS_CATEGORIES,
+    ITEM_DETAIL,
+    BERRIES,
+    BERRY_DETAIL,
     SETTINGS,
     ABOUT,
     EXIT

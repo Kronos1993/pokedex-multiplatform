@@ -1,4 +1,4 @@
-package com.kronos.mutliplatform.pokedex.features.move.list
+package com.kronos.mutliplatform.pokedex.features.egg_group.list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
@@ -44,7 +44,7 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.NavDrawer
 import com.kronos.mutliplatform.pokedex.core.ui.components.PullToRefreshContainer
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.ButtonType
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
-import com.kronos.mutliplatform.pokedex.features.move.list.content.MovesContent
+import com.kronos.mutliplatform.pokedex.features.egg_group.list.content.EggGroupContent
 import com.kronos.mutliplatform.pokedex.rememberNavDestinations
 import com.kronos.mutliplatform.pokedex.screen_config.DeviceScreenConfiguration
 import kotlinx.coroutines.launch
@@ -55,20 +55,20 @@ import pokedex.shared.generated.resources.app_name
 import pokedex.shared.generated.resources.empty_move_list
 import pokedex.shared.generated.resources.loading_dialog_text
 import pokedex.shared.generated.resources.loading_dialog_title
-import pokedex.shared.generated.resources.menu_moves
+import pokedex.shared.generated.resources.menu_egg_groups
 import pokedex.shared.generated.resources.refresh_list
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MoveListScreen(
+fun EggGroupListScreen(
     navHost: NavHostController,
     isDarkTheme: Boolean,
     deviceScreenConfiguration: DeviceScreenConfiguration,
 ) {
-    val viewModel = koinViewModel<MoveListScreenViewModel>()
+    val viewModel = koinViewModel<EggGroupListScreenViewModel>()
     val appViewModel = koinViewModel<AppViewModel>()
 
-    val moves by viewModel.moves.collectAsStateWithLifecycle()
+    val eggGroups by viewModel.eggGroups.collectAsStateWithLifecycle()
     val appVersion by viewModel.appVersion.collectAsStateWithLifecycle()
     val isLoading by viewModel.loading.collectAsStateWithLifecycle()
     val errorMessage by viewModel.message.collectAsStateWithLifecycle()
@@ -105,7 +105,7 @@ fun MoveListScreen(
 
     LaunchedEffect(Unit) {
         viewModel.getAppVersion()
-        viewModel.loadMoves()
+        viewModel.loadEggGroups()
     }
 
     LaunchedEffect(errorMessage) {
@@ -120,7 +120,7 @@ fun MoveListScreen(
         }
     }
 
-    LaunchedEffect(listState, isLastPage, isLoading, moves) {
+    LaunchedEffect(listState, isLastPage, isLoading, eggGroups) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collect { lastVisibleItemIndex ->
                 val totalItems = listState.layoutInfo.totalItemsCount
@@ -128,9 +128,9 @@ fun MoveListScreen(
                     lastVisibleItemIndex >= totalItems - 3 &&
                     !isLastPage &&
                     !isLoading &&
-                    moves.isNotEmpty()
+                    eggGroups.isNotEmpty()
                 ) {
-                    viewModel.loadMoves()
+                    viewModel.loadEggGroups()
                 }
             }
     }
@@ -154,7 +154,7 @@ fun MoveListScreen(
             Scaffold(
                 topBar = {
                     AppTopAppBar(
-                        title = stringResource(Res.string.menu_moves),
+                        title = stringResource(Res.string.menu_egg_groups),
                         navIconButton = {
                             IconButton(
                                 icon = Icons.Filled.Menu,
@@ -183,7 +183,7 @@ fun MoveListScreen(
                 PullToRefreshContainer(
                     innerPadding = it,
                     isRefreshing = isLoading,
-                    onRefresh = { viewModel.loadMoves(true) }
+                    onRefresh = { viewModel.loadEggGroups(true) }
                 ) {
 
                     val rootModifier = Modifier
@@ -192,23 +192,23 @@ fun MoveListScreen(
                         .background(color = Color.Transparent)
                         .consumeWindowInsets(WindowInsets.navigationBars)
 
-                    if (moves.isEmpty()) {
+                    if (eggGroups.isEmpty()) {
                         EmptyList(
                             title = stringResource(Res.string.empty_move_list),
                             subtitle = stringResource(Res.string.refresh_list),
                             showRetryButton = true,
                             onRetryClick = {
-                                viewModel.loadMoves(true)
+                                viewModel.loadEggGroups(true)
                             },
                             modifier = rootModifier
                         )
                     } else {
-                        MovesContent(
+                        EggGroupContent(
                             gridColumns = gridColumns,
                             listState = listState,
-                            moves = moves,
+                            eggGroups = eggGroups,
                             onClick = {
-                                navHost.navigate("${Destinations.MOVE_DETAIL.name}/${it.name}")
+                                navHost.navigate("${Destinations.EGG_GROUP_DETAIL.name}/${it.name}")
                             },
                             modifier = rootModifier
                         )

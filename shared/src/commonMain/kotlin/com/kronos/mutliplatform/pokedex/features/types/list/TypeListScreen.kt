@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.kronos.mutliplatform.pokedex.AppViewModel
 import com.kronos.mutliplatform.pokedex.components.EmptyList
 import com.kronos.mutliplatform.pokedex.components.icon.AppIcon
 import com.kronos.mutliplatform.pokedex.core.PlatformType
@@ -65,6 +66,7 @@ fun TypeListScreen(
     deviceScreenConfiguration: DeviceScreenConfiguration,
 ) {
     val viewModel = koinViewModel<TypeListScreenViewModel>()
+    val appViewModel = koinViewModel<AppViewModel>()
 
     val typeList by viewModel.types.collectAsStateWithLifecycle()
     val appVersion by viewModel.appVersion.collectAsStateWithLifecycle()
@@ -80,7 +82,9 @@ fun TypeListScreen(
     val navDestinations = rememberNavDestinations(
         navController = navHost,
         isDesktop = viewModel.platform.platformType == PlatformType.DESKTOP,
-        onExitClicked = {  }
+        onExitClicked = {
+            appViewModel.showExitDialog(true)
+        }
     )
 
     val navBackStackEntry by navHost.currentBackStackEntryAsState()

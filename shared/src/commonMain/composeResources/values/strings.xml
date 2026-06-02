@@ -18,6 +18,7 @@
     <string name="menu_types">Types</string>
     <string name="menu_abilities">Abilities</string>
     <string name="menu_natures">Natures</string>
+    <string name="menu_egg_groups">Egg Groups</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_about">About</string>
 
@@ -102,6 +103,8 @@
     <string name="nature_detail_info_screen_likes_flavor">Likes flavor</string>
     <string name="nature_detail_info_screen_hates_flavor">Hates flavor</string>
     <string name="nature_detail_info_screen_stat_none">—</string>
+
+    <string name="egg_group_detail_info_screen_pokemon_title">Pokemons</string>
 
 
 </resources>

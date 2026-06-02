@@ -1846,8 +1846,7 @@ fun String.toPokemonTypeIcon(): ImageVector {
         "dark" -> PokemonTypes.Dark
         "steel" -> PokemonTypes.Steel
         "fairy" -> PokemonTypes.Fairy
-
-        else -> Icons.Default.CatchingPokemon
+        else -> Icons.Pokeball
     }
 }
 

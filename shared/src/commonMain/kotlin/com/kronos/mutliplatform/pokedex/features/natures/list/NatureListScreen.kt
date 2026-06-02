@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.kronos.mutliplatform.pokedex.AppViewModel
 import com.kronos.mutliplatform.pokedex.components.EmptyList
 import com.kronos.mutliplatform.pokedex.components.icon.AppIcon
 import com.kronos.mutliplatform.pokedex.core.PlatformType
@@ -43,8 +44,6 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.NavDrawer
 import com.kronos.mutliplatform.pokedex.core.ui.components.PullToRefreshContainer
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.ButtonType
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
-import com.kronos.mutliplatform.pokedex.features.move.list.MoveListScreenViewModel
-import com.kronos.mutliplatform.pokedex.features.move.list.content.MovesContent
 import com.kronos.mutliplatform.pokedex.features.natures.list.content.NaturesContent
 import com.kronos.mutliplatform.pokedex.rememberNavDestinations
 import com.kronos.mutliplatform.pokedex.screen_config.DeviceScreenConfiguration
@@ -56,7 +55,6 @@ import pokedex.shared.generated.resources.app_name
 import pokedex.shared.generated.resources.empty_move_list
 import pokedex.shared.generated.resources.loading_dialog_text
 import pokedex.shared.generated.resources.loading_dialog_title
-import pokedex.shared.generated.resources.menu_moves
 import pokedex.shared.generated.resources.menu_natures
 import pokedex.shared.generated.resources.refresh_list
 
@@ -68,6 +66,7 @@ fun NatureListScreen(
     deviceScreenConfiguration: DeviceScreenConfiguration,
 ) {
     val viewModel = koinViewModel<NatureListScreenViewModel>()
+    val appViewModel = koinViewModel<AppViewModel>()
 
     val natures by viewModel.natures.collectAsStateWithLifecycle()
     val appVersion by viewModel.appVersion.collectAsStateWithLifecycle()
@@ -83,7 +82,9 @@ fun NatureListScreen(
     val navDestinations = rememberNavDestinations(
         navController = navHost,
         isDesktop = viewModel.platform.platformType == PlatformType.DESKTOP,
-        onExitClicked = {  }
+        onExitClicked = {
+            appViewModel.showExitDialog(true)
+        }
     )
 
     val navBackStackEntry by navHost.currentBackStackEntryAsState()

@@ -20,6 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.kronos.mutliplatform.pokedex.components.icon.DrawerPokemonTypes
+import com.kronos.mutliplatform.pokedex.components.icon.Egg
 import com.kronos.mutliplatform.pokedex.components.icon.Info
 import com.kronos.mutliplatform.pokedex.components.icon.Natures
 import com.kronos.mutliplatform.pokedex.components.icon.PokedexSvg
@@ -34,10 +35,11 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
 import com.kronos.mutliplatform.pokedex.features.abilities.detail.AbilityDetailScreen
 import com.kronos.mutliplatform.pokedex.features.abilities.list.AbilityListScreen
 import com.kronos.mutliplatform.pokedex.features.about.AboutScreen
+import com.kronos.mutliplatform.pokedex.features.egg_group.detail.EggGroupDetailScreen
+import com.kronos.mutliplatform.pokedex.features.egg_group.list.EggGroupListScreen
 import com.kronos.mutliplatform.pokedex.features.move.detail.MoveDetailScreen
 import com.kronos.mutliplatform.pokedex.features.move.list.MoveListScreen
 import com.kronos.mutliplatform.pokedex.features.natures.detail.NatureDetailScreen
-import com.kronos.mutliplatform.pokedex.features.natures.detail.NatureDetailScreenViewModel
 import com.kronos.mutliplatform.pokedex.features.natures.list.NatureListScreen
 import com.kronos.mutliplatform.pokedex.features.pokedex.PokedexScreen
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.PokemonDetailScreen
@@ -57,6 +59,7 @@ import pokedex.shared.generated.resources.exit_dialog_yes
 import pokedex.shared.generated.resources.lang_preference_default_value
 import pokedex.shared.generated.resources.menu_abilities
 import pokedex.shared.generated.resources.menu_about
+import pokedex.shared.generated.resources.menu_egg_groups
 import pokedex.shared.generated.resources.menu_exit
 import pokedex.shared.generated.resources.menu_moves
 import pokedex.shared.generated.resources.menu_natures
@@ -256,6 +259,32 @@ fun App() {
                         )
                     }
 
+                    composable(route = Destinations.EGG_GROUPS.name) {
+                        EggGroupListScreen(
+                            navController,
+                            isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            deviceScreenConfiguration = deviceScreenConfiguration,
+                        )
+                    }
+
+                    composable(
+                        route = "${Destinations.EGG_GROUP_DETAIL}/{egg_group}",
+                        arguments = listOf(navArgument("egg_group") {
+                            type = NavType.StringType
+                        })
+                    ) { backStackEntry ->
+                        val savedStateHandle = backStackEntry.savedStateHandle
+                        val eggGroup = savedStateHandle.get<String>("egg_group") ?: ""
+                        EggGroupDetailScreen(
+                            eggGroup = eggGroup,
+                            navController,
+                            isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            currentLang = currentLang,
+                            deviceScreenConfiguration = deviceScreenConfiguration,
+                        )
+                    }
+
+
                     composable(
                         route = Destinations.SETTINGS.name,
                     ) { backStackEntry ->
@@ -313,6 +342,7 @@ fun rememberNavDestinations(
     val naturesTitle = stringResource(Res.string.menu_natures)
     val settingsTitle = stringResource(Res.string.menu_settings)
     val aboutTitle = stringResource(Res.string.menu_about)
+    val eggGroupTitle = stringResource(Res.string.menu_egg_groups)
     val exitTitle = stringResource(Res.string.menu_exit)
     val closeIconTint = MaterialTheme.colorScheme.onSurface
     val abilityIconTint = MaterialTheme.colorScheme.primary
@@ -372,6 +402,16 @@ fun rememberNavDestinations(
                     destination = Destinations.NATURES,
                     selectedIcon = Icons.Natures,
                     unselectedIcon = Icons.Natures,
+                    onClick = defaultClick
+                )
+            )
+
+            add(
+                NavigationItem(
+                    title = eggGroupTitle,
+                    destination = Destinations.EGG_GROUPS,
+                    selectedIcon = Icons.Egg,
+                    unselectedIcon = Icons.Egg,
                     onClick = defaultClick
                 )
             )
