@@ -92,6 +92,7 @@ fun PokemonDetailScreen(
     val evolutionListState = rememberLazyGridState()
     val statsListState = rememberLazyGridState()
     val movesListState = rememberLazyGridState()
+    val gamesListState = rememberLazyGridState()
 
     val stringSpriteHome = stringResource(Res.string.home)
     val stringSpriteHomeShiny = stringResource(Res.string.home_shiny)
@@ -266,7 +267,7 @@ fun PokemonDetailScreen(
                 dominantColor = dominantColor,
                 isDarkTheme = isDarkTheme,
                 currentLang = currentLang,
-                listState = movesListState,
+                listState = gamesListState,
                 gridColumns = when (deviceScreenConfiguration) {
                     DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
                         1
