@@ -173,6 +173,94 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.LabelText
 import com.kronos.mutliplatform.pokedex.core.ui.components.TitleText
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterBridgeBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterBridgeContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterCaveBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterCaveContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterColorChance
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterColorMaxLevel
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterColorMinLevel
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterColorVersion
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterColosseumBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterColosseumContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterDefaultBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterDefaultContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterFishingBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterFishingContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterFlowerBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterFlowerContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterFluteBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterFluteContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterGiftBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterGiftContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterGrassBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterGrassContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterGrottoBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterGrottoContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterHeadbuttBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterHeadbuttContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterIslandBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterIslandContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterOnlyOneBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterOnlyOneContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterOverworldBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterOverworldContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterRadarBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterRadarContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterRaidBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterRaidContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterRoamerBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterRoamerContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterShadowBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterShadowContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterSkyBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterSkyContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterSnagBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterSnagContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterSosBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterSosContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterStarterBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterStarterContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterSurfBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterSurfContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterWalkBackground
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEncounterWalkContent
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEvolutionBeautyColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEvolutionDaytimeColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEvolutionKnowMoveColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEvolutionLocationColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEvolutionNeedsRainColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEvolutionNeedsScreenRotationColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEvolutionNighttimeColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEvolutionOtherTimeColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonEvolutionUseItemColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonFemaleColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonGenderlessColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonMaleColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonStatAttackColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonStatDefenseColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonStatHpColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonStatSpecialAttackColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonStatSpecialDefenseColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonStatSpeedColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeBugColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeDarkColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeDragonColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeElectricColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeFairyColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeFightingColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeFireColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeFlyingColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeGhostColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeGrassColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeGroundColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeIceColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeNormalColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypePoisonColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypePsychicColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeRockColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeSteelColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonTypeWaterColor
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.ratingColorContainerLight
 import com.kronos.mutliplatform.pokedex.core.util.format
 import com.kronos.mutliplatform.pokedex.domain.model.FlavorText
@@ -682,12 +770,8 @@ fun GenderRateBar(
 
         LinearProgressIndicator(
             progress = { (genderPossibility?.male ?: 0f) / 100f },
-            color = if (genderPossibility?.genderless == true) Color(0xFF7A757F) else Color(
-                0xFF448AFF
-            ),
-            trackColor = if (genderPossibility?.genderless == true) Color(0xFF7A757F) else Color(
-                0xFFE040FB
-            ),
+            color = if (genderPossibility?.genderless == true) PokemonGenderlessColor else PokemonMaleColor,
+            trackColor = if (genderPossibility?.genderless == true) PokemonGenderlessColor else PokemonFemaleColor,
             drawStopIndicator = {},
             modifier = Modifier
                 .fillMaxWidth()
@@ -733,13 +817,13 @@ fun PokemonAbilitiesCard(
         title = "Abilities",
     ) {
 
-        if (pokemon.abilities.isEmpty()){
+        if (pokemon.abilities.isEmpty()) {
             EmptyList(
                 icon = null,
                 title = stringResource(Res.string.empty_pokemon_ability_list),
                 modifier = Modifier.fillMaxWidth()
             )
-        }else{
+        } else {
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(
@@ -956,11 +1040,6 @@ fun TypeChip(
 /* ENCOUNTERS                                                               */
 /* -------------------------------------------------------------------------- */
 
-private val ColorVersion = Color(0xFF534AB7)   // purple
-private val ColorMinLevel = Color(0xFF1D9E75)  // teal
-private val ColorMaxLevel = Color(0xFFBA7517)  // amber
-private val ColorChance = Color(0xFFD85A30)    // coral
-
 @Composable
 fun PokemonEncounterGridItem(
     item: Encounter,
@@ -1038,25 +1117,25 @@ fun VersionItem(
                 title = stringResource(Res.string.pokemon_detail_tab_encounter_game_version),
                 value = item.version.name.prettyName(),
                 icon = Icons.Default.VideogameAsset,
-                iconTint = ColorVersion
+                iconTint = PokemonEncounterColorVersion
             ),
             PokemonInfoItem(
                 title = stringResource(Res.string.pokemon_detail_tab_encounter_min_level),
                 value = item.encounterDetail.minLevel.toString(),
                 icon = Icons.Default.KeyboardArrowDown,
-                iconTint = ColorMinLevel
+                iconTint = PokemonEncounterColorMinLevel
             ),
             PokemonInfoItem(
                 title = stringResource(Res.string.pokemon_detail_tab_encounter_max_level),
                 value = item.encounterDetail.maxLevel.toString(),
                 icon = Icons.Default.KeyboardArrowUp,
-                iconTint = ColorMaxLevel
+                iconTint = PokemonEncounterColorMaxLevel
             ),
             PokemonInfoItem(
                 title = stringResource(Res.string.pokemon_detail_tab_encounter_max_chance),
                 value = "${item.encounterDetail.chance}%",
                 icon = Icons.Default.Percent,
-                iconTint = ColorChance
+                iconTint = PokemonEncounterColorChance
             ),
         )
 
@@ -1219,7 +1298,7 @@ private fun EvolutionDetails(
     detail.item?.name?.takeIf { it.isNotBlank() }?.let {
         EvolutionDetailRow(
             icon = Icons.Default.Inventory2,
-            iconTint = Color(0xFFC22E28),
+            iconTint = PokemonEvolutionUseItemColor,
             label = "Use item",
             value = it.prettyName()
         )
@@ -1229,7 +1308,7 @@ private fun EvolutionDetails(
     detail.heldItem?.name?.takeIf { it.isNotBlank() }?.let {
         EvolutionDetailRow(
             icon = Icons.Default.Inventory2,
-            iconTint = Color(0xFFC22E28),
+            iconTint = PokemonEvolutionUseItemColor,
             label = "Held item",
             value = it.prettyName()
         )
@@ -1257,7 +1336,7 @@ private fun EvolutionDetails(
     detail.minBeauty?.takeIf { it > 0 }?.let {
         EvolutionDetailRow(
             icon = Icons.Default.AutoAwesome,
-            iconTint = Color(0xFFF7D02C),
+            iconTint = PokemonEvolutionBeautyColor,
             label = "Beauty",
             value = "≥ $it"
         )
@@ -1280,7 +1359,7 @@ private fun EvolutionDetails(
     detail.knownMove?.name?.takeIf { it.isNotBlank() }?.let {
         EvolutionDetailRow(
             icon = Icons.Default.SportsKabaddi,
-            iconTint = Color(0xFF444441),
+            iconTint = PokemonEvolutionKnowMoveColor,
             label = "Know move",
             value = it.prettyName()
         )
@@ -1299,7 +1378,7 @@ private fun EvolutionDetails(
     detail.location?.name?.takeIf { it.isNotBlank() }?.let {
         EvolutionDetailRow(
             icon = Icons.Default.Place,
-            iconTint = Color(0xFFA8A77A),
+            iconTint = PokemonEvolutionLocationColor,
             label = "Location",
             value = it.prettyName()
         )
@@ -1309,7 +1388,7 @@ private fun EvolutionDetails(
     detail.partySpecies?.name?.takeIf { it.isNotBlank() }?.let {
         EvolutionDetailRow(
             icon = Icons.Default.Group,
-            iconTint = Color(0xFFA8A77A),
+            iconTint = PokemonEvolutionLocationColor,
             label = "Party member",
             value = it.prettyName()
         )
@@ -1319,7 +1398,7 @@ private fun EvolutionDetails(
     detail.partyType?.name?.takeIf { it.isNotBlank() }?.let {
         EvolutionDetailRow(
             icon = Icons.Default.Category,
-            iconTint = Color(0xFFC22E28),
+            iconTint = PokemonEvolutionUseItemColor,
             label = "Party type",
             value = it.prettyName()
         )
@@ -1333,9 +1412,9 @@ private fun EvolutionDetails(
             else -> Icons.Default.AccessTime
         }
         val iconTint = when (it.lowercase()) {
-            "day" -> Color(0xFFF7D02C)
-            "night" -> Color(0xFF444441)
-            else -> Color(0xFF2C2C2A)
+            "day" -> PokemonEvolutionDaytimeColor
+            "night" -> PokemonEvolutionNighttimeColor
+            else -> PokemonEvolutionOtherTimeColor
         }
 
         EvolutionDetailRow(
@@ -1350,7 +1429,7 @@ private fun EvolutionDetails(
     if (detail.needsOverworldRain) {
         EvolutionDetailRow(
             icon = Icons.Default.Umbrella,
-            iconTint = Color(0xFF185FA5),
+            iconTint = PokemonEvolutionNeedsRainColor,
             label = "Raining",
             value = "Required"
         )
@@ -1360,7 +1439,7 @@ private fun EvolutionDetails(
     if (detail.turnUpsideDown) {
         EvolutionDetailRow(
             icon = Icons.Default.ScreenRotation,
-            iconTint = Color(0xFF993C1D),
+            iconTint = PokemonEvolutionNeedsScreenRotationColor,
             label = "Turn upside down",
             value = "Required"
         )
@@ -1725,25 +1804,24 @@ fun gameIcon(gameName: String): ImageVector {
 @Composable
 fun String.toPokemonColor(): Color {
     return when (lowercase()) {
-        "normal" -> Color(0xFFA8A77A)
-        "fire" -> Color(0xFFEE8130)
-        "water" -> Color(0xFF6390F0)
-        "electric" -> Color(0xFFF7D02C)
-        "grass" -> Color(0xFF7AC74C)
-        "ice" -> Color(0xFF96D9D6)
-        "fighting" -> Color(0xFFC22E28)
-        "poison" -> Color(0xFFA33EA1)
-        "ground" -> Color(0xFFE2BF65)
-        "flying" -> Color(0xFFA98FF3)
-        "psychic" -> Color(0xFFF95587)
-        "bug" -> Color(0xFFA6B91A)
-        "rock" -> Color(0xFFB6A136)
-        "ghost" -> Color(0xFF735797)
-        "dragon" -> Color(0xFF6F35FC)
-        "dark" -> Color(0xFF705746)
-        "steel" -> Color(0xFFB7B7CE)
-        "fairy" -> Color(0xFFD685AD)
-
+        "normal" -> PokemonTypeNormalColor
+        "fire" -> PokemonTypeFireColor
+        "water" -> PokemonTypeWaterColor
+        "electric" -> PokemonTypeElectricColor
+        "grass" -> PokemonTypeGrassColor
+        "ice" -> PokemonTypeIceColor
+        "fighting" -> PokemonTypeFightingColor
+        "poison" -> PokemonTypePoisonColor
+        "ground" -> PokemonTypeGroundColor
+        "flying" -> PokemonTypeFlyingColor
+        "psychic" -> PokemonTypePsychicColor
+        "bug" -> PokemonTypeBugColor
+        "rock" -> PokemonTypeRockColor
+        "ghost" -> PokemonTypeGhostColor
+        "dragon" -> PokemonTypeDragonColor
+        "dark" -> PokemonTypeDarkColor
+        "steel" -> PokemonTypeSteelColor
+        "fairy" -> PokemonTypeFairyColor
         else -> MaterialTheme.colorScheme.primary
     }
 }
@@ -1825,46 +1903,6 @@ fun String.toEggGroupIcon(): ImageVector {
         "undiscovered" -> PokemonTypes.Steel
 
         else -> Icons.NoEgg
-    }
-}
-
-@Composable
-fun String.toEggGroupColor(): Color {
-
-    return when (lowercase()) {
-
-        "dragon" -> "dragon".toPokemonColor()
-        "fairy" -> "fairy".toPokemonColor()
-
-        "grass",
-        "plant" -> "grass".toPokemonColor()
-
-        "water1",
-        "water2",
-        "water3" -> "water".toPokemonColor()
-
-        "flying" -> "flying".toPokemonColor()
-
-        "bug" -> "bug".toPokemonColor()
-
-        "mineral" -> "rock".toPokemonColor()
-
-        "amorphous" -> "ghost".toPokemonColor()
-
-        "human-like",
-        "humanshape" -> "fighting".toPokemonColor()
-
-        "poison" -> "poison".toPokemonColor()
-
-        "monster" -> "dark".toPokemonColor()
-
-        "field" -> "normal".toPokemonColor()
-
-        "ditto" -> "psychic".toPokemonColor()
-
-        "undiscovered" -> "steel".toPokemonColor()
-
-        else -> MaterialTheme.colorScheme.primary
     }
 }
 
@@ -1973,79 +2011,76 @@ private fun encounterMethodColors(method: String): EncounterColors {
     return when {
         m.contains("walk") || m.contains("dark-grass") || m.contains("grass-spot") ||
                 m.contains("shaking-grass") || m.contains("sweet-scent") || m.contains("rough-terrain") ->
-            EncounterColors(Color(0xFFE1F5EE), Color(0xFF0F6E56))
+            EncounterColors(PokemonEncounterWalkBackground, PokemonEncounterWalkContent)
 
         m.contains("flower") ->
-            EncounterColors(Color(0xFFEAF3DE), Color(0xFF3B6D11))
+            EncounterColors(PokemonEncounterFlowerBackground, PokemonEncounterFlowerContent)
 
         m.contains("surf") ->
-            EncounterColors(Color(0xFFE6F1FB), Color(0xFF185FA5))
+            EncounterColors(PokemonEncounterSurfBackground, PokemonEncounterSurfContent)
 
         m.contains("rod") || m.contains("fishing") ->
-            EncounterColors(Color(0xFFFAEEDA), Color(0xFF854F0B))
+            EncounterColors(PokemonEncounterFishingBackground, PokemonEncounterFishingContent)
 
         m.contains("cave") || m.contains("rock-smash") ->
-            EncounterColors(Color(0xFFF1EFE8), Color(0xFF5F5E5A))
+            EncounterColors(PokemonEncounterCaveBackground, PokemonEncounterCaveContent)
 
         m.contains("headbutt") || m.contains("shaking-tree") ->
-            EncounterColors(Color(0xFFEAF3DE), Color(0xFF27500A))
+            EncounterColors(PokemonEncounterHeadbuttBackground, PokemonEncounterHeadbuttContent)
 
         m.contains("bridge") ->
-            EncounterColors(Color(0xFFD3D1C7), Color(0xFF444441))
+            EncounterColors(PokemonEncounterBridgeBackground, PokemonEncounterBridgeContent)
 
         m.contains("radar") || m.contains("devon") || m.contains("scope") ->
-            EncounterColors(Color(0xFFEEEDFE), Color(0xFF3C3489))
+            EncounterColors(PokemonEncounterRadarBackground, PokemonEncounterRadarContent)
 
         m.contains("roamer") ->
-            EncounterColors(Color(0xFFFAECE7), Color(0xFF993C1D))
+            EncounterColors(PokemonEncounterRoamerBackground, PokemonEncounterRoamerContent)
 
         m.contains("only-one") ->
-            EncounterColors(Color(0xFFFBEAF0), Color(0xFF993556))
+            EncounterColors(PokemonEncounterOnlyOneBackground, PokemonEncounterOnlyOneContent)
 
         m.contains("gift") || m.contains("hatch") || m.contains("egg") ->
-            EncounterColors(Color(0xFFE1F5EE), Color(0xFF085041))
+            EncounterColors(PokemonEncounterGiftBackground, PokemonEncounterGiftContent)
 
         m.contains("grotto") ->
-            EncounterColors(Color(0xFFEAF3DE), Color(0xFF173404))
+            EncounterColors(PokemonEncounterGrottoBackground, PokemonEncounterGrottoContent)
 
         m.contains("sos") ->
-            EncounterColors(Color(0xFFE6F1FB), Color(0xFF0C447C))
+            EncounterColors(PokemonEncounterSosBackground, PokemonEncounterSosContent)
 
-        m.contains("raid") || m.contains("dynamax") ->
-            EncounterColors(Color(0xFFFCEBEB), Color(0xFFA32D2D))
+        m.contains("raid") || m.contains("dynamax") || m.contains("horde") ->
+            EncounterColors(PokemonEncounterRaidBackground, PokemonEncounterRaidContent)
 
         m.contains("shadow") ->
-            EncounterColors(Color(0xFFD3D1C7), Color(0xFF2C2C2A))
+            EncounterColors(PokemonEncounterShadowBackground, PokemonEncounterShadowContent)
 
         m.contains("overworld") || m.contains("terrestrial") ->
-            EncounterColors(Color(0xFFE1F5EE), Color(0xFF1D9E75))
+            EncounterColors(PokemonEncounterOverworldBackground, PokemonEncounterOverworldContent)
 
         m.contains("sky") ->
-            EncounterColors(Color(0xFFE6F1FB), Color(0xFF378ADD))
+            EncounterColors(PokemonEncounterSkyBackground, PokemonEncounterSkyContent)
 
         m.contains("starter") ->
-            EncounterColors(Color(0xFFFBEAF0), Color(0xFF72243E))
+            EncounterColors(PokemonEncounterStarterBackground, PokemonEncounterStarterContent)
 
         m.contains("grass") || m.contains("shaking") ->
-            EncounterColors(Color(0xFFEAF3DE), Color(0xFF639922))
+            EncounterColors(PokemonEncounterGrassBackground, PokemonEncounterGrassContent)
 
         m.contains("island-scan") || m.contains("island") ->
-            EncounterColors(Color(0xFFE6F1FB), Color(0xFF185FA5))
-
-        m.contains("horde") ->
-            EncounterColors(Color(0xFFFCEBEB), Color(0xFFA32D2D))
+            EncounterColors(PokemonEncounterIslandBackground, PokemonEncounterIslandContent)
 
         m.contains("snag") ->
-            EncounterColors(Color(0xFFEEEDFE), Color(0xFF534AB7))
+            EncounterColors(PokemonEncounterSnagBackground, PokemonEncounterSnagContent)
 
         m.contains("pokeflute") || m.contains("flute") ->
-            EncounterColors(Color(0xFFFBEAF0), Color(0xFF72243E))
+            EncounterColors(PokemonEncounterFluteBackground, PokemonEncounterFluteContent)
 
         m.contains("colosseum") || m.contains("bonus-disc") ->
-            EncounterColors(Color(0xFFFAEEDA), Color(0xFF854F0B))
+            EncounterColors(PokemonEncounterColosseumBackground, PokemonEncounterColosseumContent)
 
         else ->
-            EncounterColors(Color(0xFFF1EFE8), Color(0xFF888780))
+            EncounterColors(PokemonEncounterDefaultBackground, PokemonEncounterDefaultContent)
     }
 }
 
@@ -2064,12 +2099,12 @@ fun Double.formatWeight(): String {
 @Composable
 fun statColor(statName: String): Color {
     return when (statName.lowercase()) {
-        "hp" -> Color(0xFFFF5959)
-        "attack" -> Color(0xFFF08030)
-        "defense" -> Color(0xFFF8D030)
-        "special-attack" -> Color(0xFF6890F0)
-        "special-defense" -> Color(0xFF78C850)
-        "speed" -> Color(0xFFF85888)
+        "hp" -> PokemonStatHpColor
+        "attack" -> PokemonStatAttackColor
+        "defense" -> PokemonStatDefenseColor
+        "special-attack" -> PokemonStatSpecialAttackColor
+        "special-defense" -> PokemonStatSpecialDefenseColor
+        "speed" -> PokemonStatSpeedColor
         else -> MaterialTheme.colorScheme.primary
     }
 }
@@ -2284,6 +2319,7 @@ private fun previewPokemon(): PokemonInfo {
         )
     )
 }
+
 private fun previewPokemonNoAbility(): PokemonInfo {
 
     return PokemonInfo(

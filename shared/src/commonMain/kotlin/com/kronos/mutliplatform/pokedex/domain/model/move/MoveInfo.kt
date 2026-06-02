@@ -26,6 +26,7 @@ data class MoveInfo(
         return names
             .firstOrNull { it.language.name == language }
             ?.name
+            ?: names.firstOrNull { it.language.name == "en" }?.name
             ?: names.firstOrNull()?.name
             ?: moveName
     }

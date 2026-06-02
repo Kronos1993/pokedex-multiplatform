@@ -90,6 +90,7 @@
     <string name="type_detail_info_screen_defending_double_damage">Takes 2× from</string>
     <string name="type_detail_info_screen_defending_half_damage">Takes ½× from</string>
     <string name="type_detail_info_screen_defending_inmune_damage">Immune to</string>
+    <string name="type_detail_info_screen_no_data">No type matchup data available.</string>
 
     <string name="ability_detail_info_screen_game_description">GAME DESCRIPTION</string>
     <string name="ability_detail_info_screen_effect">EFFECT</string>

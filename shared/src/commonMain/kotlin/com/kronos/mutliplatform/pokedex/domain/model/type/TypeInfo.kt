@@ -13,10 +13,11 @@ data class TypeInfo(
     var names:List<Name> = listOf(),
     var pokemon:List<NamedResourceApi> = listOf(),
 ){
-    fun getName(language: String):String {
+    fun getName(language: String): String {
         return names
             .firstOrNull { it.language.name == language }
             ?.name
+            ?: names.firstOrNull { it.language.name == "en" }?.name
             ?: names.firstOrNull()?.name
             ?: name
     }

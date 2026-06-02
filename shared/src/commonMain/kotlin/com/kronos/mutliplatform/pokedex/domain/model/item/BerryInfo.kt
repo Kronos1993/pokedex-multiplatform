@@ -20,4 +20,13 @@ data class BerryInfo(
     var size:Int = 0,
     var smoothness:Int = 0,
     var soilDryness:Int = 0
-)
+){
+    fun getName(language: String): String {
+        return names
+            .firstOrNull { it.language.name == language }
+            ?.name
+            ?: names.firstOrNull { it.language.name == "en" }?.name
+            ?: names.firstOrNull()?.name
+            ?: name
+    }
+}

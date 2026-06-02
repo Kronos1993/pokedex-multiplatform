@@ -31,6 +31,10 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
 import com.kronos.mutliplatform.pokedex.core.ui.components.LabelText
 import com.kronos.mutliplatform.pokedex.core.ui.components.TitleText
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.NatureDecreaseStatContainerColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.NatureDecreaseStatIconColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.NatureIncreaseStatContainerColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.NatureIncreaseStatIconColor
 import com.kronos.mutliplatform.pokedex.domain.model.Name
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.nature.NatureDetail
@@ -180,13 +184,13 @@ private fun NatureStatItem(
 @Composable
 private fun StatDirectionBadge(isIncrease: Boolean) {
     val containerColor = if (isIncrease)
-        MaterialTheme.colorScheme.tertiaryContainer
+        NatureIncreaseStatContainerColor
     else
-        MaterialTheme.colorScheme.errorContainer
+        NatureDecreaseStatContainerColor
     val contentColor = if (isIncrease)
-        MaterialTheme.colorScheme.onTertiaryContainer
+        NatureIncreaseStatIconColor
     else
-        MaterialTheme.colorScheme.onErrorContainer
+        NatureDecreaseStatIconColor
     val icon = if (isIncrease) Icons.Filled.ArrowUpward else Icons.Filled.ArrowDownward
 
     Box(

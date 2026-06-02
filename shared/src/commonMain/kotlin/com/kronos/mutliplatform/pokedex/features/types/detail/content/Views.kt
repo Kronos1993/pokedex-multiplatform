@@ -30,12 +30,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kronos.mutliplatform.pokedex.components.icon.Shield
 import com.kronos.mutliplatform.pokedex.components.icon.Sword
+import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
 import com.kronos.mutliplatform.pokedex.core.ui.components.LabelText
 import com.kronos.mutliplatform.pokedex.core.ui.components.TitleText
@@ -56,6 +58,7 @@ import pokedex.shared.generated.resources.type_detail_info_screen_defending_doub
 import pokedex.shared.generated.resources.type_detail_info_screen_defending_half_damage
 import pokedex.shared.generated.resources.type_detail_info_screen_defending_inmune_damage
 import pokedex.shared.generated.resources.type_detail_info_screen_defending_title
+import pokedex.shared.generated.resources.type_detail_info_screen_no_data
 
 @Composable
 fun TypeInfoScreen(
@@ -74,63 +77,72 @@ fun TypeInfoScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         val dr = typeInfo.damageRelations
-        DamageSectionCard(
-            title = stringResource(Res.string.type_detail_info_screen_defending_title),
-            icon = Icons.Shield,
-            groups = buildList {
-                if (dr.doubleDamageFrom.isNotEmpty())
-                    add(stringResource(Res.string.type_detail_info_screen_defending_double_damage) to dr.doubleDamageFrom.map {
-                        DamageRelationContainer(
-                            it.name,
-                            "2×"
-                        )
-                    })
-                if (dr.halfDamageFrom.isNotEmpty())
-                    add(stringResource(Res.string.type_detail_info_screen_defending_half_damage) to dr.halfDamageFrom.map {
-                        DamageRelationContainer(
-                            it.name,
-                            "½×"
-                        )
-                    })
-                if (dr.noDamageFrom.isNotEmpty())
-                    add(stringResource(Res.string.type_detail_info_screen_defending_inmune_damage) to dr.noDamageFrom.map {
-                        DamageRelationContainer(
-                            it.name,
-                            "0×"
-                        )
-                    })
-            },
-            onTypeClick = onTypeClick,
-        )
+        val defendingGroups = buildList {
+            if (dr.doubleDamageFrom.isNotEmpty())
+                add(stringResource(Res.string.type_detail_info_screen_defending_double_damage) to dr.doubleDamageFrom.map {
+                    DamageRelationContainer(
+                        it.name,
+                        "2×"
+                    )
+                })
+            if (dr.halfDamageFrom.isNotEmpty())
+                add(stringResource(Res.string.type_detail_info_screen_defending_half_damage) to dr.halfDamageFrom.map {
+                    DamageRelationContainer(
+                        it.name,
+                        "½×"
+                    )
+                })
+            if (dr.noDamageFrom.isNotEmpty())
+                add(stringResource(Res.string.type_detail_info_screen_defending_inmune_damage) to dr.noDamageFrom.map {
+                    DamageRelationContainer(
+                        it.name,
+                        "0×"
+                    )
+                })
+        }
 
-        DamageSectionCard(
-            title = stringResource(Res.string.type_detail_info_screen_attaking_title),
-            icon = Icons.Sword,
-            groups = buildList {
-                if (dr.doubleDamageTo.isNotEmpty())
-                    add(stringResource(Res.string.type_detail_info_screen_attaking_supper_effective) to dr.doubleDamageTo.map {
-                        DamageRelationContainer(
-                            it.name,
-                            "2×"
-                        )
-                    })
-                if (dr.halfDamageTo.isNotEmpty())
-                    add(stringResource(Res.string.type_detail_info_screen_attaking_not_very_effective) to dr.halfDamageTo.map {
-                        DamageRelationContainer(
-                            it.name,
-                            "½×"
-                        )
-                    })
-                if (dr.noDamageTo.isNotEmpty())
-                    add(stringResource(Res.string.type_detail_info_screen_attaking_no_effect) to dr.noDamageTo.map {
-                        DamageRelationContainer(
-                            it.name,
-                            "0×"
-                        )
-                    })
-            },
-            onTypeClick = onTypeClick
-        )
+        val attackingGroups = buildList {
+            if (dr.doubleDamageTo.isNotEmpty())
+                add(stringResource(Res.string.type_detail_info_screen_attaking_supper_effective) to dr.doubleDamageTo.map {
+                    DamageRelationContainer(
+                        it.name,
+                        "2×"
+                    )
+                })
+            if (dr.halfDamageTo.isNotEmpty())
+                add(stringResource(Res.string.type_detail_info_screen_attaking_not_very_effective) to dr.halfDamageTo.map {
+                    DamageRelationContainer(
+                        it.name,
+                        "½×"
+                    )
+                })
+            if (dr.noDamageTo.isNotEmpty())
+                add(stringResource(Res.string.type_detail_info_screen_attaking_no_effect) to dr.noDamageTo.map {
+                    DamageRelationContainer(
+                        it.name,
+                        "0×"
+                    )
+                })
+        }
+
+        val hasAnyData = defendingGroups.isNotEmpty() || attackingGroups.isNotEmpty()
+
+        if (hasAnyData) {
+            DamageSectionCard(
+                title = stringResource(Res.string.type_detail_info_screen_defending_title),
+                icon = Icons.Shield,
+                groups = defendingGroups,
+                onTypeClick = onTypeClick,
+            )
+            DamageSectionCard(
+                title = stringResource(Res.string.type_detail_info_screen_attaking_title),
+                icon = Icons.Sword,
+                groups = attackingGroups,
+                onTypeClick = onTypeClick,
+            )
+        } else {
+            TypeInfoEmptyState()
+        }
     }
 }
 
@@ -283,6 +295,34 @@ private fun TypeChip(
         }
 
         Spacer(Modifier.width(4.dp))
+    }
+}
+
+
+@Composable
+private fun TypeInfoEmptyState() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 48.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Shield, // o un ícono más genérico
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+                modifier = Modifier.size(40.dp),
+            )
+            BodyText(
+                text = stringResource(Res.string.type_detail_info_screen_no_data),
+                textColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                textAlign = TextAlign.Center,
+            )
+        }
     }
 }
 

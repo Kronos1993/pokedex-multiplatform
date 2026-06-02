@@ -23,4 +23,13 @@ data class ItemInfo(
     var name:String = "",
     var names:List<Name> = listOf(),
     var sprites:Sprite = Sprite()
-)
+){
+    fun getName(language: String): String {
+        return names
+            .firstOrNull { it.language.name == language }
+            ?.name
+            ?: names.firstOrNull { it.language.name == "en" }?.name
+            ?: names.firstOrNull()?.name
+            ?: name
+    }
+}

@@ -41,6 +41,10 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
 import com.kronos.mutliplatform.pokedex.core.ui.components.LabelText
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonLearnMethodEggColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonLearnMethodLevelUpColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonLearnMethodMachineColor
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.PokemonLearnMethodTutorColor
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.move.MoveDetail
 import com.kronos.mutliplatform.pokedex.domain.model.move.MoveList
@@ -253,10 +257,10 @@ fun learnMethodIcon(method: String): ImageVector {
 
 fun learnMethodColor(method: String): Color {
     return when (method) {
-        "egg"      -> Color(0xFFF085B6)
-        "tutor"    -> Color(0xFF78C850)
-        "level-up" -> Color(0xFFF8D030)
-        "machine"  -> Color(0xFF6890F0)
+        "egg"      -> PokemonLearnMethodEggColor
+        "tutor"    -> PokemonLearnMethodTutorColor
+        "level-up" -> PokemonLearnMethodLevelUpColor
+        "machine"  -> PokemonLearnMethodMachineColor
         else       -> Color.Gray
     }
 }

@@ -16,4 +16,13 @@ data class Game(
     val url:String = "",
     val names:List<Name> = listOf(),
     val versionGroup:NamedResourceApi = NamedResourceApi()
-)
+){
+    fun getName(language: String): String {
+        return names
+            .firstOrNull { it.language.name == language }
+            ?.name
+            ?: names.firstOrNull { it.language.name == "en" }?.name
+            ?: names.firstOrNull()?.name
+            ?: name
+    }
+}
