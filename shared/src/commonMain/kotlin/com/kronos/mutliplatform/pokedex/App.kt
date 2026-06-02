@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.kronos.mutliplatform.pokedex.components.icon.DrawerPokemonTypes
 import com.kronos.mutliplatform.pokedex.components.icon.Info
+import com.kronos.mutliplatform.pokedex.components.icon.Natures
 import com.kronos.mutliplatform.pokedex.components.icon.PokedexSvg
 import com.kronos.mutliplatform.pokedex.components.icon.Settings
 import com.kronos.mutliplatform.pokedex.components.icon.TmDisk
@@ -35,6 +36,9 @@ import com.kronos.mutliplatform.pokedex.features.abilities.list.AbilityListScree
 import com.kronos.mutliplatform.pokedex.features.about.AboutScreen
 import com.kronos.mutliplatform.pokedex.features.move.detail.MoveDetailScreen
 import com.kronos.mutliplatform.pokedex.features.move.list.MoveListScreen
+import com.kronos.mutliplatform.pokedex.features.natures.detail.NatureDetailScreen
+import com.kronos.mutliplatform.pokedex.features.natures.detail.NatureDetailScreenViewModel
+import com.kronos.mutliplatform.pokedex.features.natures.list.NatureListScreen
 import com.kronos.mutliplatform.pokedex.features.pokedex.PokedexScreen
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.PokemonDetailScreen
 import com.kronos.mutliplatform.pokedex.features.pokemon.list.PokemonListScreen
@@ -55,6 +59,7 @@ import pokedex.shared.generated.resources.menu_abilities
 import pokedex.shared.generated.resources.menu_about
 import pokedex.shared.generated.resources.menu_exit
 import pokedex.shared.generated.resources.menu_moves
+import pokedex.shared.generated.resources.menu_natures
 import pokedex.shared.generated.resources.menu_pokedex
 import pokedex.shared.generated.resources.menu_settings
 import pokedex.shared.generated.resources.menu_types
@@ -226,6 +231,31 @@ fun App() {
                         )
                     }
 
+                    composable(route = Destinations.NATURES.name) {
+                        NatureListScreen(
+                            navController,
+                            isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            deviceScreenConfiguration = deviceScreenConfiguration,
+                        )
+                    }
+
+                    composable(
+                        route = "${Destinations.NATURE_DETAIL}/{nature}",
+                        arguments = listOf(navArgument("nature") {
+                            type = NavType.StringType
+                        })
+                    ) { backStackEntry ->
+                        val savedStateHandle = backStackEntry.savedStateHandle
+                        val nature = savedStateHandle.get<String>("nature") ?: ""
+                        NatureDetailScreen(
+                            nature = nature,
+                            navController,
+                            isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            currentLang = currentLang,
+                            deviceScreenConfiguration = deviceScreenConfiguration,
+                        )
+                    }
+
                     composable(
                         route = Destinations.SETTINGS.name,
                     ) { backStackEntry ->
@@ -280,6 +310,7 @@ fun rememberNavDestinations(
     val movesTitle = stringResource(Res.string.menu_moves)
     val typesTitle = stringResource(Res.string.menu_types)
     val abilitiesTitle = stringResource(Res.string.menu_abilities)
+    val naturesTitle = stringResource(Res.string.menu_natures)
     val settingsTitle = stringResource(Res.string.menu_settings)
     val aboutTitle = stringResource(Res.string.menu_about)
     val exitTitle = stringResource(Res.string.menu_exit)
@@ -331,6 +362,16 @@ fun rememberNavDestinations(
                     selectedIcon = Icons.Default.Psychology,
                     unselectedIcon = Icons.Default.Psychology,
                     iconTint = abilityIconTint,
+                    onClick = defaultClick
+                )
+            )
+
+            add(
+                NavigationItem(
+                    title = naturesTitle,
+                    destination = Destinations.NATURES,
+                    selectedIcon = Icons.Natures,
+                    unselectedIcon = Icons.Natures,
                     onClick = defaultClick
                 )
             )

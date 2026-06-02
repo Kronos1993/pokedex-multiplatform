@@ -72,6 +72,8 @@ enum class Destinations {
     TYPES_DETAIL,
     ABILITIES,
     ABILITY_DETAIL,
+    NATURES,
+    NATURE_DETAIL,
     SETTINGS,
     ABOUT,
     EXIT

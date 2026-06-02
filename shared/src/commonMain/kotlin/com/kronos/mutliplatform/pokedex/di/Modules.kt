@@ -6,6 +6,8 @@ import com.kronos.mutliplatform.pokedex.features.abilities.list.AbilityListScree
 import com.kronos.mutliplatform.pokedex.features.about.AboutViewModel
 import com.kronos.mutliplatform.pokedex.features.move.detail.MoveDetailScreenViewModel
 import com.kronos.mutliplatform.pokedex.features.move.list.MoveListScreenViewModel
+import com.kronos.mutliplatform.pokedex.features.natures.detail.NatureDetailScreenViewModel
+import com.kronos.mutliplatform.pokedex.features.natures.list.NatureListScreenViewModel
 import com.kronos.mutliplatform.pokedex.features.pokedex.PokedexScreenViewModel
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.PokemonDetailScreenViewModel
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.pages.PokemonMovesTabViewModel
@@ -29,5 +31,7 @@ val viewModelModule = module {
     viewModelOf(::TypeDetailScreenViewModel)
     viewModelOf(::AbilityListScreenViewModel)
     viewModelOf(::AbilityDetailScreenViewModel)
+    viewModelOf(::NatureListScreenViewModel)
+    viewModelOf(::NatureDetailScreenViewModel)
     viewModelOf(::AboutViewModel)
 }
