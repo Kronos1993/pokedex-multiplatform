@@ -22,7 +22,7 @@ data class MoveInfo(
     var effectChance: Int? = 0,
 ) {
 
-    fun getName(language: String):String {
+    fun getName(language: String): String {
         return names
             .firstOrNull { it.language.name == language }
             ?.name
@@ -34,21 +34,33 @@ data class MoveInfo(
         return moveFlavorText
             .firstOrNull { it.language == language }
             ?.description
-            ?: moveFlavorText.firstOrNull()?.description?.replace("\n"," ")
+            ?: moveFlavorText.firstOrNull()?.description?.replace("\n", " ")
+            ?: moveFlavorText
+                .firstOrNull { it.language == "en" }
+                ?.description
+            ?: moveFlavorText.firstOrNull()?.description?.replace("\n", " ")
             ?: ""
     }
 
     fun getMoveEffect(language: String): String {
         return effects
             .firstOrNull { it.language == language }
-            ?.effect?.replace(Regex("effect_chance"), effectChance.toString())?.replace("$","")
+            ?.effect?.replace(Regex("effect_chance"), effectChance.toString())?.replace("$", "")
+            ?: effects
+                .firstOrNull { it.language == "en" }
+                ?.effect?.replace(Regex("effect_chance"), effectChance.toString())?.replace("$", "")
             ?: ""
     }
 
     fun getShortEffect(language: String): String {
         return effects
             .firstOrNull { it.language == language }
-            ?.shortEffect?.replace(Regex("effect_chance"), effectChance.toString())?.replace("$","")
+            ?.shortEffect?.replace(Regex("effect_chance"), effectChance.toString())
+            ?.replace("$", "")
+            ?: effects
+                .firstOrNull { it.language == "en" }
+                ?.shortEffect?.replace(Regex("effect_chance"), effectChance.toString())
+                ?.replace("$", "")
             ?: ""
     }
 

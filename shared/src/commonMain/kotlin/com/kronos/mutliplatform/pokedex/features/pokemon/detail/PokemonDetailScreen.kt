@@ -177,6 +177,7 @@ fun PokemonDetailScreen(
                 onEggGroupClick = {
                 },
                 onAbilityClick = {
+                    navHost.navigate("${Destinations.ABILITY_DETAIL.name}/${it.ability.name}")
                 },
                 onSpriteClick = {},
                 onOtherFormsClick = {

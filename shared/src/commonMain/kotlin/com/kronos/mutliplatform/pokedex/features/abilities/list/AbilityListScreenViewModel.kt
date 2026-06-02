@@ -1,4 +1,4 @@
-package com.kronos.mutliplatform.pokedex.features.move.list
+package com.kronos.mutliplatform.pokedex.features.abilities.list
 
 import androidx.lifecycle.viewModelScope
 import com.kronos.mutliplatform.pokedex.core.Platform
@@ -8,7 +8,7 @@ import com.kronos.mutliplatform.pokedex.core.util.IAppInfo
 import com.kronos.mutliplatform.pokedex.core.viewmodel.ParentViewModel
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.util.FullNetworkError
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
-import com.kronos.mutliplatform.pokedex.domain.repository.MoveRemoteRepository
+import com.kronos.mutliplatform.pokedex.domain.repository.AbilityRemoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,14 +16,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class MoveListScreenViewModel(
+class AbilityListScreenViewModel(
     private val appInfo: IAppInfo,
-    private val moveRemoteRepository: MoveRemoteRepository,
+    private val abilityRemoteRepository: AbilityRemoteRepository,
     val platform: Platform
-): ParentViewModel() {
+) : ParentViewModel() {
 
-    private var _moves = MutableStateFlow(listOf<NamedResourceApi>())
-    var moves: StateFlow<List<NamedResourceApi>> = _moves.asStateFlow()
+    private var _abilities = MutableStateFlow(listOf<NamedResourceApi>())
+    var abilities: StateFlow<List<NamedResourceApi>> = _abilities.asStateFlow()
 
     private var _appVersion = MutableStateFlow("")
     var appVersion: StateFlow<String> = _appVersion.asStateFlow()
@@ -32,8 +32,8 @@ class MoveListScreenViewModel(
         _appVersion.value = appInfo.getAppVersion()
     }
 
-    private fun postMoves(results: List<NamedResourceApi>) {
-        _moves.value = _moves.value.plus(results)
+    private fun postAbilities(results: List<NamedResourceApi>) {
+        _abilities.value = _abilities.value.plus(results)
     }
 
     fun loadMoves(reset: Boolean = false) {
@@ -44,18 +44,18 @@ class MoveListScreenViewModel(
             setLastPage(false)
         }
         viewModelScope.launch(Dispatchers.IO) {
-            moveRemoteRepository.listMove(
+            abilityRemoteRepository.listAbility(
                 limit.value,
                 offset.value,
             )
                 .onSuccess {
                     _loading.value = (false)
                     if (reset)
-                        _moves.value = listOf()
+                        _abilities.value = listOf()
 
                     if (it.results.isNotEmpty()) {
                         setOffset(offset.value + limit.value)
-                        postMoves(it.results)
+                        postAbilities(it.results)
                     } else
                         setLastPage(true)
 

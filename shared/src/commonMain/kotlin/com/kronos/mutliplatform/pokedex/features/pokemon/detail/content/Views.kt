@@ -752,10 +752,10 @@ fun PokemonAbilitiesCard(
                 pokemon.abilities.forEach { ability ->
 
                     BaseCardView(
-                        modifier = Modifier.clickable {
+                        shape = RoundedCornerShape(20.dp),
+                        onClick = {
                             onAbilityClick(ability)
-                        },
-                        shape = RoundedCornerShape(20.dp)
+                        }
                     ) {
 
                         Row(

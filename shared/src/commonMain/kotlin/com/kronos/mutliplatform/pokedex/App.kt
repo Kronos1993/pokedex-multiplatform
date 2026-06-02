@@ -2,6 +2,7 @@ package com.kronos.mutliplatform.pokedex
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,6 +30,8 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.ConfirmDialog
 import com.kronos.mutliplatform.pokedex.core.ui.components.Destinations
 import com.kronos.mutliplatform.pokedex.core.ui.components.NavigationItem
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
+import com.kronos.mutliplatform.pokedex.features.abilities.detail.AbilityDetailScreen
+import com.kronos.mutliplatform.pokedex.features.abilities.list.AbilityListScreen
 import com.kronos.mutliplatform.pokedex.features.about.AboutScreen
 import com.kronos.mutliplatform.pokedex.features.move.detail.MoveDetailScreen
 import com.kronos.mutliplatform.pokedex.features.move.list.MoveListScreen
@@ -48,6 +51,7 @@ import pokedex.shared.generated.resources.exit_dialog_no
 import pokedex.shared.generated.resources.exit_dialog_title
 import pokedex.shared.generated.resources.exit_dialog_yes
 import pokedex.shared.generated.resources.lang_preference_default_value
+import pokedex.shared.generated.resources.menu_abilities
 import pokedex.shared.generated.resources.menu_about
 import pokedex.shared.generated.resources.menu_exit
 import pokedex.shared.generated.resources.menu_moves
@@ -197,6 +201,31 @@ fun App() {
                         )
                     }
 
+                    composable(route = Destinations.ABILITIES.name) {
+                        AbilityListScreen(
+                            navController,
+                            isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            deviceScreenConfiguration = deviceScreenConfiguration,
+                        )
+                    }
+
+                    composable(
+                        route = "${Destinations.ABILITY_DETAIL}/{ability}",
+                        arguments = listOf(navArgument("ability") {
+                            type = NavType.StringType
+                        })
+                    ) { backStackEntry ->
+                        val savedStateHandle = backStackEntry.savedStateHandle
+                        val ability = savedStateHandle.get<String>("ability") ?: ""
+                        AbilityDetailScreen(
+                            ability = ability,
+                            navController,
+                            isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            currentLang = currentLang,
+                            deviceScreenConfiguration = deviceScreenConfiguration,
+                        )
+                    }
+
                     composable(
                         route = Destinations.SETTINGS.name,
                     ) { backStackEntry ->
@@ -250,10 +279,12 @@ fun rememberNavDestinations(
     val pokedexTitle = stringResource(Res.string.menu_pokedex)
     val movesTitle = stringResource(Res.string.menu_moves)
     val typesTitle = stringResource(Res.string.menu_types)
+    val abilitiesTitle = stringResource(Res.string.menu_abilities)
     val settingsTitle = stringResource(Res.string.menu_settings)
     val aboutTitle = stringResource(Res.string.menu_about)
     val exitTitle = stringResource(Res.string.menu_exit)
     val closeIconTint = MaterialTheme.colorScheme.onSurface
+    val abilityIconTint = MaterialTheme.colorScheme.primary
 
     return remember(navController, isDesktop, onExitClicked) {
         buildList {
@@ -289,6 +320,17 @@ fun rememberNavDestinations(
                     destination = Destinations.TYPES,
                     selectedIcon = Icons.DrawerPokemonTypes,
                     unselectedIcon = Icons.DrawerPokemonTypes,
+                    onClick = defaultClick
+                )
+            )
+
+            add(
+                NavigationItem(
+                    title = abilitiesTitle,
+                    destination = Destinations.ABILITIES,
+                    selectedIcon = Icons.Default.Psychology,
+                    unselectedIcon = Icons.Default.Psychology,
+                    iconTint = abilityIconTint,
                     onClick = defaultClick
                 )
             )

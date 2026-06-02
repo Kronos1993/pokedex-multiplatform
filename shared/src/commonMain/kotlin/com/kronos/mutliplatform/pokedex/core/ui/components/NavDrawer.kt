@@ -70,6 +70,8 @@ enum class Destinations {
     MOVE_DETAIL,
     TYPES,
     TYPES_DETAIL,
+    ABILITIES,
+    ABILITY_DETAIL,
     SETTINGS,
     ABOUT,
     EXIT
