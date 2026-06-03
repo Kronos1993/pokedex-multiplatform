@@ -69,6 +69,27 @@
     <string name="pokemon_detail_tab_encounter_max_chance">Probabilidad Máx.</string>
     <string name="pokemon_detail_tab_encounter_game_version">Versión del Juego</string>
 
+    <string name="evolution_detail_tab_evolves_from">Evoluciona de</string>
+    <string name="evolution_detail_tab_trigger">Método</string>
+    <string name="evolution_detail_tab_level">Nivel</string>
+    <string name="evolution_detail_tab_use_item">Usar objeto</string>
+    <string name="evolution_detail_tab_held_item">Objeto equipado</string>
+    <string name="evolution_detail_tab_happiness">Felicidad</string>
+    <string name="evolution_detail_tab_affection">Afecto</string>
+    <string name="evolution_detail_tab_beauty">Belleza</string>
+    <string name="evolution_detail_tab_gender">Género</string>
+    <string name="evolution_detail_tab_female">Hembra</string>
+    <string name="evolution_detail_tab_male">Macho</string>
+    <string name="evolution_detail_tab_know_move">Conocer movimiento</string>
+    <string name="evolution_detail_tab_move_type">Tipo de movimiento</string>
+    <string name="evolution_detail_tab_location">Ubicación</string>
+    <string name="evolution_detail_tab_party_member">Miembro del equipo</string>
+    <string name="evolution_detail_tab_party_type">Tipo en el equipo</string>
+    <string name="evolution_detail_tab_time_of_day">Hora del día</string>
+    <string name="evolution_detail_tab_raining">Lluvia</string>
+    <string name="evolution_detail_tab_required">Requerido</string>
+    <string name="evolution_detail_tab_turn_upside_down">Girar al revés</string>
+
     <string name="move_detail_tab_info_egg">HUEVO</string>
     <string name="move_detail_tab_info_lv">NV</string>
     <string name="move_detail_tab_info_tut">TUTOR</string>

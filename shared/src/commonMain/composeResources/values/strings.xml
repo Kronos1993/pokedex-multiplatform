@@ -69,6 +69,27 @@
     <string name="pokemon_detail_tab_encounter_max_chance">Max Chance</string>
     <string name="pokemon_detail_tab_encounter_game_version">Game Version</string>
 
+    <string name="evolution_detail_tab_evolves_from">Evolves from</string>
+    <string name="evolution_detail_tab_trigger">Trigger</string>
+    <string name="evolution_detail_tab_level">Level</string>
+    <string name="evolution_detail_tab_use_item">Use item</string>
+    <string name="evolution_detail_tab_held_item">Held item</string>
+    <string name="evolution_detail_tab_happiness">Happiness</string>
+    <string name="evolution_detail_tab_affection">Affection</string>
+    <string name="evolution_detail_tab_beauty">Beauty</string>
+    <string name="evolution_detail_tab_gender">Gender</string>
+    <string name="evolution_detail_tab_female">Female</string>
+    <string name="evolution_detail_tab_male">Male</string>
+    <string name="evolution_detail_tab_know_move">Know move</string>
+    <string name="evolution_detail_tab_move_type">Move type</string>
+    <string name="evolution_detail_tab_location">Location</string>
+    <string name="evolution_detail_tab_party_member">Party member</string>
+    <string name="evolution_detail_tab_party_type">Party type</string>
+    <string name="evolution_detail_tab_time_of_day">Time of day</string>
+    <string name="evolution_detail_tab_raining">Raining</string>
+    <string name="evolution_detail_tab_required">Required</string>
+    <string name="evolution_detail_tab_turn_upside_down">Turn upside down</string>
+
     <string name="move_detail_tab_info_egg">EGG</string>
     <string name="move_detail_tab_info_lv">LV</string>
     <string name="move_detail_tab_info_tut">TUT</string>

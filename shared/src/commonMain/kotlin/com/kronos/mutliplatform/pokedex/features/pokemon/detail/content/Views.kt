@@ -284,6 +284,26 @@ import org.jetbrains.compose.resources.stringResource
 import pokedex.shared.generated.resources.Res
 import pokedex.shared.generated.resources.baby_pokemon
 import pokedex.shared.generated.resources.empty_pokemon_ability_list
+import pokedex.shared.generated.resources.evolution_detail_tab_affection
+import pokedex.shared.generated.resources.evolution_detail_tab_beauty
+import pokedex.shared.generated.resources.evolution_detail_tab_evolves_from
+import pokedex.shared.generated.resources.evolution_detail_tab_female
+import pokedex.shared.generated.resources.evolution_detail_tab_gender
+import pokedex.shared.generated.resources.evolution_detail_tab_happiness
+import pokedex.shared.generated.resources.evolution_detail_tab_held_item
+import pokedex.shared.generated.resources.evolution_detail_tab_know_move
+import pokedex.shared.generated.resources.evolution_detail_tab_level
+import pokedex.shared.generated.resources.evolution_detail_tab_location
+import pokedex.shared.generated.resources.evolution_detail_tab_male
+import pokedex.shared.generated.resources.evolution_detail_tab_move_type
+import pokedex.shared.generated.resources.evolution_detail_tab_party_member
+import pokedex.shared.generated.resources.evolution_detail_tab_party_type
+import pokedex.shared.generated.resources.evolution_detail_tab_raining
+import pokedex.shared.generated.resources.evolution_detail_tab_required
+import pokedex.shared.generated.resources.evolution_detail_tab_time_of_day
+import pokedex.shared.generated.resources.evolution_detail_tab_trigger
+import pokedex.shared.generated.resources.evolution_detail_tab_turn_upside_down
+import pokedex.shared.generated.resources.evolution_detail_tab_use_item
 import pokedex.shared.generated.resources.legendary_pokemon
 import pokedex.shared.generated.resources.mythical_pokemon
 import pokedex.shared.generated.resources.pokemon_detail_tab_encounter_game_version
@@ -1269,7 +1289,7 @@ private fun EvolutionDetails(
     chain.evolvesFrom.takeIf { it.isNotBlank() }?.let {
         EvolutionDetailRow(
             icon = Icons.Pokeball,
-            label = "Evolves from",
+            label = stringResource(Res.string.evolution_detail_tab_evolves_from),
             value = it.prettyName()
         )
     }
@@ -1278,7 +1298,7 @@ private fun EvolutionDetails(
     detail.trigger?.name?.takeIf { it.isNotBlank() }?.let {
         EvolutionDetailRow(
             icon = Icons.Bolt,
-            label = "Trigger",
+            label = stringResource(Res.string.evolution_detail_tab_trigger),
             value = it.prettyName()
         )
     }
@@ -1287,7 +1307,7 @@ private fun EvolutionDetails(
     detail.minLevel?.let {
         EvolutionDetailRow(
             icon = Icons.LevelUp,
-            label = "Level",
+            label = stringResource(Res.string.evolution_detail_tab_level),
             value = "Lv. $it"
         )
     }
@@ -1297,7 +1317,7 @@ private fun EvolutionDetails(
         EvolutionDetailRow(
             icon = Icons.Default.Inventory2,
             iconTint = PokemonEvolutionUseItemColor,
-            label = "Use item",
+            label = stringResource(Res.string.evolution_detail_tab_use_item),
             value = it.prettyName()
         )
     }
@@ -1307,7 +1327,7 @@ private fun EvolutionDetails(
         EvolutionDetailRow(
             icon = Icons.Default.Inventory2,
             iconTint = PokemonEvolutionUseItemColor,
-            label = "Held item",
+            label = stringResource(Res.string.evolution_detail_tab_held_item),
             value = it.prettyName()
         )
     }
@@ -1316,7 +1336,7 @@ private fun EvolutionDetails(
     detail.minHappiness?.takeIf { it > 0 }?.let {
         EvolutionDetailRow(
             icon = Icons.Heart,
-            label = "Happiness",
+            label = stringResource(Res.string.evolution_detail_tab_happiness),
             value = "≥ $it"
         )
     }
@@ -1325,7 +1345,7 @@ private fun EvolutionDetails(
     detail.minAffection?.takeIf { it > 0 }?.let {
         EvolutionDetailRow(
             icon = Icons.Heart,
-            label = "Affection",
+            label = stringResource(Res.string.evolution_detail_tab_affection),
             value = "≥ $it"
         )
     }
@@ -1335,21 +1355,22 @@ private fun EvolutionDetails(
         EvolutionDetailRow(
             icon = Icons.Default.AutoAwesome,
             iconTint = PokemonEvolutionBeautyColor,
-            label = "Beauty",
+            label = stringResource(Res.string.evolution_detail_tab_beauty),
             value = "≥ $it"
         )
     }
 
     // Gender
     detail.gender?.let { genderId ->
-        val (icon, label) = when (genderId) {
-            1 -> Icons.Female to "Female"
-            else -> Icons.Male to "Male"
+        val (icon, value) = when (genderId) {
+            1 -> Icons.Female to stringResource(Res.string.evolution_detail_tab_female)
+            else -> Icons.Male to stringResource(Res.string.evolution_detail_tab_male)
         }
+
         EvolutionDetailRow(
             icon = icon,
-            label = "Gender",
-            value = label
+            label = stringResource(Res.string.evolution_detail_tab_gender),
+            value = value
         )
     }
 
@@ -1358,7 +1379,7 @@ private fun EvolutionDetails(
         EvolutionDetailRow(
             icon = Icons.Default.SportsKabaddi,
             iconTint = PokemonEvolutionKnowMoveColor,
-            label = "Know move",
+            label = stringResource(Res.string.evolution_detail_tab_know_move),
             value = it.prettyName()
         )
     }
@@ -1367,7 +1388,7 @@ private fun EvolutionDetails(
     detail.knownMoveType?.name?.takeIf { it.isNotBlank() }?.let {
         EvolutionDetailRow(
             icon = Icons.TmDisk,
-            label = "Move type",
+            label = stringResource(Res.string.evolution_detail_tab_move_type),
             value = it.prettyName()
         )
     }
@@ -1377,7 +1398,7 @@ private fun EvolutionDetails(
         EvolutionDetailRow(
             icon = Icons.Default.Place,
             iconTint = PokemonEvolutionLocationColor,
-            label = "Location",
+            label = stringResource(Res.string.evolution_detail_tab_location),
             value = it.prettyName()
         )
     }
@@ -1387,7 +1408,7 @@ private fun EvolutionDetails(
         EvolutionDetailRow(
             icon = Icons.Default.Group,
             iconTint = PokemonEvolutionLocationColor,
-            label = "Party member",
+            label = stringResource(Res.string.evolution_detail_tab_party_member),
             value = it.prettyName()
         )
     }
@@ -1397,7 +1418,7 @@ private fun EvolutionDetails(
         EvolutionDetailRow(
             icon = Icons.Default.Category,
             iconTint = PokemonEvolutionUseItemColor,
-            label = "Party type",
+            label = stringResource(Res.string.evolution_detail_tab_party_type),
             value = it.prettyName()
         )
     }
@@ -1409,6 +1430,7 @@ private fun EvolutionDetails(
             "night" -> Icons.Default.NightShelter
             else -> Icons.Default.AccessTime
         }
+
         val iconTint = when (it.lowercase()) {
             "day" -> PokemonEvolutionDaytimeColor
             "night" -> PokemonEvolutionNighttimeColor
@@ -1418,7 +1440,7 @@ private fun EvolutionDetails(
         EvolutionDetailRow(
             icon = icon,
             iconTint = iconTint,
-            label = "Time of day",
+            label = stringResource(Res.string.evolution_detail_tab_time_of_day),
             value = it.prettyName()
         )
     }
@@ -1428,8 +1450,8 @@ private fun EvolutionDetails(
         EvolutionDetailRow(
             icon = Icons.Default.Umbrella,
             iconTint = PokemonEvolutionNeedsRainColor,
-            label = "Raining",
-            value = "Required"
+            label = stringResource(Res.string.evolution_detail_tab_raining),
+            value = stringResource(Res.string.evolution_detail_tab_required)
         )
     }
 
@@ -1438,12 +1460,11 @@ private fun EvolutionDetails(
         EvolutionDetailRow(
             icon = Icons.Default.ScreenRotation,
             iconTint = PokemonEvolutionNeedsScreenRotationColor,
-            label = "Turn upside down",
-            value = "Required"
+            label = stringResource(Res.string.evolution_detail_tab_turn_upside_down),
+            value = stringResource(Res.string.evolution_detail_tab_required)
         )
     }
 }
-
 // ─── Single detail row ────────────────────────────────────────────────────────
 
 @Composable

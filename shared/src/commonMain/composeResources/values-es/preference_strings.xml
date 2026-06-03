@@ -7,20 +7,4 @@
     <string name="preference_theme_subtitle">Selecciona el tema de la aplicación</string>
     <string name="preference_app_theme_entries">Oscuro,Claro</string>
 
-    <string name="preference_city_title">Ciudad predeterminada</string>
-    <string name="preference_city_subtitle">Selecciona la ciudad predeterminada</string>
-
-    <string name="preference_days_title">Cantidad de días</string>
-    <string name="preference_days_subtitle">Selecciona la cantidad de días a obtener</string>
-    <string name="preference_days_entries">3,7,15</string>
-
-    <string name="preference_image_quality_title">Calidad de imagen</string>
-    <string name="preference_image_quality_subtitle">Selecciona la calidad de imagen</string>
-    <string name="preference_image_quality_entries">Baja,Media,Alta</string>
-
-    <string name="preference_measure_unit_title">Unidad de medida</string>
-    <string name="preference_measure_unit_subtitle">Selecione la unidad de medida</string>
-    <string name="preference_measure_unit_entries">Internacional,Imperial</string>
-    <string name="preference_measure_unit_values">1,2</string>
-
 </resources>

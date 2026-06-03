@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pokemon_detail_tab_stats_base_stats">Estadísticas Base</string>
+    <string name="pokemon_detail_tab_stats_max_stats">Estadísticas Máximas</string>
+    <string name="pokemon_detail_tab_stats_max_stats_tooltip">Estadísticas calculadas al nivel 100 con 31 IVs y 252 EVs en cada estadística, naturaleza beneficiosa.</string>
+    <string name="pokemon_detail_tab_stats_stats_total">Total</string>
+    <string name="pokemon_detail_tab_stats_ev_yield">EV Otorgados</string>
+
+    <string name="pokemon_detail_tab_stats_hp">PS</string>
+    <string name="pokemon_detail_tab_stats_attack">ATQ</string>
+    <string name="pokemon_detail_tab_stats_defense">DEF</string>
+    <string name="pokemon_detail_tab_stats_special_attack">ATQ.ESP</string>
+    <string name="pokemon_detail_tab_stats_special_defense">DEF.ESP</string>
+    <string name="pokemon_detail_tab_stats_speed">VEL</string>
+</resources>

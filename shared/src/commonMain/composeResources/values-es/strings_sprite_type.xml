@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home">Inicio</string>
+    <string name="home_shiny">Inicio Shiny</string>
+    <string name="front">Predeterminado</string>
+    <string name="front_shiny">Predeterminado Shiny</string>
+    <string name="female">Hembra</string>
+    <string name="female_shiny">Hembra Shiny</string>
+</resources>
