@@ -63,6 +63,8 @@ fun PokemonListScreen(
     var pokedexName by remember { mutableStateOf(pokedex) }
     val isLoading by viewModel.loading.collectAsStateWithLifecycle()
     val errorMessage by viewModel.message.collectAsStateWithLifecycle()
+    val isSearching by viewModel.isSearching.collectAsStateWithLifecycle()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -110,6 +112,20 @@ fun PokemonListScreen(
             topBar = {
                 AppTopAppBar(
                     title = screenTitle.replaceFirstChar { it.uppercase() },
+                    isSearching = isSearching,
+                    searchQuery = searchQuery,
+                    searchEnabled = true,
+                    onSearchQueryChange = {
+                        viewModel.updateSearchQuery(it)
+                    },
+                    onSearchToggle = {
+                        val isSearching = !isSearching
+
+                        if (!isSearching) {
+                            viewModel.updateSearchQuery("")
+                        }
+                        viewModel.isSearching(isSearching)
+                    },
                     navIconButton = {
                         IconButton(
                             icon = Icons.AutoMirrored.Filled.ArrowBack,
