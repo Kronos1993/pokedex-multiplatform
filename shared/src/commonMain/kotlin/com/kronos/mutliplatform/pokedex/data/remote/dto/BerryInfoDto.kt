@@ -11,6 +11,7 @@ data class BerryInfoDto(
     @SerialName("growth_time")
     var growthTime:Int = 0,
     var id:Int = 0,
+    @SerialName("item")
     var itemResource:NamedResourceApiDto = NamedResourceApiDto(),
     @SerialName("max_harvest")
     var maxHarvest:Int = 0,

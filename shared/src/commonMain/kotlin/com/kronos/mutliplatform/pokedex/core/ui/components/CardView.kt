@@ -34,7 +34,7 @@ fun BaseCardView(
     borderStroke: BorderStroke? = null,
     enabled: Boolean = true,
     onClick: (() -> Unit)? = null,
-    shape: CornerBasedShape = RoundedCornerShape(20.dp),
+    shape: CornerBasedShape = RoundedCornerShape(8.dp),
     content: @Composable () -> Unit,
 ) {
 

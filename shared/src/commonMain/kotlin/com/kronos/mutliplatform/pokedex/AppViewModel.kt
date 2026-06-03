@@ -1,15 +1,11 @@
 package com.kronos.mutliplatform.pokedex
 
-import androidx.lifecycle.viewModelScope
 import com.kronos.mutliplatform.pokedex.core.Platform
 import com.kronos.mutliplatform.pokedex.core.util.ICloseApp
 import com.kronos.mutliplatform.pokedex.core.viewmodel.ParentViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 class AppViewModel(
     private var closeApp: ICloseApp,
@@ -25,9 +21,7 @@ class AppViewModel(
     }
 
     fun closeApp() {
-        viewModelScope.launch(Dispatchers.IO) {
-            closeApp.closeApp()
-        }
+        closeApp.closeApp()
     }
 }
 

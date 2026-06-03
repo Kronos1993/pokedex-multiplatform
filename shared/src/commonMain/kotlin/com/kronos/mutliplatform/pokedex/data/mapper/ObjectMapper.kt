@@ -447,7 +447,10 @@ fun PokemonGeneraDto.toPokemonGenera(): PokemonGenera =
 fun SpriteDto.toSprite(): Sprite =
     Sprite(
         default.let {
-            it.ifEmpty { "" }
+            if(it.isNullOrEmpty())
+                ""
+            else
+                it
         },
         backDefault.let {
             if(it.isNullOrEmpty())

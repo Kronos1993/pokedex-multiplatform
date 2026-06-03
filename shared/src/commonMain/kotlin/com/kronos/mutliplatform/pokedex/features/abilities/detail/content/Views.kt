@@ -41,6 +41,7 @@ import org.jetbrains.compose.resources.stringResource
 import pokedex.shared.generated.resources.Res
 import pokedex.shared.generated.resources.ability_detail_info_screen_effect
 import pokedex.shared.generated.resources.ability_detail_info_screen_game_description
+import pokedex.shared.generated.resources.ability_detail_info_screen_pokemon_title
 
 // ── Screen ────────────────────────────────────────────────────────────────────
 
@@ -77,7 +78,7 @@ fun AbilityInfoScreen(
             title = stringResource(Res.string.ability_detail_info_screen_game_description),
         ) {
             AbilityTextContent(
-                text = gameDescription.orEmpty().replace("\n"," "),
+                text = gameDescription.orEmpty().replace("\n", " "),
             )
         }
 
@@ -95,13 +96,18 @@ fun AbilityInfoScreen(
             }
         }
 
-        // ── Pokémon with ability ────────────────────────────────────────
+        AbilitySectionCard(
+            title = stringResource(Res.string.ability_detail_info_screen_pokemon_title),
+        ) {
+            // ── Pokémon with ability ────────────────────────────────────────
+            PokemonFlowRow(
+                pokemonList = pokemonList,
+                itemsPerRow = pokemonItemsPerRow,
+                onPokemonClick = onPokemonClick,
+            )
+        }
 
-        PokemonFlowRow(
-            pokemonList = pokemonList,
-            itemsPerRow = pokemonItemsPerRow,
-            onPokemonClick = onPokemonClick,
-        )
+
     }
 }
 
@@ -276,7 +282,10 @@ private fun AbilityInfoScreenPreview() {
                     PokemonDexEntry(
                         dexEntry = 1,
                         pokemonId = 1,
-                        pokemon = NamedResourceApi(name = "gastly",url = "https://pokeapi.co/api/v2/pokemon/92"),
+                        pokemon = NamedResourceApi(
+                            name = "gastly",
+                            url = "https://pokeapi.co/api/v2/pokemon/92"
+                        ),
                         imageUrl = "https://pokeapi.co/api/v2/pokemon/92/",
                     ),
                 ),

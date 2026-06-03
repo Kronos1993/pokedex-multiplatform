@@ -19,9 +19,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.kronos.mutliplatform.pokedex.components.icon.Backpack
+import com.kronos.mutliplatform.pokedex.components.icon.Berries
 import com.kronos.mutliplatform.pokedex.components.icon.DrawerPokemonTypes
 import com.kronos.mutliplatform.pokedex.components.icon.Egg
 import com.kronos.mutliplatform.pokedex.components.icon.Info
+import com.kronos.mutliplatform.pokedex.components.icon.Inventory
 import com.kronos.mutliplatform.pokedex.components.icon.Natures
 import com.kronos.mutliplatform.pokedex.components.icon.PokedexSvg
 import com.kronos.mutliplatform.pokedex.components.icon.Settings
@@ -35,8 +38,13 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
 import com.kronos.mutliplatform.pokedex.features.abilities.detail.AbilityDetailScreen
 import com.kronos.mutliplatform.pokedex.features.abilities.list.AbilityListScreen
 import com.kronos.mutliplatform.pokedex.features.about.AboutScreen
+import com.kronos.mutliplatform.pokedex.features.berries.detail.BerryDetailScreen
+import com.kronos.mutliplatform.pokedex.features.berries.list.BerryListScreen
 import com.kronos.mutliplatform.pokedex.features.egg_group.detail.EggGroupDetailScreen
 import com.kronos.mutliplatform.pokedex.features.egg_group.list.EggGroupListScreen
+import com.kronos.mutliplatform.pokedex.features.items.categories.ItemCategoryListScreen
+import com.kronos.mutliplatform.pokedex.features.items.detail.ItemDetailScreen
+import com.kronos.mutliplatform.pokedex.features.items.list.ItemListScreen
 import com.kronos.mutliplatform.pokedex.features.move.detail.MoveDetailScreen
 import com.kronos.mutliplatform.pokedex.features.move.list.MoveListScreen
 import com.kronos.mutliplatform.pokedex.features.natures.detail.NatureDetailScreen
@@ -59,8 +67,11 @@ import pokedex.shared.generated.resources.exit_dialog_yes
 import pokedex.shared.generated.resources.lang_preference_default_value
 import pokedex.shared.generated.resources.menu_abilities
 import pokedex.shared.generated.resources.menu_about
+import pokedex.shared.generated.resources.menu_berries
 import pokedex.shared.generated.resources.menu_egg_groups
 import pokedex.shared.generated.resources.menu_exit
+import pokedex.shared.generated.resources.menu_items
+import pokedex.shared.generated.resources.menu_items_categories
 import pokedex.shared.generated.resources.menu_moves
 import pokedex.shared.generated.resources.menu_natures
 import pokedex.shared.generated.resources.menu_pokedex
@@ -285,6 +296,83 @@ fun App() {
                     }
 
 
+                    composable(route = Destinations.ITEMS_CATEGORIES.name) {
+                        ItemCategoryListScreen(
+                            navController,
+                            isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            deviceScreenConfiguration = deviceScreenConfiguration,
+                        )
+                    }
+
+                    composable(
+                        route = "${Destinations.ITEMS}/{item_category}",
+                        arguments = listOf(navArgument("item_category") {
+                            type = NavType.StringType
+                        })
+                    ) { backStackEntry ->
+                        val savedStateHandle = backStackEntry.savedStateHandle
+                        val itemCategory = savedStateHandle.get<String>("item_category")
+                        ItemListScreen(
+                            itemCategory = itemCategory,
+                            navController,
+                            isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            deviceScreenConfiguration = deviceScreenConfiguration,
+                        )
+                    }
+
+                    composable(route = Destinations.ITEMS.name)
+                     {
+                        ItemListScreen(
+                            itemCategory = null,
+                            navController,
+                            isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            deviceScreenConfiguration = deviceScreenConfiguration,
+                        )
+                    }
+
+
+                    composable(
+                        route = "${Destinations.ITEM_DETAIL}/{item}",
+                        arguments = listOf(navArgument("item") {
+                            type = NavType.StringType
+                        })
+                    ) { backStackEntry ->
+                        val savedStateHandle = backStackEntry.savedStateHandle
+                        val item = savedStateHandle.get<String>("item")?:""
+                        ItemDetailScreen(
+                            item = item,
+                            navController,
+                            isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            currentLang = currentLang,
+                            deviceScreenConfiguration = deviceScreenConfiguration,
+                        )
+                    }
+
+                    composable(route = Destinations.BERRIES.name) {
+                        BerryListScreen(
+                            navController,
+                            isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            deviceScreenConfiguration = deviceScreenConfiguration,
+                        )
+                    }
+
+                    composable(
+                        route = "${Destinations.BERRY_DETAIL}/{berry}",
+                        arguments = listOf(navArgument("berry") {
+                            type = NavType.StringType
+                        })
+                    ) { backStackEntry ->
+                        val savedStateHandle = backStackEntry.savedStateHandle
+                        val berry = savedStateHandle.get<String>("berry")?:""
+                        BerryDetailScreen(
+                            berry = berry,
+                            navController,
+                            isDarkTheme == stringResource(Res.string.theme_preference_default_value),
+                            currentLang = currentLang,
+                            deviceScreenConfiguration = deviceScreenConfiguration,
+                        )
+                    }
+
                     composable(
                         route = Destinations.SETTINGS.name,
                     ) { backStackEntry ->
@@ -342,7 +430,10 @@ fun rememberNavDestinations(
     val naturesTitle = stringResource(Res.string.menu_natures)
     val settingsTitle = stringResource(Res.string.menu_settings)
     val aboutTitle = stringResource(Res.string.menu_about)
+    val itemCategoriesTitle = stringResource(Res.string.menu_items_categories)
+    val itemsTitle = stringResource(Res.string.menu_items)
     val eggGroupTitle = stringResource(Res.string.menu_egg_groups)
+    val berriesTitle = stringResource(Res.string.menu_berries)
     val exitTitle = stringResource(Res.string.menu_exit)
     val closeIconTint = MaterialTheme.colorScheme.onSurface
     val abilityIconTint = MaterialTheme.colorScheme.primary
@@ -412,6 +503,36 @@ fun rememberNavDestinations(
                     destination = Destinations.EGG_GROUPS,
                     selectedIcon = Icons.Egg,
                     unselectedIcon = Icons.Egg,
+                    onClick = defaultClick
+                )
+            )
+
+            add(
+                NavigationItem(
+                    title = itemCategoriesTitle,
+                    destination = Destinations.ITEMS_CATEGORIES,
+                    selectedIcon = Icons.Backpack,
+                    unselectedIcon = Icons.Backpack,
+                    onClick = defaultClick
+                )
+            )
+
+            add(
+                NavigationItem(
+                    title = itemsTitle,
+                    destination = Destinations.ITEMS,
+                    selectedIcon = Icons.Inventory,
+                    unselectedIcon = Icons.Inventory,
+                    onClick = defaultClick
+                )
+            )
+
+            add(
+                NavigationItem(
+                    title = berriesTitle,
+                    destination = Destinations.BERRIES,
+                    selectedIcon = Icons.Berries,
+                    unselectedIcon = Icons.Berries,
                     onClick = defaultClick
                 )
             )

@@ -106,7 +106,7 @@ fun AbilityListScreen(
 
     LaunchedEffect(Unit) {
         viewModel.getAppVersion()
-        viewModel.loadMoves()
+        viewModel.loadAbilities()
     }
 
     LaunchedEffect(errorMessage) {
@@ -131,7 +131,7 @@ fun AbilityListScreen(
                     !isLoading &&
                     abilities.isNotEmpty()
                 ) {
-                    viewModel.loadMoves()
+                    viewModel.loadAbilities()
                 }
             }
     }
@@ -184,7 +184,7 @@ fun AbilityListScreen(
                 PullToRefreshContainer(
                     innerPadding = it,
                     isRefreshing = isLoading,
-                    onRefresh = { viewModel.loadMoves(true) }
+                    onRefresh = { viewModel.loadAbilities(true) }
                 ) {
 
                     val rootModifier = Modifier
@@ -199,7 +199,7 @@ fun AbilityListScreen(
                             subtitle = stringResource(Res.string.refresh_list),
                             showRetryButton = true,
                             onRetryClick = {
-                                viewModel.loadMoves(true)
+                                viewModel.loadAbilities(true)
                             },
                             modifier = rootModifier
                         )

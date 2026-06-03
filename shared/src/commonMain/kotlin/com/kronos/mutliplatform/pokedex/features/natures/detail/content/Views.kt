@@ -15,8 +15,6 @@ import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
 import com.kronos.mutliplatform.pokedex.core.ui.components.LabelText
 import com.kronos.mutliplatform.pokedex.core.ui.components.TitleText
@@ -217,13 +216,10 @@ fun NatureSectionCard(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    Card(
+    BaseCardView(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        cardBackgroundColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        elevation = 0.dp,
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(

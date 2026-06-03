@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SpriteDto(
-    val default:String = "",
+    val default:String? = "",
     @SerialName("back_default")
     val backDefault:String? = "",
     @SerialName("back_female")

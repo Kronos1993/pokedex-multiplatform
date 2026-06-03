@@ -15,8 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.kronos.mutliplatform.pokedex.components.EmptyList
 import com.kronos.mutliplatform.pokedex.components.icon.Check
 import com.kronos.mutliplatform.pokedex.components.icon.Error
+import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
 import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
 import com.kronos.mutliplatform.pokedex.core.ui.components.LabelText
@@ -51,6 +50,7 @@ import pokedex.shared.generated.resources.move_detail_info_screen_category_title
 import pokedex.shared.generated.resources.move_detail_info_screen_description_title
 import pokedex.shared.generated.resources.move_detail_info_screen_effect_title
 import pokedex.shared.generated.resources.move_detail_info_screen_info_title
+import pokedex.shared.generated.resources.move_detail_info_screen_learn_by_title
 import pokedex.shared.generated.resources.move_detail_info_screen_power
 import pokedex.shared.generated.resources.move_detail_info_screen_pp
 import pokedex.shared.generated.resources.move_detail_info_screen_priority
@@ -86,25 +86,27 @@ fun MoveInfoScreen(
         }
 
         MoveSectionCard(title = stringResource(Res.string.move_detail_info_screen_description_title)) {
-            MoveTextContent(text = moveInfo?.getDescription(lang).orEmpty().replace("\n"," "))
+            MoveTextContent(text = moveInfo?.getDescription(lang).orEmpty().replace("\n", " "))
         }
 
         if (!moveInfo?.getMoveEffect(lang).isNullOrBlank()) {
             MoveSectionCard(title = stringResource(Res.string.move_detail_info_screen_effect_title)) {
                 MoveTextContent(
-                    text = moveInfo.getMoveEffect(lang).replace("\n"," "),
+                    text = moveInfo.getMoveEffect(lang).replace("\n", " "),
                     maxHeight = 120.dp,
                     scrollable = true,
                 )
             }
         }
 
-        // ── Pokémon that learn this move ───────────────────────────────────
-        PokemonFlowRow(
-            pokemonList = pokemonList,
-            itemsPerRow = pokemonItemsPerRow,
-            onPokemonClick = onPokemonClick,
-        )
+        MoveSectionCard(title = stringResource(Res.string.move_detail_info_screen_learn_by_title)) {
+            // ── Pokémon that learn this move ───────────────────────────────────
+            PokemonFlowRow(
+                pokemonList = pokemonList,
+                itemsPerRow = pokemonItemsPerRow,
+                onPokemonClick = onPokemonClick,
+            )
+        }
     }
 }
 
@@ -116,13 +118,10 @@ private fun MoveSectionCard(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    Card(
+    BaseCardView(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        cardBackgroundColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        elevation = 0.dp,
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(
@@ -338,12 +337,36 @@ fun PokemonFlowRow(
 // ── Preview data ──────────────────────────────────────────────────────────────
 
 private val fakePokemonList = listOf(
-    PokemonDexEntry(dexEntry = 6,   pokemonId = 6,   imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png").apply  { pokemon = NamedResourceApi(name = "charizard") },
-    PokemonDexEntry(dexEntry = 77,  pokemonId = 77,  imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/77.png").apply  { pokemon = NamedResourceApi(name = "ponyta") },
-    PokemonDexEntry(dexEntry = 136, pokemonId = 136, imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/136.png").apply { pokemon = NamedResourceApi(name = "flareon") },
-    PokemonDexEntry(dexEntry = 146, pokemonId = 146, imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png").apply { pokemon = NamedResourceApi(name = "moltres") },
-    PokemonDexEntry(dexEntry = 244, pokemonId = 244, imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png").apply { pokemon = NamedResourceApi(name = "entei") },
-    PokemonDexEntry(dexEntry = 257, pokemonId = 257, imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/257.png").apply { pokemon = NamedResourceApi(name = "blaziken") },
+    PokemonDexEntry(
+        dexEntry = 6,
+        pokemonId = 6,
+        imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
+    ).apply { pokemon = NamedResourceApi(name = "charizard") },
+    PokemonDexEntry(
+        dexEntry = 77,
+        pokemonId = 77,
+        imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/77.png"
+    ).apply { pokemon = NamedResourceApi(name = "ponyta") },
+    PokemonDexEntry(
+        dexEntry = 136,
+        pokemonId = 136,
+        imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/136.png"
+    ).apply { pokemon = NamedResourceApi(name = "flareon") },
+    PokemonDexEntry(
+        dexEntry = 146,
+        pokemonId = 146,
+        imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+    ).apply { pokemon = NamedResourceApi(name = "moltres") },
+    PokemonDexEntry(
+        dexEntry = 244,
+        pokemonId = 244,
+        imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+    ).apply { pokemon = NamedResourceApi(name = "entei") },
+    PokemonDexEntry(
+        dexEntry = 257,
+        pokemonId = 257,
+        imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/257.png"
+    ).apply { pokemon = NamedResourceApi(name = "blaziken") },
 )
 
 private val fakeMoveInfo = MoveInfo(
@@ -409,7 +432,12 @@ private fun MoveInfoScreenPreview(
             MoveInfoScreen(
                 moveInfo = fakeMoveInfo,
                 lang = "en",
-                pokemonList = fakeMoveInfo.learnedBy.map {  PokemonDexEntry(1, pokemon = NamedResourceApi(it.name)) },
+                pokemonList = fakeMoveInfo.learnedBy.map {
+                    PokemonDexEntry(
+                        1,
+                        pokemon = NamedResourceApi(it.name)
+                    )
+                },
                 onPokemonClick = {},
             )
         }

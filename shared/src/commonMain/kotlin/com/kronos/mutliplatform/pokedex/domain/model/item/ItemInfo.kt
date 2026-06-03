@@ -11,13 +11,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ItemInfo(
     var attributes:List<NamedResourceApi> = listOf(),
-    var babyTriggerFor: ResourceApi = ResourceApi(),
+    var babyTriggerFor: ResourceApi? = ResourceApi(),
     var category: NamedResourceApi = NamedResourceApi(),
     var cost:Int = 0,
     var effectEntries:List<EffectEntry> = listOf(),
     var descriptions:List<FlavorText> = listOf(),
-    var flingEffect: NamedResourceApi = NamedResourceApi(),
-    var flingPower:Int = 0,
+    var flingEffect: NamedResourceApi? = NamedResourceApi(),
+    var flingPower:Int? = 0,
     var heldByPokemon:List<NamedResourceApi> = listOf(),
     var id:Int = 0,
     var name:String = "",
@@ -32,4 +32,37 @@ data class ItemInfo(
             ?: names.firstOrNull()?.name
             ?: name
     }
+
+    fun getEffect(language: String): String {
+        return effectEntries
+            .firstOrNull { it.language == language }
+            ?.effect?.replace("\n", " ")
+            ?: effectEntries
+                .firstOrNull { it.language == "en" }
+                ?.effect?.replace("\n"," " )
+            ?: ""
+    }
+
+    fun getShortEffect(language: String): String {
+        return effectEntries
+            .firstOrNull { it.language == language }
+            ?.shortEffect?.replace("\n", " ")
+            ?: effectEntries
+                .firstOrNull { it.language == "en" }
+                ?.shortEffect?.replace("\n"," " )
+            ?: ""
+    }
+
+    fun getDescription(language: String): String {
+        return descriptions
+            .firstOrNull { it.language == language }
+            ?.description
+            ?: descriptions.firstOrNull()?.description?.replace("\n", " ")
+            ?: descriptions
+                .firstOrNull { it.language == "en" }
+                ?.description
+            ?: descriptions.firstOrNull()?.description?.replace("\n", " ")
+            ?: ""
+    }
+
 }

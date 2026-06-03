@@ -4,8 +4,13 @@ import com.kronos.mutliplatform.pokedex.AppViewModel
 import com.kronos.mutliplatform.pokedex.features.abilities.detail.AbilityDetailScreenViewModel
 import com.kronos.mutliplatform.pokedex.features.abilities.list.AbilityListScreenViewModel
 import com.kronos.mutliplatform.pokedex.features.about.AboutViewModel
+import com.kronos.mutliplatform.pokedex.features.berries.detail.BerryDetailScreenViewModel
+import com.kronos.mutliplatform.pokedex.features.berries.list.BerryListScreenViewModel
 import com.kronos.mutliplatform.pokedex.features.egg_group.detail.EggGroupDetailScreenViewModel
 import com.kronos.mutliplatform.pokedex.features.egg_group.list.EggGroupListScreenViewModel
+import com.kronos.mutliplatform.pokedex.features.items.categories.ItemCategoryListScreenViewModel
+import com.kronos.mutliplatform.pokedex.features.items.detail.ItemDetailScreenViewModel
+import com.kronos.mutliplatform.pokedex.features.items.list.ItemListScreenViewModel
 import com.kronos.mutliplatform.pokedex.features.move.detail.MoveDetailScreenViewModel
 import com.kronos.mutliplatform.pokedex.features.move.list.MoveListScreenViewModel
 import com.kronos.mutliplatform.pokedex.features.natures.detail.NatureDetailScreenViewModel
@@ -37,5 +42,10 @@ val viewModelModule = module {
     viewModelOf(::NatureDetailScreenViewModel)
     viewModelOf(::EggGroupListScreenViewModel)
     viewModelOf(::EggGroupDetailScreenViewModel)
+    viewModelOf(::ItemCategoryListScreenViewModel)
+    viewModelOf(::ItemListScreenViewModel)
+    viewModelOf(::ItemDetailScreenViewModel)
+    viewModelOf(::BerryListScreenViewModel)
+    viewModelOf(::BerryDetailScreenViewModel)
     viewModelOf(::AboutViewModel)
 }

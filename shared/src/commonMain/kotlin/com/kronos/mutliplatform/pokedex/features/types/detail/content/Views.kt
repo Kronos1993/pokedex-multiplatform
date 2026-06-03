@@ -1,5 +1,6 @@
 package com.kronos.mutliplatform.pokedex.features.types.detail.content
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,8 +19,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kronos.mutliplatform.pokedex.components.icon.Shield
 import com.kronos.mutliplatform.pokedex.components.icon.Sword
+import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
 import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
 import com.kronos.mutliplatform.pokedex.core.ui.components.LabelText
@@ -158,11 +158,10 @@ private fun DamageSectionCard(
 ) {
     if (groups.isEmpty()) return
 
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = androidx.compose.foundation.BorderStroke(
+    BaseCardView(
+        cardBackgroundColor = MaterialTheme.colorScheme.surface,
+        elevation = 0.dp,
+        borderStroke = BorderStroke(
             width = 0.5.dp,
             color = MaterialTheme.colorScheme.outlineVariant,
         ),

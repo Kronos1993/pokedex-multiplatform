@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kronos.mutliplatform.pokedex.components.EmptyList
+import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
 import com.kronos.mutliplatform.pokedex.core.ui.components.TitleText
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
@@ -53,37 +54,67 @@ fun EggGroupInfoScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         // ── Pokémon that learn this move ───────────────────────────────────
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(width = 4.dp, height = 16.dp)
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(MaterialTheme.colorScheme.primary),
-            )
-            TitleText(
-                text = stringResource(Res.string.egg_group_detail_info_screen_pokemon_title),
-                size = ComponentSize.SMALL,
-                fontWeight = FontWeight.Bold,
-                textColor = MaterialTheme.colorScheme.onSurface,
+        AbilitySectionCard(
+            title = stringResource(Res.string.egg_group_detail_info_screen_pokemon_title)
+        ){
+            PokemonFlowRow(
+                pokemonList = pokemonList,
+                itemsPerRow = pokemonItemsPerRow,
+                onPokemonClick = onPokemonClick,
             )
         }
+    }
+}
 
-        HorizontalDivider(
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-            thickness = 1.dp,
-        )
+@Composable
+private fun AbilitySectionCard(
+    title: String,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    BaseCardView(
+        modifier = modifier.fillMaxWidth(),
+        cardBackgroundColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        elevation = 0.dp,
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
 
-        PokemonFlowRow(
-            pokemonList = pokemonList,
-            itemsPerRow = pokemonItemsPerRow,
-            onPokemonClick = onPokemonClick,
-        )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+
+                Box(
+                    modifier = Modifier
+                        .size(width = 4.dp, height = 16.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.primary),
+                )
+
+                TitleText(
+                    text = title,
+                    size = ComponentSize.SMALL,
+                    fontWeight = FontWeight.Bold,
+                    textColor = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                thickness = 1.dp,
+            )
+
+            Box(
+                modifier = Modifier.padding(16.dp),
+            ) {
+                content()
+            }
+        }
     }
 }
 

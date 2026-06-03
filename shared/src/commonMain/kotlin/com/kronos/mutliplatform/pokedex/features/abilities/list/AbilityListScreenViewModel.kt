@@ -36,7 +36,7 @@ class AbilityListScreenViewModel(
         _abilities.value = _abilities.value.plus(results)
     }
 
-    fun loadMoves(reset: Boolean = false) {
+    fun loadAbilities(reset: Boolean = false) {
         _loading.value = true
         if (reset) {
             setLimit(50)
