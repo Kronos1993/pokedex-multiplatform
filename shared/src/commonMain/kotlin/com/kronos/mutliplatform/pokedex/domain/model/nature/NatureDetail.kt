@@ -12,12 +12,17 @@ data class NatureDetail(
     var name: String = "",
     var names: List<Name> = listOf(),
 ) {
+
     fun getName(language: String): String {
         return names
             .firstOrNull { it.language.name == language }
             ?.name
-            ?: names.firstOrNull { it.language.name == "en" }?.name
-            ?: names.firstOrNull()?.name
+            ?: names
+                .firstOrNull { it.language.name == "en" }
+                ?.name
+            ?: names
+                .firstOrNull()
+                ?.name
             ?: name
     }
 }

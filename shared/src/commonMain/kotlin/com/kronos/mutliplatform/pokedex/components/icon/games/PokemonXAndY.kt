@@ -16,17 +16,17 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-val Games.Pokemon: ImageVector
+val Games.PokemonXAndY: ImageVector
     get() {
-        if (_pokemon != null) {
-            return _pokemon!!
+        if (_pokemonXAndY != null) {
+            return _pokemonXAndY!!
         }
-        _pokemon = Builder(
-            name = "Pokemon", 
+        _pokemonXAndY = Builder(
+            name = "PokemonXAndY", 
             defaultWidth = 800.dp, 
             defaultHeight = 800.dp, 
             viewportWidth = 269.5f, 
-            viewportHeight = 98.8f
+            viewportHeight = 120f
         ).apply {
             path(fill = linearGradient(0f to Color(0xFF0070B6), 1f to Color(0xFF1D2C5E), start = Offset(13.3f,53.52f), end = Offset(3.28f,34.86f))) {
                 moveTo(0f, 36.6f)
@@ -387,10 +387,6 @@ val Games.Pokemon: ImageVector
                 lineToRelative(3.2f, 2.8f)
                 lineToRelative(1.2f, -7.6f)
                 lineToRelative(-1f, 1.1f)
-                close()
-            }
-            path(fill = SolidColor(Color(0xFF7D7F68))) {
-                moveTo(115.7f, 47.5f)
                 close()
             }
             path(fill = SolidColor(Color(0xFFC7A008))) {
@@ -958,53 +954,259 @@ val Games.Pokemon: ImageVector
                 lineToRelative(-17.1f, 52f)
                 close()
             }
-            path(fill = SolidColor(Color.Black)) {
-                moveTo(258f, 85.3f)
-                horizontalLineToRelative(0.4f)
-                curveToRelative(0.5f, 0f, 0.9f, -0.2f, 0.9f, -0.7f)
-                curveToRelative(0f, -0.3f, -0.3f, -0.7f, -0.9f, -0.7f)
-                horizontalLineToRelative(-0.4f)
-                verticalLineToRelative(1.4f)
+            path(fill = SolidColor(Color(0xFF1D2C5E))) {
+                moveTo(103.22f, 110.73f)
+                lineTo(102.26f, 110.73f)
+                lineTo(102.26f, 113f)
+                lineTo(100.73f, 113f)
+                lineTo(100.73f, 106.68f)
+                lineTo(103.22f, 106.68f)
+                quadTo(103.97f, 106.68f, 104.5f, 106.94f)
+                quadTo(105.02f, 107.2f, 105.28f, 107.66f)
+                quadTo(105.54f, 108.12f, 105.54f, 108.72f)
+                quadTo(105.54f, 109.26f, 105.29f, 109.72f)
+                quadTo(105.04f, 110.17f, 104.51f, 110.45f)
+                quadTo(103.99f, 110.73f, 103.22f, 110.73f)
                 close()
-                moveTo(258f, 87.4f)
-                horizontalLineToRelative(-0.6f)
-                verticalLineToRelative(-3.8f)
-                curveToRelative(0.3f, -0.1f, 0.6f, -0.1f, 1.1f, -0.1f)
-                curveToRelative(0.6f, 0f, 1f, 0.1f, 1.2f, 0.3f)
-                curveToRelative(0.2f, 0.2f, 0.4f, 0.4f, 0.4f, 0.8f)
-                curveToRelative(0f, 0.5f, -0.3f, 0.8f, -0.7f, 0.9f)
-                curveToRelative(0.3f, 0.1f, 0.6f, 0.4f, 0.6f, 0.9f)
-                curveToRelative(0.1f, 0.6f, 0.2f, 0.8f, 0.2f, 0.9f)
-                horizontalLineToRelative(-0.6f)
-                curveToRelative(-0.1f, -0.1f, -0.2f, -0.5f, -0.3f, -1f)
-                curveToRelative(-0.1f, -0.5f, -0.3f, -0.7f, -0.8f, -0.7f)
-                horizontalLineToRelative(-0.5f)
-                verticalLineToRelative(1.8f)
+                moveTo(103.97f, 108.72f)
+                quadTo(103.97f, 108.34f, 103.76f, 108.13f)
+                quadTo(103.54f, 107.92f, 103.1f, 107.92f)
+                lineTo(102.26f, 107.92f)
+                lineTo(102.26f, 109.51f)
+                lineTo(103.1f, 109.51f)
+                quadTo(103.54f, 109.51f, 103.76f, 109.3f)
+                quadTo(103.97f, 109.09f, 103.97f, 108.72f)
                 close()
-                moveTo(258.7f, 82.5f)
-                curveToRelative(-1.5f, 0f, -2.7f, 1.3f, -2.7f, 2.9f)
-                curveToRelative(0f, 1.6f, 1.2f, 2.9f, 2.8f, 2.9f)
-                curveToRelative(1.5f, 0f, 2.7f, -1.3f, 2.7f, -2.9f)
-                curveToRelative(-0.1f, -1.6f, -1.3f, -2.9f, -2.8f, -2.9f)
+            }
+            path(fill = SolidColor(Color(0xFF1D2C5E))) {
+                moveTo(106.04f, 110.49f)
+                quadTo(106.04f, 109.71f, 106.38f, 109.13f)
+                quadTo(106.72f, 108.54f, 107.31f, 108.22f)
+                quadTo(107.91f, 107.91f, 108.65f, 107.91f)
+                quadTo(109.38f, 107.91f, 109.98f, 108.22f)
+                quadTo(110.57f, 108.54f, 110.91f, 109.13f)
+                quadTo(111.26f, 109.71f, 111.26f, 110.49f)
+                quadTo(111.26f, 111.26f, 110.91f, 111.85f)
+                quadTo(110.56f, 112.44f, 109.96f, 112.76f)
+                quadTo(109.37f, 113.07f, 108.63f, 113.07f)
+                quadTo(107.89f, 113.07f, 107.3f, 112.76f)
+                quadTo(106.71f, 112.44f, 106.37f, 111.86f)
+                quadTo(106.04f, 111.27f, 106.04f, 110.49f)
                 close()
-                moveTo(258.7f, 82f)
-                curveToRelative(1.9f, 0f, 3.3f, 1.5f, 3.3f, 3.4f)
-                reflectiveCurveToRelative(-1.5f, 3.4f, -3.4f, 3.4f)
-                reflectiveCurveToRelative(-3.4f, -1.5f, -3.4f, -3.4f)
-                curveToRelative(0.1f, -1.9f, 1.6f, -3.4f, 3.5f, -3.4f)
+                moveTo(109.69f, 110.49f)
+                quadTo(109.69f, 109.89f, 109.39f, 109.56f)
+                quadTo(109.09f, 109.24f, 108.65f, 109.24f)
+                quadTo(108.2f, 109.24f, 107.9f, 109.56f)
+                quadTo(107.6f, 109.88f, 107.6f, 110.49f)
+                quadTo(107.6f, 111.09f, 107.89f, 111.42f)
+                quadTo(108.19f, 111.74f, 108.63f, 111.74f)
+                quadTo(109.07f, 111.74f, 109.38f, 111.42f)
+                quadTo(109.69f, 111.09f, 109.69f, 110.49f)
+                close()
+            }
+            path(fill = SolidColor(Color(0xFF1D2C5E))) {
+                moveTo(115.14f, 113f)
+                lineTo(113.61f, 110.89f)
+                lineTo(113.61f, 113f)
+                lineTo(112.07f, 113f)
+                lineTo(112.07f, 106.34f)
+                lineTo(113.61f, 106.34f)
+                lineTo(113.61f, 110.02f)
+                lineTo(115.13f, 107.98f)
+                lineTo(117.03f, 107.98f)
+                lineTo(114.95f, 110.5f)
+                lineTo(117.05f, 113f)
+                close()
+            }
+            path(fill = SolidColor(Color(0xFF1D2C5E))) {
+                moveTo(122.34f, 110.86f)
+                lineTo(118.86f, 110.86f)
+                quadTo(118.9f, 111.33f, 119.16f, 111.57f)
+                quadTo(119.43f, 111.82f, 119.82f, 111.82f)
+                quadTo(120.39f, 111.82f, 120.62f, 111.33f)
+                lineTo(122.25f, 111.33f)
+                quadTo(122.13f, 111.83f, 121.8f, 112.23f)
+                quadTo(121.47f, 112.62f, 120.98f, 112.85f)
+                quadTo(120.48f, 113.07f, 119.87f, 113.07f)
+                quadTo(119.13f, 113.07f, 118.56f, 112.76f)
+                quadTo(117.98f, 112.44f, 117.65f, 111.86f)
+                quadTo(117.33f, 111.27f, 117.33f, 110.49f)
+                quadTo(117.33f, 109.71f, 117.65f, 109.12f)
+                quadTo(117.97f, 108.54f, 118.55f, 108.22f)
+                quadTo(119.12f, 107.91f, 119.87f, 107.91f)
+                quadTo(120.6f, 107.91f, 121.17f, 108.21f)
+                quadTo(121.73f, 108.52f, 122.05f, 109.08f)
+                quadTo(122.37f, 109.65f, 122.37f, 110.41f)
+                quadTo(122.37f, 110.62f, 122.34f, 110.86f)
+                close()
+                moveTo(120.8f, 110f)
+                quadTo(120.8f, 109.61f, 120.53f, 109.37f)
+                quadTo(120.26f, 109.14f, 119.85f, 109.14f)
+                quadTo(119.46f, 109.14f, 119.2f, 109.36f)
+                quadTo(118.93f, 109.59f, 118.87f, 110f)
+                close()
+                moveTo(120.9f, 106.69f)
+                lineTo(118.74f, 107.6f)
+                lineTo(118.74f, 106.54f)
+                lineTo(120.9f, 105.49f)
+                close()
+            }
+            path(fill = SolidColor(Color(0xFF1D2C5E))) {
+                moveTo(131.63f, 110.07f)
+                lineTo(131.63f, 113f)
+                lineTo(130.1f, 113f)
+                lineTo(130.1f, 110.27f)
+                quadTo(130.1f, 109.79f, 129.85f, 109.52f)
+                quadTo(129.59f, 109.26f, 129.14f, 109.26f)
+                quadTo(128.69f, 109.26f, 128.43f, 109.52f)
+                quadTo(128.18f, 109.79f, 128.18f, 110.27f)
+                lineTo(128.18f, 113f)
+                lineTo(126.65f, 113f)
+                lineTo(126.65f, 110.27f)
+                quadTo(126.65f, 109.79f, 126.39f, 109.52f)
+                quadTo(126.13f, 109.26f, 125.68f, 109.26f)
+                quadTo(125.23f, 109.26f, 124.98f, 109.52f)
+                quadTo(124.72f, 109.79f, 124.72f, 110.27f)
+                lineTo(124.72f, 113f)
+                lineTo(123.18f, 113f)
+                lineTo(123.18f, 107.98f)
+                lineTo(124.72f, 107.98f)
+                lineTo(124.72f, 108.61f)
+                quadTo(124.95f, 108.29f, 125.33f, 108.11f)
+                quadTo(125.71f, 107.92f, 126.19f, 107.92f)
+                quadTo(126.75f, 107.92f, 127.2f, 108.17f)
+                quadTo(127.65f, 108.41f, 127.9f, 108.86f)
+                quadTo(128.16f, 108.45f, 128.61f, 108.18f)
+                quadTo(129.06f, 107.92f, 129.59f, 107.92f)
+                quadTo(130.52f, 107.92f, 131.08f, 108.49f)
+                quadTo(131.63f, 109.06f, 131.63f, 110.07f)
+                close()
+            }
+            path(fill = SolidColor(Color(0xFF1D2C5E))) {
+                moveTo(132.41f, 110.49f)
+                quadTo(132.41f, 109.71f, 132.75f, 109.13f)
+                quadTo(133.09f, 108.54f, 133.68f, 108.22f)
+                quadTo(134.28f, 107.91f, 135.02f, 107.91f)
+                quadTo(135.75f, 107.91f, 136.35f, 108.22f)
+                quadTo(136.94f, 108.54f, 137.28f, 109.13f)
+                quadTo(137.63f, 109.71f, 137.63f, 110.49f)
+                quadTo(137.63f, 111.26f, 137.28f, 111.85f)
+                quadTo(136.93f, 112.44f, 136.33f, 112.76f)
+                quadTo(135.74f, 113.07f, 135f, 113.07f)
+                quadTo(134.26f, 113.07f, 133.67f, 112.76f)
+                quadTo(133.08f, 112.44f, 132.74f, 111.86f)
+                quadTo(132.41f, 111.27f, 132.41f, 110.49f)
+                close()
+                moveTo(136.06f, 110.49f)
+                quadTo(136.06f, 109.89f, 135.76f, 109.56f)
+                quadTo(135.46f, 109.24f, 135.02f, 109.24f)
+                quadTo(134.57f, 109.24f, 134.27f, 109.56f)
+                quadTo(133.97f, 109.88f, 133.97f, 110.49f)
+                quadTo(133.97f, 111.09f, 134.26f, 111.42f)
+                quadTo(134.56f, 111.74f, 135f, 111.74f)
+                quadTo(135.44f, 111.74f, 135.75f, 111.42f)
+                quadTo(136.06f, 111.09f, 136.06f, 110.49f)
+                close()
+            }
+            path(fill = SolidColor(Color(0xFF1D2C5E))) {
+                moveTo(143.44f, 110.07f)
+                lineTo(143.44f, 113f)
+                lineTo(141.91f, 113f)
+                lineTo(141.91f, 110.27f)
+                quadTo(141.91f, 109.77f, 141.65f, 109.49f)
+                quadTo(141.39f, 109.21f, 140.95f, 109.21f)
+                quadTo(140.51f, 109.21f, 140.24f, 109.49f)
+                quadTo(139.98f, 109.77f, 139.98f, 110.27f)
+                lineTo(139.98f, 113f)
+                lineTo(138.44f, 113f)
+                lineTo(138.44f, 107.98f)
+                lineTo(139.98f, 107.98f)
+                lineTo(139.98f, 108.64f)
+                quadTo(140.22f, 108.31f, 140.61f, 108.12f)
+                quadTo(141.01f, 107.92f, 141.5f, 107.92f)
+                quadTo(142.39f, 107.92f, 142.91f, 108.5f)
+                quadTo(143.44f, 109.07f, 143.44f, 110.07f)
+                close()
+            }
+            path(fill = SolidColor(Color(0xFF1D2C5E))) {
+                moveTo(150.29f, 113f)
+                lineTo(149f, 111.07f)
+                lineTo(147.87f, 113f)
+                lineTo(146.12f, 113f)
+                lineTo(148.15f, 109.79f)
+                lineTo(146.08f, 106.68f)
+                lineTo(147.87f, 106.68f)
+                lineTo(149.14f, 108.59f)
+                lineTo(150.25f, 106.68f)
+                lineTo(152f, 106.68f)
+                lineTo(149.99f, 109.87f)
+                lineTo(152.08f, 113f)
+                close()
+            }
+            path(fill = SolidColor(Color(0xFF1D2C5E))) {
+                moveTo(159.59f, 113f)
+                lineTo(159.01f, 112.43f)
+                quadTo(158.14f, 113.1f, 156.92f, 113.1f)
+                quadTo(156.19f, 113.1f, 155.65f, 112.86f)
+                quadTo(155.11f, 112.62f, 154.82f, 112.19f)
+                quadTo(154.53f, 111.75f, 154.53f, 111.16f)
+                quadTo(154.53f, 110.57f, 154.85f, 110.09f)
+                quadTo(155.17f, 109.61f, 155.81f, 109.3f)
+                quadTo(155.57f, 109.01f, 155.47f, 108.75f)
+                quadTo(155.37f, 108.48f, 155.37f, 108.17f)
+                quadTo(155.37f, 107.72f, 155.61f, 107.35f)
+                quadTo(155.84f, 106.98f, 156.29f, 106.77f)
+                quadTo(156.73f, 106.56f, 157.34f, 106.56f)
+                quadTo(157.96f, 106.56f, 158.4f, 106.78f)
+                quadTo(158.83f, 107.01f, 159.04f, 107.38f)
+                quadTo(159.26f, 107.76f, 159.24f, 108.21f)
+                lineTo(157.79f, 108.21f)
+                quadTo(157.8f, 107.97f, 157.67f, 107.84f)
+                quadTo(157.54f, 107.71f, 157.33f, 107.71f)
+                quadTo(157.11f, 107.71f, 156.97f, 107.83f)
+                quadTo(156.82f, 107.96f, 156.82f, 108.16f)
+                quadTo(156.82f, 108.35f, 156.94f, 108.55f)
+                quadTo(157.07f, 108.76f, 157.33f, 109.03f)
+                lineTo(158.87f, 110.53f)
+                quadTo(158.88f, 110.49f, 158.91f, 110.43f)
+                quadTo(158.95f, 110.36f, 158.98f, 110.28f)
+                lineTo(159.32f, 109.71f)
+                lineTo(160.85f, 109.71f)
+                lineTo(160.42f, 110.5f)
+                quadTo(160.18f, 111.03f, 159.86f, 111.51f)
+                lineTo(161.39f, 113f)
+                close()
+                moveTo(158.06f, 111.51f)
+                lineTo(156.66f, 110.16f)
+                quadTo(156.01f, 110.49f, 156.01f, 111.06f)
+                quadTo(156.01f, 111.4f, 156.28f, 111.63f)
+                quadTo(156.54f, 111.86f, 156.99f, 111.86f)
+                quadTo(157.6f, 111.86f, 158.06f, 111.51f)
+                close()
+            }
+            path(fill = SolidColor(Color(0xFF1D2C5E))) {
+                moveTo(169.27f, 106.68f)
+                lineTo(167.08f, 110.91f)
+                lineTo(167.08f, 113f)
+                lineTo(165.54f, 113f)
+                lineTo(165.54f, 110.91f)
+                lineTo(163.36f, 106.68f)
+                lineTo(165.1f, 106.68f)
+                lineTo(166.33f, 109.33f)
+                lineTo(167.54f, 106.68f)
                 close()
             }
         }
         .build()
-        return _pokemon!!
+        return _pokemonXAndY!!
     }
 
-private var _pokemon: ImageVector? = null
+private var _pokemonXAndY: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box(modifier = Modifier.padding(12.dp)) {
-        Image(imageVector = Games.Pokemon, contentDescription = null)
+        Image(imageVector = Games.PokemonXAndY, contentDescription = null)
     }
 }

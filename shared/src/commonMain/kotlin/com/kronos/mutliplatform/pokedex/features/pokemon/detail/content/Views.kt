@@ -141,31 +141,29 @@ import com.kronos.mutliplatform.pokedex.components.icon.Steel
 import com.kronos.mutliplatform.pokedex.components.icon.TmDisk
 import com.kronos.mutliplatform.pokedex.components.icon.UpArrow
 import com.kronos.mutliplatform.pokedex.components.icon.Water
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameBdsp
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameBlack2White2
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameBlackWhite
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameColosseum
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameCrystal
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameDiamondPearl
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameEmerald
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameFireredLeafgreen
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameGoldSilver
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameHeartgoldSoulsilver
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameLegendsArceus
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameLgpe
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameOras
-import com.kronos.mutliplatform.pokedex.components.icon.games.GamePlatinum
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameRedBlue
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameRubySapphire
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameScarletViolet
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameSunMoon
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameSwordShield
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameUsum
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameXd
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameXy
-import com.kronos.mutliplatform.pokedex.components.icon.games.GameYellow
 import com.kronos.mutliplatform.pokedex.components.icon.games.Games
 import com.kronos.mutliplatform.pokedex.components.icon.games.Pokemon
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonBlack2AndWhite2
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonBlackAndWhite
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonBrilliantDiamondAndShiningPearl
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonCrystal
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonDiamondAndPearl
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonEmerald
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonFireredAndLeafgreen
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonGoldAndSilver
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonHeartgoldAndSoulsilver
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonLegendsArceus
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonLetsGoPikachuAndEevee
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonOmegaRubyAndAlphaSapphire
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonPlatinum
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonRedAndBlue
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonRubyAndSapphire
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonScarletAndViolet
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonSunAndMoon
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonSwordAndShield
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonUltraSunAndUltraMoon
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonXAndY
+import com.kronos.mutliplatform.pokedex.components.icon.games.PokemonYellow
 import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
 import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
@@ -1754,49 +1752,47 @@ fun PokemonGameGridItem(
 
 fun gameIcon(gameName: String): ImageVector {
     return when (gameName.lowercase()) {
-        "red" -> Games.GameRedBlue
-        "blue" -> Games.GameRedBlue
-        "yellow" -> Games.GameYellow
-        "gold" -> Games.GameGoldSilver
-        "silver" -> Games.GameGoldSilver
-        "crystal" -> Games.GameCrystal
-        "ruby" -> Games.GameRubySapphire
-        "sapphire" -> Games.GameRubySapphire
-        "emerald" -> Games.GameEmerald
-        "firered" -> Games.GameFireredLeafgreen
-        "leafgreen" -> Games.GameFireredLeafgreen
-        "diamond" -> Games.GameDiamondPearl
-        "pearl" -> Games.GameDiamondPearl
-        "platinum" -> Games.GamePlatinum
-        "heartgold" -> Games.GameHeartgoldSoulsilver
-        "soulsilver" -> Games.GameHeartgoldSoulsilver
-        "black" -> Games.GameBlackWhite
-        "white" -> Games.GameBlackWhite
-        "colosseum" -> Games.GameColosseum
-        "xd" -> Games.GameXd
-        "black-2" -> Games.GameBlack2White2
-        "white-2" -> Games.GameBlack2White2
-        "x" -> Games.GameXy
-        "y" -> Games.GameXy
-        "omega-ruby" -> Games.GameOras
-        "alpha-sapphire" -> Games.GameOras
-        "sun" -> Games.GameSunMoon
-        "moon" -> Games.GameSunMoon
-        "ultra-sun" -> Games.GameUsum
-        "ultra-moon" -> Games.GameUsum
-        "lets-go-pikachu" -> Games.GameLgpe
-        "lets-go-eevee" -> Games.GameLgpe
-        "sword" -> Games.GameSwordShield
-        "shield" -> Games.GameSwordShield
-        "the-isle-of-armor" -> Games.GameSwordShield
-        "the-crown-tundra" -> Games.GameSwordShield
-        "brilliant-diamond" -> Games.GameBdsp
-        "shining-pearl" -> Games.GameBdsp
-        "legends-arceus" -> Games.GameLegendsArceus
-        "scarlet" -> Games.GameScarletViolet
-        "violet" -> Games.GameScarletViolet
-        "the-teal-mask" -> Games.GameScarletViolet
-        "the-indigo-disk" -> Games.GameScarletViolet
+        "red" -> Games.PokemonRedAndBlue
+        "blue" -> Games.PokemonRedAndBlue
+        "yellow" -> Games.PokemonYellow
+        "gold" -> Games.PokemonGoldAndSilver
+        "silver" -> Games.PokemonGoldAndSilver
+        "crystal" -> Games.PokemonCrystal
+        "ruby" -> Games.PokemonRubyAndSapphire
+        "sapphire" -> Games.PokemonRubyAndSapphire
+        "emerald" -> Games.PokemonEmerald
+        "firered" -> Games.PokemonFireredAndLeafgreen
+        "leafgreen" -> Games.PokemonFireredAndLeafgreen
+        "diamond" -> Games.PokemonDiamondAndPearl
+        "pearl" -> Games.PokemonDiamondAndPearl
+        "platinum" -> Games.PokemonPlatinum
+        "heartgold" -> Games.PokemonHeartgoldAndSoulsilver
+        "soulsilver" -> Games.PokemonHeartgoldAndSoulsilver
+        "black" -> Games.PokemonBlackAndWhite
+        "white" -> Games.PokemonBlackAndWhite
+        "black-2" -> Games.PokemonBlack2AndWhite2
+        "white-2" -> Games.PokemonBlack2AndWhite2
+        "x" -> Games.PokemonXAndY
+        "y" -> Games.PokemonXAndY
+        "omega-ruby" -> Games.PokemonOmegaRubyAndAlphaSapphire
+        "alpha-sapphire" -> Games.PokemonOmegaRubyAndAlphaSapphire
+        "sun" -> Games.PokemonSunAndMoon
+        "moon" -> Games.PokemonSunAndMoon
+        "ultra-sun" -> Games.PokemonUltraSunAndUltraMoon
+        "ultra-moon" -> Games.PokemonUltraSunAndUltraMoon
+        "lets-go-pikachu" -> Games.PokemonLetsGoPikachuAndEevee
+        "lets-go-eevee" -> Games.PokemonLetsGoPikachuAndEevee
+        "sword" -> Games.PokemonSwordAndShield
+        "shield" -> Games.PokemonSwordAndShield
+        "the-isle-of-armor" -> Games.PokemonSwordAndShield
+        "the-crown-tundra" -> Games.PokemonSwordAndShield
+        "brilliant-diamond" -> Games.PokemonBrilliantDiamondAndShiningPearl
+        "shining-pearl" -> Games.PokemonBrilliantDiamondAndShiningPearl
+        "legends-arceus" -> Games.PokemonLegendsArceus
+        "scarlet" -> Games.PokemonScarletAndViolet
+        "violet" -> Games.PokemonScarletAndViolet
+        "the-teal-mask" -> Games.PokemonScarletAndViolet
+        "the-indigo-disk" -> Games.PokemonScarletAndViolet
         else -> Games.Pokemon
     }
 }

@@ -10,46 +10,63 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ItemInfo(
-    var attributes:List<NamedResourceApi> = listOf(),
+    var attributes: List<NamedResourceApi> = listOf(),
     var babyTriggerFor: ResourceApi? = ResourceApi(),
     var category: NamedResourceApi = NamedResourceApi(),
-    var cost:Int = 0,
-    var effectEntries:List<EffectEntry> = listOf(),
-    var descriptions:List<FlavorText> = listOf(),
+    var cost: Int = 0,
+    var effectEntries: List<EffectEntry> = listOf(),
+    var descriptions: List<FlavorText> = listOf(),
     var flingEffect: NamedResourceApi? = NamedResourceApi(),
-    var flingPower:Int? = 0,
-    var heldByPokemon:List<NamedResourceApi> = listOf(),
-    var id:Int = 0,
-    var name:String = "",
-    var names:List<Name> = listOf(),
-    var sprites:Sprite = Sprite()
-){
+    var flingPower: Int? = 0,
+    var heldByPokemon: List<NamedResourceApi> = listOf(),
+    var id: Int = 0,
+    var name: String = "",
+    var names: List<Name> = listOf(),
+    var sprites: Sprite = Sprite(),
+) {
+
     fun getName(language: String): String {
         return names
             .firstOrNull { it.language.name == language }
             ?.name
-            ?: names.firstOrNull { it.language.name == "en" }?.name
-            ?: names.firstOrNull()?.name
+            ?: names
+                .firstOrNull { it.language.name == "en" }
+                ?.name
+            ?: names
+                .firstOrNull()
+                ?.name
             ?: name
     }
 
     fun getEffect(language: String): String {
         return effectEntries
             .firstOrNull { it.language == language }
-            ?.effect?.replace("\n", " ")
+            ?.effect
+            ?.replace("\n", " ")
             ?: effectEntries
                 .firstOrNull { it.language == "en" }
-                ?.effect?.replace("\n"," " )
+                ?.effect
+                ?.replace("\n", " ")
+            ?: effectEntries
+                .firstOrNull()
+                ?.effect
+                ?.replace("\n", " ")
             ?: ""
     }
 
     fun getShortEffect(language: String): String {
         return effectEntries
             .firstOrNull { it.language == language }
-            ?.shortEffect?.replace("\n", " ")
+            ?.shortEffect
+            ?.replace("\n", " ")
             ?: effectEntries
                 .firstOrNull { it.language == "en" }
-                ?.shortEffect?.replace("\n"," " )
+                ?.shortEffect
+                ?.replace("\n", " ")
+            ?: effectEntries
+                .firstOrNull()
+                ?.shortEffect
+                ?.replace("\n", " ")
             ?: ""
     }
 
@@ -57,12 +74,15 @@ data class ItemInfo(
         return descriptions
             .firstOrNull { it.language == language }
             ?.description
-            ?: descriptions.firstOrNull()?.description?.replace("\n", " ")
+            ?.replace("\n", " ")
             ?: descriptions
                 .firstOrNull { it.language == "en" }
                 ?.description
-            ?: descriptions.firstOrNull()?.description?.replace("\n", " ")
+                ?.replace("\n", " ")
+            ?: descriptions
+                .firstOrNull()
+                ?.description
+                ?.replace("\n", " ")
             ?: ""
     }
-
 }

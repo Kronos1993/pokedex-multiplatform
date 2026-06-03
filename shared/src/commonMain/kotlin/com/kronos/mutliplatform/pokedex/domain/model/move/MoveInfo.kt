@@ -26,8 +26,12 @@ data class MoveInfo(
         return names
             .firstOrNull { it.language.name == language }
             ?.name
-            ?: names.firstOrNull { it.language.name == "en" }?.name
-            ?: names.firstOrNull()?.name
+            ?: names
+                .firstOrNull { it.language.name == "en" }
+                ?.name
+            ?: names
+                .firstOrNull()
+                ?.name
             ?: moveName
     }
 
@@ -35,34 +39,53 @@ data class MoveInfo(
         return moveFlavorText
             .firstOrNull { it.language == language }
             ?.description
-            ?: moveFlavorText.firstOrNull()?.description?.replace("\n", " ")
+            ?.replace("\n", " ")
             ?: moveFlavorText
                 .firstOrNull { it.language == "en" }
                 ?.description
-            ?: moveFlavorText.firstOrNull()?.description?.replace("\n", " ")
+                ?.replace("\n", " ")
+            ?: moveFlavorText
+                .firstOrNull()
+                ?.description
+                ?.replace("\n", " ")
             ?: ""
     }
 
     fun getMoveEffect(language: String): String {
         return effects
             .firstOrNull { it.language == language }
-            ?.effect?.replace(Regex("effect_chance"), effectChance.toString())?.replace("$", "")
+            ?.effect
+            ?.replace("effect_chance", effectChance?.toString() ?: "")
+            ?.replace("$", "")
             ?: effects
                 .firstOrNull { it.language == "en" }
-                ?.effect?.replace(Regex("effect_chance"), effectChance.toString())?.replace("$", "")
+                ?.effect
+                ?.replace("effect_chance", effectChance?.toString() ?: "")
+                ?.replace("$", "")
+            ?: effects
+                .firstOrNull()
+                ?.effect
+                ?.replace("effect_chance", effectChance?.toString() ?: "")
+                ?.replace("$", "")
             ?: ""
     }
 
     fun getShortEffect(language: String): String {
         return effects
             .firstOrNull { it.language == language }
-            ?.shortEffect?.replace(Regex("effect_chance"), effectChance.toString())
+            ?.shortEffect
+            ?.replace("effect_chance", effectChance?.toString() ?: "")
             ?.replace("$", "")
             ?: effects
                 .firstOrNull { it.language == "en" }
-                ?.shortEffect?.replace(Regex("effect_chance"), effectChance.toString())
+                ?.shortEffect
+                ?.replace("effect_chance", effectChance?.toString() ?: "")
+                ?.replace("$", "")
+            ?: effects
+                .firstOrNull()
+                ?.shortEffect
+                ?.replace("effect_chance", effectChance?.toString() ?: "")
                 ?.replace("$", "")
             ?: ""
     }
-
 }

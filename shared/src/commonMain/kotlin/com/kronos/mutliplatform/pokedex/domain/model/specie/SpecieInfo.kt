@@ -28,12 +28,20 @@ data class SpecieInfo(
     var eggGroup: List<NamedResourceApi> = listOf(),
     var genera: List<PokemonGenera> = listOf(),
 ) {
+
     fun getDescription(language: String): String {
         return flavorText
             .firstOrNull { it.language == language }
             ?.description
-            ?: flavorText.firstOrNull { it.language == "en" }?.description
-            ?: flavorText.firstOrNull()?.description
+            ?.replace("\n", " ")
+            ?: flavorText
+                .firstOrNull { it.language == "en" }
+                ?.description
+                ?.replace("\n", " ")
+            ?: flavorText
+                .firstOrNull()
+                ?.description
+                ?.replace("\n", " ")
             ?: ""
     }
 
@@ -41,17 +49,27 @@ data class SpecieInfo(
         return names
             .firstOrNull { it.language.name == language }
             ?.name
-            ?: names.firstOrNull { it.language.name == "en" }?.name
-            ?: names.firstOrNull()?.name
+            ?: names
+                .firstOrNull { it.language.name == "en" }
+                ?.name
+            ?: names
+                .firstOrNull()
+                ?.name
             ?: name
     }
 
     fun getPokemonGenera(language: String): String {
+        val lang = language.take(2)
+
         return genera
-            .firstOrNull { it.language == language.substring(0, 2) }
+            .firstOrNull { it.language == lang }
             ?.genus
-            ?: genera.firstOrNull { it.language == "en" }?.genus
-            ?: genera.firstOrNull()?.genus
+            ?: genera
+                .firstOrNull { it.language == "en" }
+                ?.genus
+            ?: genera
+                .firstOrNull()
+                ?.genus
             ?: ""
     }
 
@@ -78,6 +96,6 @@ data class SpecieInfo(
     fun calculateHatchCounter(): Int =
         hatchCounter * 255
 
-    fun calculateCaptureRate(): Double = (captureRate * 0.13).roundTo2Decimals()
-
+    fun calculateCaptureRate(): Double =
+        (captureRate * 0.13).roundTo2Decimals()
 }

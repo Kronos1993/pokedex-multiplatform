@@ -14,41 +14,52 @@ data class AbilityInfo(
     var flavorText: List<FlavorText> = listOf(),
     var effects: List<EffectEntry> = listOf(),
 ) {
+
     fun getName(language: String): String {
         return names
             .firstOrNull { it.language.name == language }
             ?.name
-            ?: names.firstOrNull { it.language.name == "en" }?.name
-            ?: names.firstOrNull()?.name
+            ?: names
+                .firstOrNull { it.language.name == "en" }
+                ?.name
+            ?: names
+                .firstOrNull()
+                ?.name
             ?: name
     }
 
     fun getDescription(language: String): String {
         return flavorText
             .firstOrNull { it.language == language }
-            ?.description?.replace("\n", " ")
-            ?: flavorText.firstOrNull()?.description?.replace("\n", " ")
+            ?.description
+            ?.replace("\n", " ")
             ?: flavorText
                 .firstOrNull { it.language == "en" }
-                ?.description?.replace("\n", " ")
-            ?: flavorText.firstOrNull()?.description?.replace("\n", " ")
+                ?.description
+                ?.replace("\n", " ")
+            ?: flavorText
+                .firstOrNull()
+                ?.description
+                ?.replace("\n", " ")
             ?: ""
     }
 
     fun getEffect(language: String): String {
         return effects
             .firstOrNull { it.language == language }
-            ?.effect?.replace("\n", " ")
-            ?.replace(
-                "\u000c",
-                " "
-            ) ?: effects
-            .firstOrNull { it.language == "en" }
-            ?.effect?.replace("\n", " ")
-            ?.replace(
-                "\u000c",
-                " "
-            ) ?: ""
+            ?.effect
+            ?.replace("\n", " ")
+            ?.replace("\u000c", " ")
+            ?: effects
+                .firstOrNull { it.language == "en" }
+                ?.effect
+                ?.replace("\n", " ")
+                ?.replace("\u000c", " ")
+            ?: effects
+                .firstOrNull()
+                ?.effect
+                ?.replace("\n", " ")
+                ?.replace("\u000c", " ")
+            ?: ""
     }
-
 }

@@ -2,15 +2,135 @@
     <string name="app_name">Pokedex</string>
 
     <string name="required_field">Este campo es obligatorio</string>
-    <string name="storage_permission_dialog_message">Es necesario el acceso al almacenamiento para guardar las localizaciones del usuario</string>
+    <string name="storage_permission_dialog_message">Se requiere permiso de acceso al almacenamiento para guardar ubicaciones del usuario</string>
     <string name="storage_permission_dialog_title">Permisos requeridos</string>
-    <string name="ok">Ok</string>
+    <string name="ok">Aceptar</string>
     <string name="cancel">Cancelar</string>
 
+    <string name="menu_exit">Salir</string>
     <string name="exit_dialog_title">Salir</string>
-    <string name="exit_dialog_body">Estas seguro que quieres salir?</string>
-    <string name="exit_dialog_yes">Yes</string>
+    <string name="exit_dialog_body">¿Estás seguro de que deseas salir?</string>
+    <string name="exit_dialog_yes">Sí</string>
     <string name="exit_dialog_no">No</string>
 
+    <string name="menu_pokedex">Pokedex</string>
+    <string name="menu_pokedex_search_placeholder">Buscar en la Pokedex...</string>
+    <string name="menu_pokemon_search_placeholder">Buscar Pokémon...</string>
+    <string name="menu_moves">Movimientos</string>
+    <string name="menu_types">Tipos</string>
+    <string name="menu_abilities">Habilidades</string>
+    <string name="menu_natures">Naturalezas</string>
+    <string name="menu_egg_groups">Grupos Huevo</string>
+    <string name="menu_items_categories">Categorías de Objetos</string>
+    <string name="menu_items">Objetos</string>
+    <string name="menu_berries">Bayas</string>
+    <string name="menu_settings">Configuración</string>
+    <string name="menu_about">Acerca de</string>
+
+    <string name="empty_pokedex_list">No se encontraron Pokédex</string>
+    <string name="empty_pokemon_list">No se encontraron Pokémon en esta Pokédex</string>
+    <string name="empty_pokemon_by_move_list">No se encontraron Pokémon</string>
+    <string name="empty_move_list">No se encontraron movimientos</string>
+    <string name="empty_pokemon_encounter_list">No se encontraron ubicaciones de encuentro</string>
+    <string name="empty_pokemon_evolution_list">No se encontraron evoluciones</string>
+    <string name="empty_pokemon_ability_list">No se encontraron habilidades</string>
+    <string name="empty_pokemon_stats_list">No hay estadísticas disponibles</string>
+    <string name="empty_pokemon_moves_list">No hay movimientos disponibles</string>
+    <string name="empty_pokemon_games_list">No hay juegos disponibles</string>
+    <string name="refresh_list">Haz clic en el botón de abajo para actualizar</string>
+
+    <string name="pokemon_detail_tab_info">Información</string>
+    <string name="pokemon_detail_tab_encounter">Encuentro</string>
+    <string name="pokemon_detail_tab_evolution">Evolución</string>
+    <string name="pokemon_detail_tab_stats">Estadísticas</string>
+    <string name="pokemon_detail_tab_moves">Movimientos</string>
+    <string name="pokemon_detail_tab_games">Juegos</string>
+
+    <string name="pokemon_detail_tab_info_base_exp">Exp. Base</string>
+    <string name="pokemon_detail_tab_info_height">Altura</string>
+    <string name="pokemon_detail_tab_info_weight">Peso</string>
+    <string name="pokemon_detail_tab_info_happiness">Felicidad</string>
+    <string name="pokemon_detail_tab_info_base_happiness">Felicidad Base</string>
+    <string name="pokemon_detail_tab_info_growth_rate">Ritmo de Crecimiento</string>
+    <string name="pokemon_detail_tab_info_habitat">Hábitat</string>
+    <string name="pokemon_detail_tab_info_genderless">Sin género</string>
+    <string name="pokemon_detail_tab_info_lower_happiness">Menor de lo normal</string>
+    <string name="pokemon_detail_tab_info_normal_happiness">Normal</string>
+    <string name="pokemon_detail_tab_info_high_happiness">Mayor de lo normal</string>
+    <string name="pokemon_detail_tab_info_egg_groups">Grupos Huevo</string>
+    <string name="pokemon_detail_tab_info_gender_rate">Ratio de Género</string>
+    <string name="pokemon_detail_tab_info_hatch_counter">Contador de Eclosión</string>
+    <string name="pokemon_detail_tab_info_hatch_counter_value">%1$s ciclos (%2$s pasos)</string>
+    <string name="pokemon_detail_tab_info_capture_rate">Ratio de Captura</string>
+    <string name="pokemon_detail_tab_info_capture_rate_value">%1$s (%2$s% PS completos con una Poké Ball)</string>
+    <string name="pokemon_detail_tab_info_no_info_available">Desconocido</string>
+    <string name="pokemon_detail_tab_encounter_min_level">Nivel Mín.</string>
+    <string name="pokemon_detail_tab_encounter_max_level">Nivel Máx.</string>
+    <string name="pokemon_detail_tab_encounter_max_chance">Probabilidad Máx.</string>
+    <string name="pokemon_detail_tab_encounter_game_version">Versión del Juego</string>
+
+    <string name="move_detail_tab_info_egg">HUEVO</string>
+    <string name="move_detail_tab_info_lv">NV</string>
+    <string name="move_detail_tab_info_tut">TUTOR</string>
+    <string name="move_detail_tab_info_tm">MT</string>
+    <string name="move_detail_tab_info_other">OTRO</string>
+    <string name="move_detail_tab_info_all">Todos</string>
+
+    <string name="move_detail_info_screen_info_title">INFORMACIÓN</string>
+    <string name="move_detail_info_screen_accuracy">Precisión</string>
+    <string name="move_detail_info_screen_pp">PP</string>
+    <string name="move_detail_info_screen_power">Potencia</string>
+    <string name="move_detail_info_screen_type">Tipo</string>
+    <string name="move_detail_info_screen_priority">Prioridad</string>
+    <string name="move_detail_info_screen_description_title">DESCRIPCIÓN</string>
+    <string name="move_detail_info_screen_category_title">CATEGORÍA</string>
+    <string name="move_detail_info_screen_effect_title">EFECTO</string>
+    <string name="move_detail_info_screen_learn_by_title">Aprendido por</string>
+
+    <string name="type_detail_info_screen_attaking_title">Atacando</string>
+    <string name="type_detail_info_screen_attaking_supper_effective">Súper efectivo contra</string>
+    <string name="type_detail_info_screen_attaking_not_very_effective">Poco efectivo contra</string>
+    <string name="type_detail_info_screen_attaking_no_effect">Sin efecto sobre</string>
+    <string name="type_detail_info_screen_defending_title">Defendiendo</string>
+    <string name="type_detail_info_screen_defending_double_damage">Recibe 2× de</string>
+    <string name="type_detail_info_screen_defending_half_damage">Recibe ½× de</string>
+    <string name="type_detail_info_screen_defending_inmune_damage">Inmune a</string>
+    <string name="type_detail_info_screen_no_data">No hay datos de compatibilidad de tipos disponibles.</string>
+
+    <string name="ability_detail_info_screen_game_description">DESCRIPCIÓN EN EL JUEGO</string>
+    <string name="ability_detail_info_screen_effect">EFECTO</string>
+    <string name="ability_detail_info_screen_pokemon_title">Pokémon</string>
+
+    <string name="nature_detail_info_screen_info_title">Estadística aumentada</string>
+    <string name="nature_detail_info_screen_increased_stat">Estadística aumentada</string>
+    <string name="nature_detail_info_screen_decreased_stat">Estadística reducida</string>
+    <string name="nature_detail_info_screen_likes_flavor">Sabor favorito</string>
+    <string name="nature_detail_info_screen_hates_flavor">Sabor que no le gusta</string>
+    <string name="nature_detail_info_screen_stat_none">—</string>
+
+    <string name="egg_group_detail_info_screen_pokemon_title">Pokémon</string>
+
+    <string name="item_detail_info_screen_info">Información</string>
+    <string name="item_detail_info_screen_held_by">Equipado por</string>
+    <string name="item_detail_info_screen_cost">Costo</string>
+    <string name="item_detail_info_screen_category">Categoría</string>
+    <string name="item_detail_info_screen_effect">Efecto</string>
+    <string name="item_detail_info_screen_effect_explanation">Explicación del Efecto</string>
+    <string name="item_detail_info_screen_description">Descripción</string>
+    <string name="item_detail_info_screen_no_description">No hay descripción disponible</string>
+    <string name="item_detail_info_screen_no_effect">No hay efecto disponible</string>
+    <string name="item_detail_info_screen_no_effect_explanation">No hay explicación detallada del efecto disponible</string>
+    <string name="item_detail_info_screen_no_pokemon">Ningún Pokémon lleva este objeto</string>
+    <string name="item_detail_info_screen_fling_power">Potencia de Lanzamiento</string>
+    <string name="item_detail_info_screen_fling_effect">Efecto de Lanzamiento</string>
+    <string name="item_detail_info_screen_none">—</string>
+
+    <string name="berry_detail_info_screen_info">Información de la Baya</string>
+    <string name="berry_detail_info_screen_flavors">Sabores de la Baya</string>
+    <string name="berry_detail_info_screen_firmness">Firmeza</string>
+    <string name="berry_detail_info_screen_growth_time">Tiempo de Crecimiento</string>
+    <string name="berry_detail_info_screen_smoothness">Suavidad</string>
+    <string name="berry_detail_info_screen_size">Tamaño</string>
+    <string name="berry_detail_info_screen_see_more">Ver Más</string>
 
 </resources>

@@ -6,22 +6,26 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TypeInfo(
-    var id:Int = 0,
-    var name:String = "",
+    var id: Int = 0,
+    var name: String = "",
     var damageRelations: DamageRelation = DamageRelation(),
-    var moves:List<NamedResourceApi> = listOf(),
-    var names:List<Name> = listOf(),
-    var pokemon:List<NamedResourceApi> = listOf(),
-){
+    var moves: List<NamedResourceApi> = listOf(),
+    var names: List<Name> = listOf(),
+    var pokemon: List<NamedResourceApi> = listOf(),
+) {
+
     fun getName(language: String): String {
         return names
             .firstOrNull { it.language.name == language }
             ?.name
-            ?: names.firstOrNull { it.language.name == "en" }?.name
-            ?: names.firstOrNull()?.name
+            ?: names
+                .firstOrNull { it.language.name == "en" }
+                ?.name
+            ?: names
+                .firstOrNull()
+                ?.name
             ?: name
     }
-
 }
 
 data class DamageRelationContainer(
