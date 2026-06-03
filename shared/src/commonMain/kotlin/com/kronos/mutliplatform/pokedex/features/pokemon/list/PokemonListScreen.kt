@@ -47,6 +47,7 @@ import pokedex.shared.generated.resources.Res
 import pokedex.shared.generated.resources.empty_pokedex_list
 import pokedex.shared.generated.resources.loading_dialog_text
 import pokedex.shared.generated.resources.loading_dialog_title
+import pokedex.shared.generated.resources.menu_pokemon_search_placeholder
 import pokedex.shared.generated.resources.refresh_list
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -114,6 +115,7 @@ fun PokemonListScreen(
                     title = screenTitle.replaceFirstChar { it.uppercase() },
                     isSearching = isSearching,
                     searchQuery = searchQuery,
+                    searchPlaceholder = stringResource(Res.string.menu_pokemon_search_placeholder),
                     searchEnabled = true,
                     onSearchQueryChange = {
                         viewModel.updateSearchQuery(it)

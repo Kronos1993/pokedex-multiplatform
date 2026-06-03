@@ -31,6 +31,20 @@ open class ParentViewModel(
     private val _lastPage = MutableStateFlow(false)
     val lastPage = _lastPage.asStateFlow()
 
+    protected val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+    private val _isSearching = MutableStateFlow(false)
+    val isSearching = _isSearching.asStateFlow()
+
+    fun updateSearchQuery(query: String) {
+        _searchQuery.value = query
+    }
+
+    fun isSearching(searching: Boolean = false){
+        _isSearching.value = searching
+    }
+
     fun setLastPage(i: Boolean) {
         _lastPage.value = i
     }

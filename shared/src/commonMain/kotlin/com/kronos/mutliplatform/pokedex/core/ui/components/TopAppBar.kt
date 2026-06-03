@@ -43,6 +43,7 @@ fun AppTopAppBar(
     actions: List<AppBarAction>,
     searchEnabled: Boolean = false,
     isSearching: Boolean = false,
+    searchPlaceholder: String = "",
     searchQuery: String = "",
     onSearchQueryChange: (String) -> Unit = {},
     onSearchToggle: () -> Unit = {},
@@ -88,7 +89,7 @@ fun AppTopAppBar(
                     },
                     placeholder = {
                         BodyText(
-                            "Search Pokémon...",
+                            searchPlaceholder,
                             textColor = MaterialTheme.colorScheme.onPrimary,
                             size = ComponentSize.LARGE
                         )
@@ -134,14 +135,25 @@ fun AppTopAppBar(
         navigationIcon = navIconButton,
         actions = {
             if (searchEnabled) {
-                IconButton(
-                    icon = Icons.Filled.Search,
-                    iconColor = MaterialTheme.colorScheme.onPrimary,
-                    onClick = {
-                        onSearchToggle()
-                    },
-                    size = ComponentSize.LARGE
-                )
+                if (isSearching){
+                    IconButton(
+                        icon = Icons.Filled.Close,
+                        iconColor = MaterialTheme.colorScheme.onPrimary,
+                        onClick = {
+                            onSearchToggle()
+                        },
+                        size = ComponentSize.LARGE
+                    )
+                }else{
+                    IconButton(
+                        icon = Icons.Filled.Search,
+                        iconColor = MaterialTheme.colorScheme.onPrimary,
+                        onClick = {
+                            onSearchToggle()
+                        },
+                        size = ComponentSize.LARGE
+                    )
+                }
             }
             actions.forEach { action ->
                 when (action) {

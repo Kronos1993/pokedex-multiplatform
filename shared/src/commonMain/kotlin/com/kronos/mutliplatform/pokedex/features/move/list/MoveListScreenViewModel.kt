@@ -12,8 +12,11 @@ import com.kronos.mutliplatform.pokedex.domain.repository.MoveRemoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class MoveListScreenViewModel(
@@ -22,8 +25,26 @@ class MoveListScreenViewModel(
     val platform: Platform
 ): ParentViewModel() {
 
-    private var _moves = MutableStateFlow(listOf<NamedResourceApi>())
-    var moves: StateFlow<List<NamedResourceApi>> = _moves.asStateFlow()
+    private val _allMoves = MutableStateFlow<List<NamedResourceApi>>(emptyList())
+
+    var moves: StateFlow<List<NamedResourceApi>> =
+        combine(_allMoves, _searchQuery) { moves, query ->
+
+            if (query.isBlank()) {
+                moves
+            } else {
+                moves.filter {
+                    it.name.contains(
+                        query.trim(),
+                        ignoreCase = true
+                    )
+                }
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     private var _appVersion = MutableStateFlow("")
     var appVersion: StateFlow<String> = _appVersion.asStateFlow()
@@ -33,7 +54,7 @@ class MoveListScreenViewModel(
     }
 
     private fun postMoves(results: List<NamedResourceApi>) {
-        _moves.value = _moves.value.plus(results)
+        _allMoves.value = _allMoves.value.plus(results)
     }
 
     fun loadMoves(reset: Boolean = false) {
@@ -51,7 +72,7 @@ class MoveListScreenViewModel(
                 .onSuccess {
                     _loading.value = (false)
                     if (reset)
-                        _moves.value = listOf()
+                        _allMoves.value = listOf()
 
                     if (it.results.isNotEmpty()) {
                         setOffset(offset.value + limit.value)

@@ -16,25 +16,17 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class PokemonListScreenViewModel(
     private val pokedexRemoteRepository: PokedexRemoteRepository,
-    var appCache: ICache,
     val platform: Platform,
     val urlProvider: UrlProvider
 ) : ParentViewModel() {
 
     private val _allPokemons = MutableStateFlow<List<PokemonDexEntry>>(emptyList())
-    private val _searchQuery = MutableStateFlow("")
-    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
-
-    private val _isSearching = MutableStateFlow(false)
-    val isSearching = _isSearching.asStateFlow()
-    private var _pokemons = MutableStateFlow(listOf<PokemonDexEntry>())
 
     val pokemons: StateFlow<List<PokemonDexEntry>> =
         combine(_allPokemons, _searchQuery) { pokemons, query ->
@@ -54,14 +46,6 @@ class PokemonListScreenViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
-
-    fun updateSearchQuery(query: String) {
-        _searchQuery.value = query
-    }
-
-    fun isSearching(searching: Boolean = false){
-        _isSearching.value = searching
-    }
 
     private fun postPokemons(pokemons: List<PokemonDexEntry>) {
         _allPokemons.value = pokemons.map {
@@ -98,7 +82,6 @@ class PokemonListScreenViewModel(
     }
 
     fun refreshPokemons(pokedex: String) {
-        _pokemons.value = listOf()
         _searchQuery.value = ""
         _allPokemons.value = emptyList()
         val err = HashMap<String, String>()

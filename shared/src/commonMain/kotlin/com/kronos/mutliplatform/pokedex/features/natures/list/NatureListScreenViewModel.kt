@@ -8,23 +8,43 @@ import com.kronos.mutliplatform.pokedex.core.util.IAppInfo
 import com.kronos.mutliplatform.pokedex.core.viewmodel.ParentViewModel
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.util.FullNetworkError
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
-import com.kronos.mutliplatform.pokedex.domain.repository.MoveRemoteRepository
 import com.kronos.mutliplatform.pokedex.domain.repository.NatureRemoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class NatureListScreenViewModel(
     private val appInfo: IAppInfo,
     private val natureRemoteRepository: NatureRemoteRepository,
     val platform: Platform
-): ParentViewModel() {
+) : ParentViewModel() {
 
-    private var _natures = MutableStateFlow(listOf<NamedResourceApi>())
-    var natures: StateFlow<List<NamedResourceApi>> = _natures.asStateFlow()
+    private val _allNatures = MutableStateFlow<List<NamedResourceApi>>(emptyList())
+
+    var natures: StateFlow<List<NamedResourceApi>> =
+        combine(_allNatures, _searchQuery) { natures, query ->
+
+            if (query.isBlank()) {
+                natures
+            } else {
+                natures.filter {
+                    it.name.contains(
+                        query.trim(),
+                        ignoreCase = true
+                    )
+                }
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     private var _appVersion = MutableStateFlow("")
     var appVersion: StateFlow<String> = _appVersion.asStateFlow()
@@ -34,7 +54,7 @@ class NatureListScreenViewModel(
     }
 
     private fun postNatures(results: List<NamedResourceApi>) {
-        _natures.value = _natures.value.plus(results)
+        _allNatures.value = _allNatures.value.plus(results)
     }
 
     fun loadNatures(reset: Boolean = false) {
@@ -52,7 +72,7 @@ class NatureListScreenViewModel(
                 .onSuccess {
                     _loading.value = (false)
                     if (reset)
-                        _natures.value = listOf()
+                        _allNatures.value = listOf()
 
                     if (it.results.isNotEmpty()) {
                         setOffset(offset.value + limit.value)

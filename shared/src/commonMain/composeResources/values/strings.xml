@@ -14,6 +14,8 @@
     <string name="exit_dialog_no">No</string>
 
     <string name="menu_pokedex">Pokedex</string>
+    <string name="menu_pokedex_search_placeholder">Search Pokedex...</string>
+    <string name="menu_pokemon_search_placeholder">Search Pokemon...</string>
     <string name="menu_moves">Moves</string>
     <string name="menu_types">Types</string>
     <string name="menu_abilities">Abilities</string>

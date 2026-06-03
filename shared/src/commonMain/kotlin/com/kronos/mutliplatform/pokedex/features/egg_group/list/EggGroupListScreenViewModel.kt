@@ -12,8 +12,11 @@ import com.kronos.mutliplatform.pokedex.domain.repository.EggGroupRemoteReposito
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class EggGroupListScreenViewModel(
@@ -22,8 +25,26 @@ class EggGroupListScreenViewModel(
     val platform: Platform
 ): ParentViewModel() {
 
-    private var _eggGroups = MutableStateFlow(listOf<NamedResourceApi>())
-    var eggGroups: StateFlow<List<NamedResourceApi>> = _eggGroups.asStateFlow()
+    private val _allEggGroups = MutableStateFlow<List<NamedResourceApi>>(emptyList())
+
+    var eggGroups: StateFlow<List<NamedResourceApi>> =
+        combine(_allEggGroups, _searchQuery) { eggGroup, query ->
+
+            if (query.isBlank()) {
+                eggGroup
+            } else {
+                eggGroup.filter {
+                    it.name.contains(
+                        query.trim(),
+                        ignoreCase = true
+                    )
+                }
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     private var _appVersion = MutableStateFlow("")
     var appVersion: StateFlow<String> = _appVersion.asStateFlow()
@@ -33,7 +54,7 @@ class EggGroupListScreenViewModel(
     }
 
     private fun postEggGroup(results: List<NamedResourceApi>) {
-        _eggGroups.value = _eggGroups.value.plus(results)
+        _allEggGroups.value = _allEggGroups.value.plus(results)
     }
 
     fun loadEggGroups(reset: Boolean = false) {
@@ -51,7 +72,7 @@ class EggGroupListScreenViewModel(
                 .onSuccess {
                     _loading.value = (false)
                     if (reset)
-                        _eggGroups.value = listOf()
+                        _allEggGroups.value = listOf()
 
                     if (it.results.isNotEmpty()) {
                         setOffset(offset.value + limit.value)

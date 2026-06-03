@@ -12,8 +12,11 @@ import com.kronos.mutliplatform.pokedex.domain.repository.BerryRemoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class BerryListScreenViewModel(
@@ -22,8 +25,26 @@ class BerryListScreenViewModel(
     val platform: Platform
 ) : ParentViewModel() {
 
-    private var _berries = MutableStateFlow(listOf<NamedResourceApi>())
-    var berries: StateFlow<List<NamedResourceApi>> = _berries.asStateFlow()
+    private val _allBerries = MutableStateFlow<List<NamedResourceApi>>(emptyList())
+
+    var berries: StateFlow<List<NamedResourceApi>> =
+        combine(_allBerries, _searchQuery) { berries, query ->
+
+            if (query.isBlank()) {
+                berries
+            } else {
+                berries.filter {
+                    it.name.contains(
+                        query.trim(),
+                        ignoreCase = true
+                    )
+                }
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     private var _appVersion = MutableStateFlow("")
     var appVersion: StateFlow<String> = _appVersion.asStateFlow()
@@ -33,7 +54,7 @@ class BerryListScreenViewModel(
     }
 
     private fun postBerries(results: List<NamedResourceApi>) {
-        _berries.value = _berries.value.plus(results)
+        _allBerries.value = _allBerries.value.plus(results)
     }
 
     fun loadBerries(reset: Boolean = false) {
@@ -51,7 +72,7 @@ class BerryListScreenViewModel(
                 .onSuccess {
                     _loading.value = (false)
                     if (reset)
-                        _berries.value = listOf()
+                        _allBerries.value = listOf()
 
                     if (it.results.isNotEmpty()) {
                         setOffset(offset.value + limit.value)

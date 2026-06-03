@@ -14,8 +14,11 @@ import com.kronos.mutliplatform.pokedex.features.pokedex.domain.PokedexItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class PokedexScreenViewModel(
@@ -25,8 +28,27 @@ class PokedexScreenViewModel(
     val platform: Platform,
 ) : ParentViewModel() {
 
-    private var _pokedex = MutableStateFlow(listOf<PokedexItem>())
-    var pokedex: StateFlow<List<PokedexItem>> = _pokedex.asStateFlow()
+    private val _allPokedex = MutableStateFlow<List<PokedexItem>>(emptyList())
+
+    val pokedex: StateFlow<List<PokedexItem>> =
+        combine(_allPokedex, _searchQuery) { pokedexList, query ->
+
+            if (query.isBlank()) {
+                pokedexList
+            } else {
+                pokedexList.filter {
+                    it.normalizeName.contains(
+                        query.trim(),
+                        ignoreCase = true
+                    )
+                }
+            }
+
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     private var _appVersion = MutableStateFlow("")
     var appVersion: StateFlow<String> = _appVersion.asStateFlow()
@@ -53,7 +75,7 @@ class PokedexScreenViewModel(
         }
 
         val result = linkedMapOf<String, PokedexItem>()
-        _pokedex.value.forEach { result[it.normalizeName] = it }
+        _allPokedex.value.forEach { result[it.normalizeName] = it }
 
         newItems.forEach { item ->
 
@@ -79,7 +101,7 @@ class PokedexScreenViewModel(
             }
         }
 
-        _pokedex.value = result.values.toList()
+        _allPokedex.value = result.values.toList()
     }
 
     fun loadPokedex(reset: Boolean = false) {
@@ -97,7 +119,7 @@ class PokedexScreenViewModel(
                 .onSuccess {
                     _loading.value = (false)
                     if (reset)
-                        _pokedex.value = listOf()
+                        _allPokedex.value = listOf()
 
                     if (it.results.isNotEmpty()) {
                         setOffset(offset.value + limit.value)

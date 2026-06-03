@@ -13,8 +13,11 @@ import com.kronos.mutliplatform.pokedex.domain.repository.ItemRemoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ItemCategoryListScreenViewModel(
@@ -24,8 +27,26 @@ class ItemCategoryListScreenViewModel(
     val urlProvider: UrlProvider
 ) : ParentViewModel() {
 
-    private var _itemCategory = MutableStateFlow(listOf<NamedResourceApi>())
-    var itemCategory: StateFlow<List<NamedResourceApi>> = _itemCategory.asStateFlow()
+    private val _allItemCategory = MutableStateFlow<List<NamedResourceApi>>(emptyList())
+
+    var itemCategory: StateFlow<List<NamedResourceApi>> =
+        combine(_allItemCategory, _searchQuery) { categories, query ->
+
+            if (query.isBlank()) {
+                categories
+            } else {
+                categories.filter {
+                    it.name.contains(
+                        query.trim(),
+                        ignoreCase = true
+                    )
+                }
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
 
     private var _appVersion = MutableStateFlow("")
@@ -36,7 +57,7 @@ class ItemCategoryListScreenViewModel(
     }
 
     private fun postItems(itemCategory: List<NamedResourceApi>) {
-        _itemCategory.value = _itemCategory.value.plus(itemCategory)
+        _allItemCategory.value = _allItemCategory.value.plus(itemCategory)
     }
 
     fun loadItemCategories(reset: Boolean = false) {
@@ -54,7 +75,7 @@ class ItemCategoryListScreenViewModel(
                 .onSuccess {
                     _loading.value = (false)
                     if (reset)
-                        _itemCategory.value = listOf()
+                        _allItemCategory.value = listOf()
 
                     if (it.results.isNotEmpty()) {
                         setOffset(offset.value + limit.value)
@@ -78,7 +99,8 @@ class ItemCategoryListScreenViewModel(
 
 
     fun refreshItems(reset: Boolean = false) {
-        _itemCategory.value = listOf()
+        _searchQuery.value = ""
+        _allItemCategory.value = emptyList()
         val err = HashMap<String, String>()
         _message.value = (err)
         loadItemCategories(reset)

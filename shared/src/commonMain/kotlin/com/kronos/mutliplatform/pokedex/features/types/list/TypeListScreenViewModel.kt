@@ -13,8 +13,11 @@ import com.kronos.mutliplatform.pokedex.domain.repository.TypeRemoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class TypeListScreenViewModel(
@@ -24,8 +27,26 @@ class TypeListScreenViewModel(
     val urlProvider: UrlProvider,
 ) : ParentViewModel() {
 
-    private var _types = MutableStateFlow(listOf<NamedResourceApi>())
-    var types = _types.asStateFlow()
+    private val _allTypes = MutableStateFlow<List<NamedResourceApi>>(emptyList())
+
+    var types =
+        combine(_allTypes, _searchQuery) { types, query ->
+
+            if (query.isBlank()) {
+                types
+            } else {
+                types.filter {
+                    it.name.contains(
+                        query.trim(),
+                        ignoreCase = true
+                    )
+                }
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     private var _appVersion = MutableStateFlow("")
     var appVersion: StateFlow<String> = _appVersion.asStateFlow()
@@ -37,7 +58,7 @@ class TypeListScreenViewModel(
 
 
     private fun postType(types: List<NamedResourceApi>) {
-        _types.value = types
+        _allTypes.value = _allTypes.value.plus(types)
     }
 
     fun loadTypes(reset: Boolean = false) {
@@ -55,7 +76,7 @@ class TypeListScreenViewModel(
                 .onSuccess {
                     _loading.value = (false)
                     if (reset)
-                        _types.value = listOf()
+                        _allTypes.value = listOf()
 
                     if (it.results.isNotEmpty()) {
                         setOffset(offset.value + limit.value)

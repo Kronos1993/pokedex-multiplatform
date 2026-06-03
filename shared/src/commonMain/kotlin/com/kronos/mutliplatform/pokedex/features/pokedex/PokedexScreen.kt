@@ -57,6 +57,7 @@ import pokedex.shared.generated.resources.empty_pokedex_list
 import pokedex.shared.generated.resources.loading_dialog_text
 import pokedex.shared.generated.resources.loading_dialog_title
 import pokedex.shared.generated.resources.menu_pokedex
+import pokedex.shared.generated.resources.menu_pokedex_search_placeholder
 import pokedex.shared.generated.resources.refresh_list
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,7 +75,8 @@ fun PokedexScreen(
     val isLoading by viewModel.loading.collectAsStateWithLifecycle()
     val errorMessage by viewModel.message.collectAsStateWithLifecycle()
     val isLastPage by viewModel.lastPage.collectAsStateWithLifecycle()
-
+    val isSearching by viewModel.isSearching.collectAsStateWithLifecycle()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -114,8 +116,11 @@ fun PokedexScreen(
     LaunchedEffect(listState, isLastPage, isLoading, pokedexList) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collect { lastVisibleItemIndex ->
+
                 val totalItems = listState.layoutInfo.totalItemsCount
-                if (lastVisibleItemIndex != null &&
+
+                if (
+                    lastVisibleItemIndex != null &&
                     lastVisibleItemIndex >= totalItems - 3 &&
                     !isLastPage &&
                     !isLoading &&
@@ -152,6 +157,21 @@ fun PokedexScreen(
                 topBar = {
                     AppTopAppBar(
                         title = stringResource(Res.string.menu_pokedex),
+                        isSearching = isSearching,
+                        searchQuery = searchQuery,
+                        searchEnabled = true,
+                        searchPlaceholder = stringResource(Res.string.menu_pokedex_search_placeholder),
+                        onSearchQueryChange = {
+                            viewModel.updateSearchQuery(it)
+                        },
+                        onSearchToggle = {
+                            val isSearching = !isSearching
+
+                            if (!isSearching) {
+                                viewModel.updateSearchQuery("")
+                            }
+                            viewModel.isSearching(isSearching)
+                        },
                         navIconButton = {
                             IconButton(
                                 icon = Icons.Filled.Menu,
