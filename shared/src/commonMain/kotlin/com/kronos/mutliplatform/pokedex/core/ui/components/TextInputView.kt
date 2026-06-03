@@ -18,14 +18,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -167,7 +169,8 @@ fun TextInputView(
     keyboardActions: KeyboardActions? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     enabled: Boolean = true,
-    singleLine: Boolean = true
+    singleLine: Boolean = true,
+    colors:TextFieldColors = TextFieldDefaults.colors()
 ) {
     val fontSize = getFontSize(size)
 
@@ -196,7 +199,8 @@ fun TextInputView(
                 visualTransformation = visualTransformation,
                 enabled = enabled,
                 singleLine = singleLine,
-                shape = shape
+                shape = shape,
+                colors = colors
             )
         }
 
@@ -217,6 +221,7 @@ fun TextInputView(
                 visualTransformation = visualTransformation,
                 enabled = enabled,
                 singleLine = singleLine,
+                colors = colors
             )
         }
     }
