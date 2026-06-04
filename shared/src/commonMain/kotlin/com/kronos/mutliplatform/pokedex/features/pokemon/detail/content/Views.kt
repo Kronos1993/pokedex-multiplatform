@@ -556,6 +556,7 @@ fun PokemonEncounterSectionCard(
 
         BaseCardView(
             cardBackgroundColor = Color.Transparent,
+            pressedElevation = 0.dp,
             elevation = 0.dp
         ) {
 
@@ -1061,6 +1062,7 @@ fun TypeChip(
 @Composable
 fun PokemonEncounterGridItem(
     item: Encounter,
+    itemsPerRow: Int = 2,
     modifier: Modifier = Modifier,
 ) {
     PokemonEncounterSectionCard(
@@ -1069,17 +1071,24 @@ fun PokemonEncounterGridItem(
         iconTint = MaterialTheme.colorScheme.onSurface,
         modifier = modifier.background(Color.Transparent)
     ) {
-        FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        val chunked = item.versionDetails.chunked(itemsPerRow)
+        Column(
             verticalArrangement = Arrangement.spacedBy(10.dp),
-            maxItemsInEachRow = 2
+            modifier = Modifier.fillMaxWidth()
         ) {
-            item.versionDetails.forEach { detail ->
-                VersionItem(
-                    item = detail,
+            chunked.forEach { row ->
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier.fillMaxWidth()
-                )
+                ) {
+                    row.forEach { detail ->
+                        VersionItem(
+                            item = detail,
+                            itemsPerRow = itemsPerRow,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
             }
         }
     }
@@ -1088,6 +1097,7 @@ fun PokemonEncounterGridItem(
 @Composable
 fun VersionItem(
     item: VersionDetail,
+    itemsPerRow: Int = 2,
     modifier: Modifier = Modifier,
 ) {
     val methodName = item.encounterDetail.method.name
@@ -1095,14 +1105,12 @@ fun VersionItem(
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Row(
             modifier = Modifier
                 .clip(RoundedCornerShape(50.dp))
@@ -1157,16 +1165,22 @@ fun VersionItem(
             ),
         )
 
-        FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        Column(
             verticalArrangement = Arrangement.spacedBy(6.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            infoItems.forEach { info ->
-                PokemonInfoGridItem(
-                    item = info,
-                    modifier = Modifier.fillMaxWidth(.48f)
-                )
+            infoItems.chunked(itemsPerRow).forEach { rowItems ->
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    rowItems.forEach { info ->
+                        PokemonInfoGridItem(
+                            item = info,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
             }
         }
     }

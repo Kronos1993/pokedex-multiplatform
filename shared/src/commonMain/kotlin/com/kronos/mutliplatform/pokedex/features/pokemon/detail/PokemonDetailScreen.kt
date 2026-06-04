@@ -5,6 +5,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -88,7 +89,7 @@ fun PokemonDetailScreen(
     val scope = rememberCoroutineScope()
 
     val detailListState = rememberLazyGridState()
-    val locationListState = rememberLazyGridState()
+    val locationListState = rememberLazyListState()
     val evolutionListState = rememberLazyGridState()
     val statsListState = rememberLazyGridState()
     val movesListState = rememberLazyGridState()
@@ -156,6 +157,16 @@ fun PokemonDetailScreen(
         }
     }
 
+    val encountersGridColumns = remember(deviceScreenConfiguration) {
+        when (deviceScreenConfiguration) {
+            DeviceScreenConfiguration.MOBILE_PORTRAIT->1
+            DeviceScreenConfiguration.MOBILE_LANDSCAPE,
+            DeviceScreenConfiguration.TABLET_PORTRAIT,
+            DeviceScreenConfiguration.TABLET_LANDSCAPE,
+            DeviceScreenConfiguration.DESKTOP -> 2
+        }
+    }
+
     val tabs = listOf(
         TabItem(
             stringResource(Res.string.pokemon_detail_tab_info),
@@ -200,7 +211,7 @@ fun PokemonDetailScreen(
                 isDarkTheme = isDarkTheme,
                 currentLang = currentLang,
                 listState = locationListState,
-                gridColumns = gridColumns
+                gridColumns = encountersGridColumns
             )
         },
 

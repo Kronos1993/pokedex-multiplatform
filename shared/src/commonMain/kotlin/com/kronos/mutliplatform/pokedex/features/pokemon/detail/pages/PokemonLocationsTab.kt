@@ -5,10 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyGridState
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,20 +31,19 @@ fun PokemonLocationTab(
     dominantColor: Color,
     isDarkTheme: Boolean,
     currentLang: String,
-    listState: LazyGridState,
+    listState: LazyListState,
     gridColumns: Int = 1,
     modifier: Modifier = Modifier
 ) {
 
-    if (pokemonEncounters.isEmpty()){
+    if (pokemonEncounters.isEmpty()) {
         EmptyList(
             title = stringResource(Res.string.empty_pokemon_encounter_list),
             showRetryButton = false,
             modifier = modifier
         )
-    }else{
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(gridColumns),
+    } else {
+        LazyColumn(
             state = listState,
             modifier = modifier
                 .fillMaxSize()
@@ -58,14 +56,14 @@ fun PokemonLocationTab(
                     )
                 ),
             contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(
                 items = pokemonEncounters
             ) { encounter ->
                 PokemonEncounterGridItem(
                     item = encounter,
+                    itemsPerRow = gridColumns,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
