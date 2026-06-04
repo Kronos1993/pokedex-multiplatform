@@ -10,6 +10,10 @@ val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFFFCDD2)
 val onPrimaryContainerLight = Color(0xFF7F0000)
 
+val drawerHeaderGradientColorStart = Color(0xFFCC0000)
+val drawerHeaderGradientColorCenter = Color(0xFFE53935)
+val drawerHeaderGradientColorEnd = Color(0xFFEF5350)
+
 val primaryDark = Color(0xFFEF9A9A)
 val onPrimaryDark = Color(0xFF7F0000)
 val primaryContainerDark = Color(0xFFC62828)
