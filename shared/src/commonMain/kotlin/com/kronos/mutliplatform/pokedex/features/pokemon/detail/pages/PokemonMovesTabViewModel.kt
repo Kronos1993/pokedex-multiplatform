@@ -54,7 +54,7 @@ class PokemonMovesTabViewModel(
         } else {
             _allMoves.value.filter {
                 it.moveDetails.firstOrNull()?.moveLearnMethod == method
-            }
+            }.sortedBy { it.moveDetails.firstOrNull()?.levelLearned }
         }
     }
 
