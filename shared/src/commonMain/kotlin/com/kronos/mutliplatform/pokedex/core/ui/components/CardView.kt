@@ -54,22 +54,31 @@ fun BaseCardView(
         label = "card_elevation"
     )
 
-    Card(
-        modifier = modifier,
-        interactionSource = interactionSource,
-        enabled = enabled,
-        onClick = onClick ?: {},
-        colors = CardDefaults.cardColors(
-            containerColor = cardBackgroundColor,
-            contentColor = MaterialTheme.colorScheme.onSurface,
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = animatedElevation
-        ),
-        border = borderStroke,
-        shape = shape,
-    ) {
-        content()
+    if (onClick != null) {
+        Card(
+            modifier = modifier,
+            interactionSource = interactionSource,
+            enabled = enabled,
+            onClick = onClick,
+            colors = CardDefaults.cardColors(
+                containerColor = cardBackgroundColor,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = animatedElevation),
+            border = borderStroke,
+            shape = shape,
+        ) { content() }
+    } else {
+        Card(
+            modifier = modifier,
+            colors = CardDefaults.cardColors(
+                containerColor = cardBackgroundColor,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = animatedElevation),
+            border = borderStroke,
+            shape = shape,
+        ) { content() }
     }
 }
 
