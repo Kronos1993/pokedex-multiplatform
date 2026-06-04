@@ -9,9 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -19,11 +23,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.kronos.mutliplatform.pokedex.components.EmptyList
 import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
 import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
@@ -34,10 +40,11 @@ import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.item.ItemInfo
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonDexEntry
 import com.kronos.mutliplatform.pokedex.domain.model.sprite.Sprite
-import com.kronos.mutliplatform.pokedex.features.egg_group.detail.content.PokemonFlowRow
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.prettyName
+import com.kronos.mutliplatform.pokedex.features.pokemon.list.content.PokemonItemCard
 import org.jetbrains.compose.resources.stringResource
 import pokedex.shared.generated.resources.Res
+import pokedex.shared.generated.resources.empty_pokemon_by_move_list
 import pokedex.shared.generated.resources.item_detail_info_screen_category
 import pokedex.shared.generated.resources.item_detail_info_screen_cost
 import pokedex.shared.generated.resources.item_detail_info_screen_effect
@@ -61,45 +68,79 @@ fun ItemInfoScreen(
     onPokemonClick: (PokemonDexEntry) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    LazyVerticalGrid(
+        state = rememberLazyGridState(),
+        columns = GridCells.Fixed(pokemonItemsPerRow),
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+            .background(color = Color.Transparent),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        val fullSpan: LazyGridItemSpanScope.() -> GridItemSpan = { GridItemSpan(maxLineSpan) }
 
         if (itemInfo != null) {
+            item(span = fullSpan) {
+                // ── Header Card ─────────────────────────────────────────────────────
 
-            // ── Header Card ─────────────────────────────────────────────────────
-
-            ItemHeaderCard(
-                itemInfo = itemInfo,
-                lang = lang,
-            )
-
-            // ── Info ────────────────────────────────────────────────────────
-            ItemSectionCard(
-                title = stringResource(Res.string.item_detail_info_screen_info),
-            ) {
-                ItemInfoContent(
+                ItemHeaderCard(
                     itemInfo = itemInfo,
                     lang = lang,
                 )
+            }
+            item(span = fullSpan) {
+                // ── Info ────────────────────────────────────────────────────────
+                ItemSectionCard(
+                    title = stringResource(Res.string.item_detail_info_screen_info),
+                ) {
+                    ItemInfoContent(
+                        itemInfo = itemInfo,
+                        lang = lang,
+                    )
+                }
             }
         }
 
         // ── Pokémon Holding Item ───────────────────────────────────────────
 
-        ItemSectionCard(
-            title = stringResource(Res.string.item_detail_info_screen_held_by),
-        ) {
-            PokemonFlowRow(
-                pokemonList = pokemonList,
-                itemsPerRow = pokemonItemsPerRow,
-                onPokemonClick = onPokemonClick,
-            )
+        item(span = fullSpan) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(width = 4.dp, height = 16.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.primary),
+                )
+                TitleText(
+                    text = stringResource(Res.string.item_detail_info_screen_held_by),
+                    size = ComponentSize.SMALL,
+                    fontWeight = FontWeight.Bold,
+                    textColor = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+        }
+
+        if (pokemonList.isEmpty()) {
+            item {
+                EmptyList(
+                    title = stringResource(Res.string.empty_pokemon_by_move_list),
+                    modifier = modifier.fillMaxSize(),
+                )
+            }
+        } else {
+            items(pokemonList, key = { it.pokemonId }) { entry ->
+                PokemonItemCard(
+                    item = entry,
+                    onClick = { onPokemonClick(entry) },
+                    modifier = Modifier,
+                )
+            }
         }
     }
 }

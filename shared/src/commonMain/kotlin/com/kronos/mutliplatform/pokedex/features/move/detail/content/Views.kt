@@ -11,6 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -67,45 +73,85 @@ fun MoveInfoScreen(
     onPokemonClick: (PokemonDexEntry) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+
+    LazyVerticalGrid(
+        state = rememberLazyGridState(),
+        columns = GridCells.Fixed(pokemonItemsPerRow),
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+            .background(color = Color.Transparent),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        val fullSpan: LazyGridItemSpanScope.() -> GridItemSpan = { GridItemSpan(maxLineSpan) }
+
         if (moveInfo != null) {
-            MoveSectionCard(title = stringResource(Res.string.move_detail_info_screen_info_title)) {
-                MoveStatsGrid(moveInfo = moveInfo)
+            item(span = fullSpan) {
+                MoveSectionCard(title = stringResource(Res.string.move_detail_info_screen_info_title)) {
+                    MoveStatsGrid(moveInfo = moveInfo)
+                }
             }
 
-            MoveSectionCard(title = stringResource(Res.string.move_detail_info_screen_category_title)) {
-                MoveCategoryChip(category = moveInfo.moveCategory)
+            item(span = fullSpan) {
+                MoveSectionCard(title = stringResource(Res.string.move_detail_info_screen_category_title)) {
+                    MoveCategoryChip(category = moveInfo.moveCategory)
+                }
             }
         }
-
-        MoveSectionCard(title = stringResource(Res.string.move_detail_info_screen_description_title)) {
-            MoveTextContent(text = moveInfo?.getDescription(lang).orEmpty().replace("\n", " "))
+        item(span = fullSpan) {
+            MoveSectionCard(title = stringResource(Res.string.move_detail_info_screen_description_title)) {
+                MoveTextContent(text = moveInfo?.getDescription(lang).orEmpty().replace("\n", " "))
+            }
         }
 
         if (!moveInfo?.getMoveEffect(lang).isNullOrBlank()) {
-            MoveSectionCard(title = stringResource(Res.string.move_detail_info_screen_effect_title)) {
-                MoveTextContent(
-                    text = moveInfo.getMoveEffect(lang).replace("\n", " "),
-                    maxHeight = 120.dp,
-                    scrollable = true,
+            item(span = fullSpan) {
+                MoveSectionCard(title = stringResource(Res.string.move_detail_info_screen_effect_title)) {
+                    MoveTextContent(
+                        text = moveInfo.getMoveEffect(lang).replace("\n", " "),
+                    )
+                }
+            }
+        }
+
+        item(span = fullSpan) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(width = 4.dp, height = 16.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.primary),
+                )
+                TitleText(
+                    text = stringResource(Res.string.move_detail_info_screen_learn_by_title),
+                    size = ComponentSize.SMALL,
+                    fontWeight = FontWeight.Bold,
+                    textColor = MaterialTheme.colorScheme.onSurface,
                 )
             }
         }
 
-        MoveSectionCard(title = stringResource(Res.string.move_detail_info_screen_learn_by_title)) {
-            // ── Pokémon that learn this move ───────────────────────────────────
-            PokemonFlowRow(
-                pokemonList = pokemonList,
-                itemsPerRow = pokemonItemsPerRow,
-                onPokemonClick = onPokemonClick,
-            )
+        if (pokemonList.isEmpty()) {
+            item {
+                EmptyList(
+                    title = stringResource(Res.string.empty_pokemon_by_move_list),
+                    modifier = modifier.fillMaxSize(),
+                )
+            }
+        } else {
+            items(pokemonList, key = { it.pokemonId }) { entry ->
+                PokemonItemCard(
+                    item = entry,
+                    onClick = { onPokemonClick(entry) },
+                    modifier = Modifier,
+                )
+            }
         }
     }
 }

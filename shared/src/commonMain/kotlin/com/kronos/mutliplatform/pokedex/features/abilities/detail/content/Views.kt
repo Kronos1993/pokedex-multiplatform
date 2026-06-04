@@ -10,6 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -21,10 +27,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.kronos.mutliplatform.pokedex.components.EmptyList
 import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
 import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
@@ -36,12 +44,13 @@ import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.ability.AbilityInfo
 import com.kronos.mutliplatform.pokedex.domain.model.ability.PokemonWithAbility
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonDexEntry
-import com.kronos.mutliplatform.pokedex.features.move.detail.content.PokemonFlowRow
+import com.kronos.mutliplatform.pokedex.features.pokemon.list.content.PokemonItemCard
 import org.jetbrains.compose.resources.stringResource
 import pokedex.shared.generated.resources.Res
 import pokedex.shared.generated.resources.ability_detail_info_screen_effect
 import pokedex.shared.generated.resources.ability_detail_info_screen_game_description
 import pokedex.shared.generated.resources.ability_detail_info_screen_pokemon_title
+import pokedex.shared.generated.resources.empty_pokemon_by_move_list
 
 // ── Screen ────────────────────────────────────────────────────────────────────
 
@@ -63,51 +72,81 @@ fun AbilityInfoScreen(
         abilityInfo?.getEffect(lang)
     }
 
-    Column(
+    LazyVerticalGrid(
+        state = rememberLazyGridState(),
+        columns = GridCells.Fixed(pokemonItemsPerRow),
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+            .background(color = Color.Transparent),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        val fullSpan: LazyGridItemSpanScope.() -> GridItemSpan = { GridItemSpan(maxLineSpan) }
 
         // ── Game Description ─────────────────────────────────────────────
-
-        AbilitySectionCard(
-            title = stringResource(Res.string.ability_detail_info_screen_game_description),
-        ) {
-            AbilityTextContent(
-                text = gameDescription.orEmpty().replace("\n", " "),
-            )
+        item(span = fullSpan) {
+            AbilitySectionCard(
+                title = stringResource(Res.string.ability_detail_info_screen_game_description),
+            ) {
+                AbilityTextContent(
+                    text = gameDescription.orEmpty().replace("\n", " "),
+                )
+            }
         }
 
         // ── Effect ───────────────────────────────────────────────────────
 
         if (effectText.orEmpty().isNotBlank()) {
-            AbilitySectionCard(
-                title = stringResource(Res.string.ability_detail_info_screen_effect),
+            item(span = fullSpan) {
+                AbilitySectionCard(
+                    title = stringResource(Res.string.ability_detail_info_screen_effect),
+                ) {
+                    AbilityTextContent(
+                        text = effectText.orEmpty(),
+                    )
+                }
+            }
+        }
+
+        item(span = fullSpan) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                AbilityTextContent(
-                    text = effectText.orEmpty(),
-                    maxHeight = 120.dp,
-                    scrollable = true,
+                Box(
+                    modifier = Modifier
+                        .size(width = 4.dp, height = 16.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.primary),
+                )
+                TitleText(
+                    text = stringResource(Res.string.ability_detail_info_screen_pokemon_title),
+                    size = ComponentSize.SMALL,
+                    fontWeight = FontWeight.Bold,
+                    textColor = MaterialTheme.colorScheme.onSurface,
                 )
             }
         }
 
-        AbilitySectionCard(
-            title = stringResource(Res.string.ability_detail_info_screen_pokemon_title),
-        ) {
-            // ── Pokémon with ability ────────────────────────────────────────
-            PokemonFlowRow(
-                pokemonList = pokemonList,
-                itemsPerRow = pokemonItemsPerRow,
-                onPokemonClick = onPokemonClick,
-            )
+        if (pokemonList.isEmpty()) {
+            item {
+                EmptyList(
+                    title = stringResource(Res.string.empty_pokemon_by_move_list),
+                    modifier = modifier.fillMaxSize(),
+                )
+            }
+        } else {
+            items(pokemonList, key = { it.pokemonId }) { entry ->
+                PokemonItemCard(
+                    item = entry,
+                    onClick = { onPokemonClick(entry) },
+                    modifier = Modifier,
+                )
+            }
         }
-
-
     }
 }
 

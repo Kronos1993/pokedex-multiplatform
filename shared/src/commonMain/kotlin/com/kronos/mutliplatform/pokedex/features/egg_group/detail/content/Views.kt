@@ -3,28 +3,29 @@ package com.kronos.mutliplatform.pokedex.features.egg_group.detail.content
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kronos.mutliplatform.pokedex.components.EmptyList
-import com.kronos.mutliplatform.pokedex.core.ui.components.BaseCardView
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
 import com.kronos.mutliplatform.pokedex.core.ui.components.TitleText
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
@@ -45,42 +46,19 @@ fun EggGroupInfoScreen(
     onPokemonClick: (PokemonDexEntry) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    LazyVerticalGrid(
+        state = rememberLazyGridState(),
+        columns = GridCells.Fixed(pokemonItemsPerRow),
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+            .background(color = Color.Transparent),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        val fullSpan: LazyGridItemSpanScope.() -> GridItemSpan = { GridItemSpan(maxLineSpan) }
+
         // ── Pokémon that learn this move ───────────────────────────────────
-        AbilitySectionCard(
-            title = stringResource(Res.string.egg_group_detail_info_screen_pokemon_title)
-        ){
-            PokemonFlowRow(
-                pokemonList = pokemonList,
-                itemsPerRow = pokemonItemsPerRow,
-                onPokemonClick = onPokemonClick,
-            )
-        }
-    }
-}
-
-@Composable
-private fun AbilitySectionCard(
-    title: String,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
-) {
-    BaseCardView(
-        modifier = modifier.fillMaxWidth(),
-        cardBackgroundColor = MaterialTheme.colorScheme.surfaceContainerLow,
-        elevation = 0.dp,
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-
+        item(span = fullSpan) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -88,64 +66,34 @@ private fun AbilitySectionCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-
                 Box(
                     modifier = Modifier
                         .size(width = 4.dp, height = 16.dp)
                         .clip(RoundedCornerShape(2.dp))
                         .background(MaterialTheme.colorScheme.primary),
                 )
-
                 TitleText(
-                    text = title,
+                    text = stringResource(Res.string.egg_group_detail_info_screen_pokemon_title),
                     size = ComponentSize.SMALL,
                     fontWeight = FontWeight.Bold,
                     textColor = MaterialTheme.colorScheme.onSurface,
                 )
             }
-
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                thickness = 1.dp,
-            )
-
-            Box(
-                modifier = Modifier.padding(16.dp),
-            ) {
-                content()
-            }
         }
-    }
-}
 
-// ── Pokémon flow row ──────────────────────────────────────────────────────────
-
-@Composable
-fun PokemonFlowRow(
-    pokemonList: List<PokemonDexEntry>,
-    onPokemonClick: (PokemonDexEntry) -> Unit,
-    itemsPerRow: Int = 2,
-    modifier: Modifier = Modifier,
-) {
-    if (pokemonList.isEmpty()) {
-        EmptyList(
-            title = stringResource(Res.string.empty_pokemon_by_move_list),
-            modifier = modifier.fillMaxSize(),
-        )
-    } else {
-        FlowRow(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp),
-            maxItemsInEachRow = itemsPerRow,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            pokemonList.forEach { entry ->
+        if (pokemonList.isEmpty()) {
+            item {
+                EmptyList(
+                    title = stringResource(Res.string.empty_pokemon_by_move_list),
+                    modifier = modifier.fillMaxSize(),
+                )
+            }
+        } else {
+            items(pokemonList, key = { it.pokemonId }) { entry ->
                 PokemonItemCard(
                     item = entry,
                     onClick = { onPokemonClick(entry) },
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier,
                 )
             }
         }
@@ -165,32 +113,6 @@ private val fakePokemonList = listOf(
 
 // ── Sub-component previews ────────────────────────────────────────────────────
 
-@Preview(name = "PokemonFlowRow — 6 items", showBackground = true, widthDp = 360)
-@Composable
-private fun PokemonFlowRowPreview() {
-    AppTheme {
-        Surface {
-            PokemonFlowRow(
-                pokemonList = fakePokemonList,
-                onPokemonClick = {},
-                itemsPerRow = 4
-            )
-        }
-    }
-}
-
-@Preview(name = "PokemonFlowRow — Empty", showBackground = true, widthDp = 360, heightDp = 200)
-@Composable
-private fun PokemonFlowRowEmptyPreview() {
-    AppTheme {
-        Surface {
-            PokemonFlowRow(
-                pokemonList = emptyList(),
-                onPokemonClick = {},
-            )
-        }
-    }
-}
 
 @Preview(name = "PokemonFlowRow — 3 per row", showBackground = true, widthDp = 360)
 @Composable
