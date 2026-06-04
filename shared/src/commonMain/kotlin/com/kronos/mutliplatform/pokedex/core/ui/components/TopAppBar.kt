@@ -84,6 +84,8 @@ fun AppTopAppBar(
                                     onSearchQueryChange("")
                                 },
                                 icon = Icons.Default.Close,
+                                iconColor = MaterialTheme.colorScheme.onPrimary,
+                                size = ComponentSize.LARGE
                             )
                         }
                     },
