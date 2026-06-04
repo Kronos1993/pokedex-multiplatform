@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.DrawerDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -17,7 +18,6 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -128,122 +128,125 @@ fun TypeListScreen(
             }
     }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.secondaryContainer
+
+    NavDrawer(
+        navigationItems = navDestinations,
+        selectedIndex = selectedItem,
+        drawerState = drawerState,
+        drawerHeader = {
+            DrawerHeader(
+                icon = Icons.AppIcon,
+                name = stringResource(Res.string.app_name),
+                subtitle = appVersion
+            )
+        },
+        scrimColor = if (viewModel.platform.platformType == PlatformType.DESKTOP) {
+            Color.Transparent
+        } else {
+            DrawerDefaults.scrimColor
+        },
+        modifier = Modifier.fillMaxSize()
+            .background(MaterialTheme.colorScheme.secondaryContainer),
     ) {
-        NavDrawer(
-            navigationItems = navDestinations,
-            selectedIndex = selectedItem,
-            drawerState = drawerState,
-            drawerHeader = {
-                DrawerHeader(
-                    icon = Icons.AppIcon,
-                    name = stringResource(Res.string.app_name),
-                    subtitle = appVersion
+        Scaffold(
+            topBar = {
+                AppTopAppBar(
+                    title = stringResource(Res.string.menu_types),
+                    isSearching = isSearching,
+                    searchQuery = searchQuery,
+                    searchPlaceholder = stringResource(Res.string.menu_pokemon_search_placeholder),
+                    searchEnabled = true,
+                    onSearchQueryChange = {
+                        viewModel.updateSearchQuery(it)
+                    },
+                    onSearchToggle = {
+                        val isSearching = !isSearching
+
+                        if (!isSearching) {
+                            viewModel.updateSearchQuery("")
+                        }
+                        viewModel.isSearching(isSearching)
+                    },
+                    navIconButton = {
+                        IconButton(
+                            icon = Icons.Filled.Menu,
+                            onClick = {
+                                scope.launch { drawerState.open() }
+                            },
+                            type = ButtonType.TEXT,
+                            iconColor = MaterialTheme.colorScheme.onPrimary,
+                            size = ComponentSize.LARGE
+                        )
+                    },
+                    actions = listOf()
                 )
+            },
+            modifier = Modifier.fillMaxSize(),
+            snackbarHost = {
+                SnackbarHost(snackbarHostState) { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
+                    )
+                }
             }
         ) {
-            Scaffold(
-                topBar = {
-                    AppTopAppBar(
-                        title = stringResource(Res.string.menu_types),
-                        isSearching = isSearching,
-                        searchQuery = searchQuery,
-                        searchPlaceholder = stringResource(Res.string.menu_pokemon_search_placeholder),
-                        searchEnabled = true,
-                        onSearchQueryChange = {
-                            viewModel.updateSearchQuery(it)
-                        },
-                        onSearchToggle = {
-                            val isSearching = !isSearching
-
-                            if (!isSearching) {
-                                viewModel.updateSearchQuery("")
-                            }
-                            viewModel.isSearching(isSearching)
-                        },
-                        navIconButton = {
-                            IconButton(
-                                icon = Icons.Filled.Menu,
-                                onClick = {
-                                    scope.launch { drawerState.open() }
-                                },
-                                type = ButtonType.TEXT,
-                                iconColor = MaterialTheme.colorScheme.onPrimary,
-                                size = ComponentSize.LARGE
-                            )
-                        },
-                        actions = listOf()
-                    )
-                },
-                modifier = Modifier.fillMaxSize(),
-                snackbarHost = {
-                    SnackbarHost(snackbarHostState) { data ->
-                        Snackbar(
-                            snackbarData = data,
-                            containerColor = MaterialTheme.colorScheme.error,
-                            contentColor = MaterialTheme.colorScheme.onError
-                        )
-                    }
-                }
+            PullToRefreshContainer(
+                innerPadding = it,
+                isRefreshing = isLoading,
+                onRefresh = { viewModel.loadTypes(true) }
             ) {
-                PullToRefreshContainer(
-                    innerPadding = it,
-                    isRefreshing = isLoading,
-                    onRefresh = { viewModel.loadTypes(true) }
-                ) {
 
-                    val rootModifier = Modifier
-                        .fillMaxSize()
-                        .padding(4.dp)
-                        .background(color = Color.Transparent)
-                        .consumeWindowInsets(WindowInsets.navigationBars)
+                val rootModifier = Modifier
+                    .fillMaxSize()
+                    .padding(4.dp)
+                    .background(color = Color.Transparent)
+                    .consumeWindowInsets(WindowInsets.navigationBars)
 
-                    if (typeList.isEmpty()) {
-                        EmptyList(
-                            title = stringResource(Res.string.empty_pokedex_list),
-                            subtitle = stringResource(Res.string.refresh_list),
-                            showRetryButton = true,
-                            onRetryClick = {
-                                viewModel.loadTypes(true)
-                            },
-                            modifier = rootModifier
-                        )
-                    } else {
-                        TypesContent(
-                            gridColumns = when (deviceScreenConfiguration) {
-                                DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
-                                    2
-                                }
+                if (typeList.isEmpty()) {
+                    EmptyList(
+                        title = stringResource(Res.string.empty_pokedex_list),
+                        subtitle = stringResource(Res.string.refresh_list),
+                        showRetryButton = true,
+                        onRetryClick = {
+                            viewModel.loadTypes(true)
+                        },
+                        modifier = rootModifier
+                    )
+                } else {
+                    TypesContent(
+                        gridColumns = when (deviceScreenConfiguration) {
+                            DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
+                                2
+                            }
 
-                                DeviceScreenConfiguration.MOBILE_LANDSCAPE,
-                                DeviceScreenConfiguration.TABLET_PORTRAIT -> {
-                                    3
-                                }
+                            DeviceScreenConfiguration.MOBILE_LANDSCAPE,
+                            DeviceScreenConfiguration.TABLET_PORTRAIT -> {
+                                3
+                            }
 
-                                DeviceScreenConfiguration.TABLET_LANDSCAPE,
-                                DeviceScreenConfiguration.DESKTOP -> {
-                                    4
-                                }
-                            },
-                            listState = listState,
-                            typeList = typeList,
-                            onClick = {
-                                navHost.navigate("${Destinations.TYPES_DETAIL.name}/${it.name}")
-                            },
-                            modifier = rootModifier
-                        )
-                    }
+                            DeviceScreenConfiguration.TABLET_LANDSCAPE,
+                            DeviceScreenConfiguration.DESKTOP -> {
+                                4
+                            }
+                        },
+                        listState = listState,
+                        typeList = typeList,
+                        onClick = {
+                            navHost.navigate("${Destinations.TYPES_DETAIL.name}/${it.name}")
+                        },
+                        modifier = rootModifier
+                    )
                 }
-
-                // Diálogo de carga
-                LoadingDialog(
-                    Res.string.loading_dialog_title,
-                    Res.string.loading_dialog_text,
-                    showDialog = isLoading
-                )
             }
+
+            // Diálogo de carga
+            LoadingDialog(
+                Res.string.loading_dialog_title,
+                Res.string.loading_dialog_text,
+                showDialog = isLoading
+            )
         }
     }
 }

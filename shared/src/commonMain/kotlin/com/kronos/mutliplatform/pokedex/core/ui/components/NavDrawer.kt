@@ -60,6 +60,9 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.drawerHeaderGradientColorCenter
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.drawerHeaderGradientColorEnd
+import com.kronos.mutliplatform.pokedex.core.ui.components.theme.drawerHeaderGradientColorStart
 import kotlinx.coroutines.launch
 
 enum class Destinations {
@@ -100,9 +103,9 @@ data class NavigationItem(
 
 private val drawerHeaderGradient = Brush.linearGradient(
     colors = listOf(
-        Color(0xFFCC0000),
-        Color(0xFFE53935),
-        Color(0xFFEF5350),
+        drawerHeaderGradientColorStart,
+        drawerHeaderGradientColorCenter,
+        drawerHeaderGradientColorEnd,
     ),
     start = Offset(0f, 0f),
     end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)

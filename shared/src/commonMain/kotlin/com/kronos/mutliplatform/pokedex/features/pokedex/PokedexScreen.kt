@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.DrawerDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -17,7 +18,6 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -137,122 +137,124 @@ fun PokedexScreen(
         appViewModel.showExitDialog(true)
     }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.secondaryContainer
+    NavDrawer(
+        navigationItems = navDestinations,
+        selectedIndex = selectedItem,
+        drawerState = drawerState,
+        drawerHeader = {
+            DrawerHeader(
+                icon = Icons.AppIcon,
+                name = stringResource(Res.string.app_name),
+                subtitle = appVersion
+            )
+        },
+        scrimColor = if (viewModel.platform.platformType == PlatformType.DESKTOP) {
+            Color.Transparent
+        } else {
+            DrawerDefaults.scrimColor
+        },
+        modifier = Modifier.fillMaxSize()
+            .background(MaterialTheme.colorScheme.secondaryContainer),
     ) {
-        NavDrawer(
-            navigationItems = navDestinations,
-            selectedIndex = selectedItem,
-            drawerState = drawerState,
-            drawerHeader = {
-                DrawerHeader(
-                    icon = Icons.AppIcon,
-                    name = stringResource(Res.string.app_name),
-                    subtitle = appVersion
+        Scaffold(
+            topBar = {
+                AppTopAppBar(
+                    title = stringResource(Res.string.menu_pokedex),
+                    isSearching = isSearching,
+                    searchQuery = searchQuery,
+                    searchEnabled = true,
+                    searchPlaceholder = stringResource(Res.string.menu_pokedex_search_placeholder),
+                    onSearchQueryChange = {
+                        viewModel.updateSearchQuery(it)
+                    },
+                    onSearchToggle = {
+                        val isSearching = !isSearching
+
+                        if (!isSearching) {
+                            viewModel.updateSearchQuery("")
+                        }
+                        viewModel.isSearching(isSearching)
+                    },
+                    navIconButton = {
+                        IconButton(
+                            icon = Icons.Filled.Menu,
+                            onClick = {
+                                scope.launch { drawerState.open() }
+                            },
+                            type = ButtonType.TEXT,
+                            iconColor = MaterialTheme.colorScheme.onPrimary,
+                            size = ComponentSize.LARGE
+                        )
+                    },
+                    actions = listOf()
                 )
+            },
+            modifier = Modifier.fillMaxSize(),
+            snackbarHost = {
+                SnackbarHost(snackbarHostState) { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
+                    )
+                }
             }
         ) {
-            Scaffold(
-                topBar = {
-                    AppTopAppBar(
-                        title = stringResource(Res.string.menu_pokedex),
-                        isSearching = isSearching,
-                        searchQuery = searchQuery,
-                        searchEnabled = true,
-                        searchPlaceholder = stringResource(Res.string.menu_pokedex_search_placeholder),
-                        onSearchQueryChange = {
-                            viewModel.updateSearchQuery(it)
-                        },
-                        onSearchToggle = {
-                            val isSearching = !isSearching
-
-                            if (!isSearching) {
-                                viewModel.updateSearchQuery("")
-                            }
-                            viewModel.isSearching(isSearching)
-                        },
-                        navIconButton = {
-                            IconButton(
-                                icon = Icons.Filled.Menu,
-                                onClick = {
-                                    scope.launch { drawerState.open() }
-                                },
-                                type = ButtonType.TEXT,
-                                iconColor = MaterialTheme.colorScheme.onPrimary,
-                                size = ComponentSize.LARGE
-                            )
-                        },
-                        actions = listOf()
-                    )
-                },
-                modifier = Modifier.fillMaxSize(),
-                snackbarHost = {
-                    SnackbarHost(snackbarHostState) { data ->
-                        Snackbar(
-                            snackbarData = data,
-                            containerColor = MaterialTheme.colorScheme.error,
-                            contentColor = MaterialTheme.colorScheme.onError
-                        )
-                    }
-                }
+            PullToRefreshContainer(
+                innerPadding = it,
+                isRefreshing = isLoading,
+                onRefresh = { viewModel.loadPokedex(true) }
             ) {
-                PullToRefreshContainer(
-                    innerPadding = it,
-                    isRefreshing = isLoading,
-                    onRefresh = { viewModel.loadPokedex(true) }
-                ) {
 
-                    val rootModifier = Modifier
-                        .fillMaxSize()
-                        .padding(4.dp)
-                        .background(color = Color.Transparent)
-                        .consumeWindowInsets(WindowInsets.navigationBars)
+                val rootModifier = Modifier
+                    .fillMaxSize()
+                    .padding(4.dp)
+                    .background(color = Color.Transparent)
+                    .consumeWindowInsets(WindowInsets.navigationBars)
 
-                    if (pokedexList.isEmpty()) {
-                        EmptyList(
-                            title = stringResource(Res.string.empty_pokedex_list),
-                            subtitle = stringResource(Res.string.refresh_list),
-                            showRetryButton = true,
-                            onRetryClick = {
-                                viewModel.loadPokedex(true)
-                            },
-                            modifier = rootModifier
-                        )
-                    } else {
-                        PokedexContent(
-                            gridColumns = when (deviceScreenConfiguration) {
-                                DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
-                                    2
-                                }
+                if (pokedexList.isEmpty()) {
+                    EmptyList(
+                        title = stringResource(Res.string.empty_pokedex_list),
+                        subtitle = stringResource(Res.string.refresh_list),
+                        showRetryButton = true,
+                        onRetryClick = {
+                            viewModel.loadPokedex(true)
+                        },
+                        modifier = rootModifier
+                    )
+                } else {
+                    PokedexContent(
+                        gridColumns = when (deviceScreenConfiguration) {
+                            DeviceScreenConfiguration.MOBILE_PORTRAIT -> {
+                                2
+                            }
 
-                                DeviceScreenConfiguration.MOBILE_LANDSCAPE,
-                                DeviceScreenConfiguration.TABLET_PORTRAIT -> {
-                                    3
-                                }
+                            DeviceScreenConfiguration.MOBILE_LANDSCAPE,
+                            DeviceScreenConfiguration.TABLET_PORTRAIT -> {
+                                3
+                            }
 
-                                DeviceScreenConfiguration.TABLET_LANDSCAPE,
-                                DeviceScreenConfiguration.DESKTOP -> {
-                                    4
-                                }
-                            },
-                            listState = listState,
-                            pokedexList = pokedexList,
-                            onClick = {
-                                navHost.navigate("${Destinations.POKEMON_LIST.name}/${it.name}")
-                            },
-                            modifier = rootModifier
-                        )
-                    }
+                            DeviceScreenConfiguration.TABLET_LANDSCAPE,
+                            DeviceScreenConfiguration.DESKTOP -> {
+                                4
+                            }
+                        },
+                        listState = listState,
+                        pokedexList = pokedexList,
+                        onClick = {
+                            navHost.navigate("${Destinations.POKEMON_LIST.name}/${it.name}")
+                        },
+                        modifier = rootModifier
+                    )
                 }
-
-                // Diálogo de carga
-                LoadingDialog(
-                    Res.string.loading_dialog_title,
-                    Res.string.loading_dialog_text,
-                    showDialog = isLoading
-                )
             }
+
+            // Diálogo de carga
+            LoadingDialog(
+                Res.string.loading_dialog_title,
+                Res.string.loading_dialog_text,
+                showDialog = isLoading
+            )
         }
     }
 }
