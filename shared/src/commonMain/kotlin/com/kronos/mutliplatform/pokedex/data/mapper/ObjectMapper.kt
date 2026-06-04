@@ -446,67 +446,67 @@ fun PokemonGeneraDto.toPokemonGenera(): PokemonGenera =
 
 fun SpriteDto.toSprite(): Sprite =
     Sprite(
-        default.let {
+        defaultImg = default.let {
             if(it.isNullOrEmpty())
                 ""
             else
                 it
         },
-        backDefault.let {
+        backDefault = backDefault.let {
             if(it.isNullOrEmpty())
                 ""
             else
                 it
         },
-        backFemale.let {
+        backFemale = backFemale.let {
             if(it.isNullOrEmpty())
                 ""
             else
                 it
         },
-        backShiny.let {
+        backShiny = backShiny.let {
             if(it.isNullOrEmpty())
                 ""
             else
                 it
         },
-        backShinyFemale.let {
+        backShinyFemale = backShinyFemale.let {
             if(it.isNullOrEmpty())
                 ""
             else
                 it
         },
-        frontDefault.let {
+        frontDefault = frontDefault.let {
             if(it.isNullOrEmpty())
                 ""
             else
                 it
         },
-        frontFemale.let {
+        frontFemale = frontFemale.let {
             if(it.isNullOrEmpty())
                 ""
             else
                 it
         },
-        frontShiny.let {
+        frontShiny = frontShiny.let {
             if(it.isNullOrEmpty())
                 ""
             else
                 it
         },
-        frontShinyFemale.let {
+        frontShinyFemale = frontShinyFemale.let {
             if(it.isNullOrEmpty())
                 ""
             else
                 it
         },
-        otherSprites.home.frontHome.let {
+        frontHome = otherSprites.home.frontHome.let {
             if(it.isNullOrEmpty())
                 ""
             else
                 it
         },
-        otherSprites.home.frontHomeShiny.let {
+        frontHomeShiny = otherSprites.home.frontHomeShiny.let {
             if(it.isNullOrEmpty())
                 ""
             else

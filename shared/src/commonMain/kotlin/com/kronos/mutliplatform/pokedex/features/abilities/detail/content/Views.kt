@@ -132,7 +132,7 @@ fun AbilityInfoScreen(
         }
 
         if (pokemonList.isEmpty()) {
-            item {
+            item(span = fullSpan) {
                 EmptyList(
                     title = stringResource(Res.string.empty_pokemon_by_move_list),
                     modifier = modifier.fillMaxSize(),
