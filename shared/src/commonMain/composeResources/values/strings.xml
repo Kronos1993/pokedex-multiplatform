@@ -64,10 +64,12 @@
     <string name="pokemon_detail_tab_info_capture_rate">Capture Rate</string>
     <string name="pokemon_detail_tab_info_capture_rate_value">%1$s (%2$s% full HP with a pokeball)</string>
     <string name="pokemon_detail_tab_info_no_info_available">Unknown</string>
+
     <string name="pokemon_detail_tab_encounter_min_level">Min Level</string>
     <string name="pokemon_detail_tab_encounter_max_level">Max Level</string>
     <string name="pokemon_detail_tab_encounter_max_chance">Max Chance</string>
     <string name="pokemon_detail_tab_encounter_game_version">Game Version</string>
+    <string name="pokemon_detail_tab_encounter_location">Location</string>
 
     <string name="evolution_detail_tab_evolves_from">Evolves from</string>
     <string name="evolution_detail_tab_trigger">Trigger</string>

@@ -269,7 +269,9 @@ import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.ChainLink
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.EvolutionDetail
 import com.kronos.mutliplatform.pokedex.domain.model.game.Game
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.Encounter
+import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterByVersion
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterDetail
+import com.kronos.mutliplatform.pokedex.domain.model.pokemon.LocationEncounter
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonInfo
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.VersionDetail
 import com.kronos.mutliplatform.pokedex.domain.model.specie.GenderPossibility
@@ -307,6 +309,7 @@ import pokedex.shared.generated.resources.evolution_detail_tab_use_item
 import pokedex.shared.generated.resources.legendary_pokemon
 import pokedex.shared.generated.resources.mythical_pokemon
 import pokedex.shared.generated.resources.pokemon_detail_tab_encounter_game_version
+import pokedex.shared.generated.resources.pokemon_detail_tab_encounter_location
 import pokedex.shared.generated.resources.pokemon_detail_tab_encounter_max_chance
 import pokedex.shared.generated.resources.pokemon_detail_tab_encounter_max_level
 import pokedex.shared.generated.resources.pokemon_detail_tab_encounter_min_level
@@ -1061,17 +1064,17 @@ fun TypeChip(
 
 @Composable
 fun PokemonEncounterGridItem(
-    item: Encounter,
+    item: EncounterByVersion,
     itemsPerRow: Int = 2,
     modifier: Modifier = Modifier,
 ) {
     PokemonEncounterSectionCard(
-        title = item.location.name.prettyName(),
-        icon = Icons.Default.Place,
+        title = item.version.name.prettyName(),
+        icon = Icons.Default.VideogameAsset,
         iconTint = MaterialTheme.colorScheme.onSurface,
         modifier = modifier.background(Color.Transparent)
     ) {
-        val chunked = item.versionDetails.chunked(itemsPerRow)
+        val chunked = item.locations.chunked(itemsPerRow)
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.fillMaxWidth()
@@ -1081,9 +1084,9 @@ fun PokemonEncounterGridItem(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    row.forEach { detail ->
-                        VersionItem(
-                            item = detail,
+                    row.forEach { locationEncounter ->
+                        LocationEncounterItem(
+                            item = locationEncounter,
                             itemsPerRow = itemsPerRow,
                             modifier = Modifier.weight(1f)
                         )
@@ -1160,6 +1163,98 @@ fun VersionItem(
             PokemonInfoItem(
                 title = stringResource(Res.string.pokemon_detail_tab_encounter_max_chance),
                 value = "${item.encounterDetail.chance}%",
+                icon = Icons.Default.Percent,
+                iconTint = PokemonEncounterColorChance
+            ),
+        )
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            infoItems.chunked(itemsPerRow).forEach { rowItems ->
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    rowItems.forEach { info ->
+                        PokemonInfoGridItem(
+                            item = info,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun LocationEncounterItem(
+    item: LocationEncounter,
+    itemsPerRow: Int = 2,
+    modifier: Modifier = Modifier,
+) {
+    val methodName = item.encounterDetail.method.name
+    val (badgeBg, badgeFg) = encounterMethodColors(methodName)
+
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier
+                .clip(RoundedCornerShape(50.dp))
+                .background(badgeBg)
+                .padding(horizontal = 12.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Icon(
+                imageVector = encounterMethodIcon(methodName),
+                contentDescription = null,
+                tint = badgeFg,
+                modifier = Modifier.size(16.dp)
+            )
+            Text(
+                text = methodName.prettyName(),
+                style = MaterialTheme.typography.labelMedium,
+                color = badgeFg,
+                fontWeight = FontWeight.Medium
+            )
+        }
+
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outlineVariant,
+            thickness = 0.5.dp
+        )
+
+        val infoItems = listOf(
+            PokemonInfoItem(
+                title = stringResource(Res.string.pokemon_detail_tab_encounter_location),
+                value = item.location.name.prettyName(),
+                icon = Icons.Default.Place,
+                iconTint = PokemonEncounterColorVersion
+            ),
+            PokemonInfoItem(
+                title = stringResource(Res.string.pokemon_detail_tab_encounter_min_level),
+                value = item.encounterDetail.minLevel.toString(),
+                icon = Icons.Default.KeyboardArrowDown,
+                iconTint = PokemonEncounterColorMinLevel
+            ),
+            PokemonInfoItem(
+                title = stringResource(Res.string.pokemon_detail_tab_encounter_max_level),
+                value = item.encounterDetail.maxLevel.toString(),
+                icon = Icons.Default.KeyboardArrowUp,
+                iconTint = PokemonEncounterColorMaxLevel
+            ),
+            PokemonInfoItem(
+                title = stringResource(Res.string.pokemon_detail_tab_encounter_max_chance),
+                value = "${item.maxChance}%",
                 icon = Icons.Default.Percent,
                 iconTint = PokemonEncounterColorChance
             ),
@@ -2472,52 +2567,6 @@ private fun VersionItemPreview() {
     }
 }
 
-@Preview
-@Composable
-private fun PokemonEncounterGridItemPreview() {
-    AppTheme {
-        Surface {
-
-            PokemonEncounterGridItem(
-                item = mockEncounter,
-                modifier = Modifier.padding(16.dp)
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun PokemonEncounterGridItemMultipleVersionsPreview() {
-    AppTheme {
-        Surface {
-            PokemonEncounterGridItem(
-                item = mockEncounter.copy(
-                    location = NamedResourceApi(name = "viridian-forest"),
-                    versionDetails = listOf(
-                        mockVersionDetail,
-                        mockVersionDetail.copy(
-                            encounterDetail = mockEncounterDetail.copy(
-                                method = NamedResourceApi(
-                                    name = "surf"
-                                )
-                            )
-                        ),
-                        mockVersionDetail.copy(
-                            encounterDetail = mockEncounterDetail.copy(
-                                method = NamedResourceApi(
-                                    name = "old-rod"
-                                )
-                            )
-                        ),
-                    )
-                ),
-                modifier = Modifier.padding(16.dp)
-            )
-        }
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 private fun EvolutionChainItemPreview_Selected() {
@@ -2792,5 +2841,88 @@ private fun GameItemCardPreview() {
                     PokemonGameGridItem(item = Game(name = name))
                 }
         }
+    }
+}
+
+// --- PokemonEncounterGridItem Preview ---
+
+private val previewEncounterByVersion = EncounterByVersion(
+    version = NamedResourceApi(name = "diamond"),
+    locations = listOf(
+        LocationEncounter(
+            location = NamedResourceApi(name = "eterna-forest-area"),
+            encounterDetail = EncounterDetail(
+                chance = 4,
+                minLevel = 12,
+                maxLevel = 12,
+                method = NamedResourceApi(name = "walk")
+            ),
+            maxChance = 4
+        ),
+        LocationEncounter(
+            location = NamedResourceApi(name = "route-205-area"),
+            encounterDetail = EncounterDetail(
+                chance = 10,
+                minLevel = 14,
+                maxLevel = 16,
+                method = NamedResourceApi(name = "walk")
+            ),
+            maxChance = 10
+        ),
+    )
+)
+
+@Preview
+@Composable
+fun PokemonEncounterGridItemPreview() {
+    AppTheme {
+        PokemonEncounterGridItem(
+            item = previewEncounterByVersion,
+            itemsPerRow = 2,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
+    }
+}
+
+// --- LocationEncounterItem Previews ---
+
+private val previewLocationEncounter = LocationEncounter(
+    location = NamedResourceApi(name = "eterna-forest-area"),
+    encounterDetail = EncounterDetail(
+        chance = 4,
+        minLevel = 12,
+        maxLevel = 12,
+        method = NamedResourceApi(name = "walk")
+    ),
+    maxChance = 4
+)
+
+@Preview
+@Composable
+fun LocationEncounterItemPreview() {
+    AppTheme {
+        LocationEncounterItem(
+            item = previewLocationEncounter,
+            itemsPerRow = 2,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+fun LocationEncounterItemSingleColumnPreview() {
+    AppTheme {
+        LocationEncounterItem(
+            item = previewLocationEncounter,
+            itemsPerRow = 1,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
     }
 }

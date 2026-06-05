@@ -61,7 +61,9 @@ import com.kronos.mutliplatform.pokedex.domain.model.move.MoveList
 import com.kronos.mutliplatform.pokedex.domain.model.nature.NatureDetail
 import com.kronos.mutliplatform.pokedex.domain.model.pokedex.Pokedex
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.Encounter
+import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterByVersion
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterDetail
+import com.kronos.mutliplatform.pokedex.domain.model.pokemon.LocationEncounter
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonDexEntry
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonInfo
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.VersionDetail
@@ -546,3 +548,41 @@ fun TypeInfoDto.toTypeInfo(): TypeInfo =
         moves = moves.map { it.toNamedResource() },
         pokemon = pokemon.map { it.toNamedResource() }
     )
+
+fun List<EncounterDto>.toEncountersByVersion(): List<EncounterByVersion> {
+    data class Flat(
+        val version: NamedResourceApi,
+        val location: NamedResourceApi,
+        val detail: EncounterDetail,
+        val maxChance: Int
+    )
+
+    val flat = this.flatMap { dto ->
+        dto.versionDetails.flatMap { vd ->
+            vd.encounterDetails.map { detail ->
+                Flat(
+                    version = vd.version.toNamedResource(),
+                    location = dto.location.toNamedResource(),
+                    detail = detail.toEncounterDetail(),
+                    maxChance = vd.maxChance
+                )
+            }
+        }
+    }
+
+    return flat
+        .groupBy { it.version.name }
+        .map { (_, items) ->
+            EncounterByVersion(
+                version = items.first().version,
+                locations = items.map { f ->
+                    LocationEncounter(
+                        location = f.location,
+                        encounterDetail = f.detail,
+                        maxChance = f.maxChance
+                    )
+                }
+            )
+        }
+        .sortedBy { it.version.name }
+}

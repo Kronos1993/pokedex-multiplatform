@@ -51,7 +51,7 @@
     <string name="pokemon_detail_tab_info_weight">Peso</string>
     <string name="pokemon_detail_tab_info_happiness">Felicidad</string>
     <string name="pokemon_detail_tab_info_base_happiness">Felicidad Base</string>
-    <string name="pokemon_detail_tab_info_growth_rate">Ritmo de Crecimiento</string>
+    <string name="pokemon_detail_tab_info_growth_rate">Crecimiento</string>
     <string name="pokemon_detail_tab_info_habitat">Hábitat</string>
     <string name="pokemon_detail_tab_info_genderless">Sin género</string>
     <string name="pokemon_detail_tab_info_lower_happiness">Menor de lo normal</string>
@@ -64,10 +64,12 @@
     <string name="pokemon_detail_tab_info_capture_rate">Ratio de Captura</string>
     <string name="pokemon_detail_tab_info_capture_rate_value">%1$s (%2$s% PS completos con una Poké Ball)</string>
     <string name="pokemon_detail_tab_info_no_info_available">Desconocido</string>
+
     <string name="pokemon_detail_tab_encounter_min_level">Nivel Mín.</string>
     <string name="pokemon_detail_tab_encounter_max_level">Nivel Máx.</string>
     <string name="pokemon_detail_tab_encounter_max_chance">Probabilidad Máx.</string>
     <string name="pokemon_detail_tab_encounter_game_version">Versión del Juego</string>
+    <string name="pokemon_detail_tab_encounter_location">Ubicación</string>
 
     <string name="evolution_detail_tab_evolves_from">Evoluciona de</string>
     <string name="evolution_detail_tab_trigger">Método</string>

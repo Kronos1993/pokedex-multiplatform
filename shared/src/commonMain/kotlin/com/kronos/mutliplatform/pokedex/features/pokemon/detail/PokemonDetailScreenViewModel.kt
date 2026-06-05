@@ -11,7 +11,7 @@ import com.kronos.mutliplatform.pokedex.data.remote.ktor.util.FullNetworkError
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.ChainLink
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.EvolutionChain
 import com.kronos.mutliplatform.pokedex.domain.model.game.Game
-import com.kronos.mutliplatform.pokedex.domain.model.pokemon.Encounter
+import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterByVersion
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonInfo
 import com.kronos.mutliplatform.pokedex.domain.model.stat.Stat
 import com.kronos.mutliplatform.pokedex.domain.repository.AbilityRemoteRepository
@@ -55,7 +55,7 @@ class PokemonDetailScreenViewModel(
     private val _pokemonGames = MutableStateFlow<List<Game>>(emptyList())
     val pokemonGames = _pokemonGames.asStateFlow()
 
-    private val _pokemonEncounterList = MutableStateFlow<List<Encounter>>(emptyList())
+    private val _pokemonEncounterList = MutableStateFlow<List<EncounterByVersion>>(emptyList())
     val pokemonEncounterList = _pokemonEncounterList.asStateFlow()
 
     var stringSpriteHome = ""
@@ -148,7 +148,7 @@ class PokemonDetailScreenViewModel(
 
     }
 
-    private fun postPokemonEncounters(list: List<Encounter>) {
+    private fun postPokemonEncounters(list: List<EncounterByVersion>) {
         _pokemonEncounterList.value = (list)
     }
 

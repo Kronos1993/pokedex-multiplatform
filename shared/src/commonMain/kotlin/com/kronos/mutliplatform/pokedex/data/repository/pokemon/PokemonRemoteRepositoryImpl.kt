@@ -5,9 +5,9 @@ import com.kronos.mutliplatform.pokedex.core.result.Result
 import com.kronos.mutliplatform.pokedex.data.remote.datasources.pokemon.PokemonRemoteDataSource
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.ResponseList
-import com.kronos.mutliplatform.pokedex.domain.repository.PokemonRemoteRepository
-import com.kronos.mutliplatform.pokedex.domain.model.pokemon.Encounter
+import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterByVersion
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonInfo
+import com.kronos.mutliplatform.pokedex.domain.repository.PokemonRemoteRepository
 
 class PokemonRemoteRepositoryImpl(
     private val pokemonRemoteDataSource: PokemonRemoteDataSource
@@ -23,7 +23,7 @@ class PokemonRemoteRepositoryImpl(
         return pokemonRemoteDataSource.getPokemonInfo(pokemon)
     }
 
-    override suspend fun getPokemonEncountersInfo(pokemon: String): Result<List<Encounter>, Error> {
+    override suspend fun getPokemonEncountersInfo(pokemon: String): Result<List<EncounterByVersion>, Error> {
         return pokemonRemoteDataSource.getPokemonEncountersInfo(pokemon)
     }
 

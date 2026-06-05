@@ -2,7 +2,7 @@ package com.kronos.mutliplatform.pokedex.data.remote.datasources.pokemon
 
 import com.kronos.mutliplatform.pokedex.core.result.Error
 import com.kronos.mutliplatform.pokedex.core.result.Result
-import com.kronos.mutliplatform.pokedex.data.mapper.toEncounter
+import com.kronos.mutliplatform.pokedex.data.mapper.toEncountersByVersion
 import com.kronos.mutliplatform.pokedex.data.mapper.toNamedResource
 import com.kronos.mutliplatform.pokedex.data.mapper.toPokemonInfo
 import com.kronos.mutliplatform.pokedex.data.mapper.toResponseList
@@ -19,7 +19,7 @@ import com.kronos.mutliplatform.pokedex.data.remote.ktor.util.FullNetworkError
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.util.NetworkError
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.ResponseList
-import com.kronos.mutliplatform.pokedex.domain.model.pokemon.Encounter
+import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterByVersion
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonInfo
 import io.ktor.client.call.body
 import io.ktor.client.network.sockets.SocketTimeoutException
@@ -402,7 +402,7 @@ class PokemonRemoteDataSourceImpl(
         }
     }
 
-    override suspend fun getPokemonEncountersInfo(pokemon: String): Result<List<Encounter>, Error> {
+    override suspend fun getPokemonEncountersInfo(pokemon: String): Result<List<EncounterByVersion>, Error> {
         val response =
             try {
                 httpClient.createKtorClient(httpEngine)
@@ -473,7 +473,7 @@ class PokemonRemoteDataSourceImpl(
                         }
                         val list =
                             json.decodeFromString<List<EncounterDto>>(result)
-                        Result.Success(list.map { it.toEncounter() })
+                        Result.Success(list.toEncountersByVersion())
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Result.Error(
