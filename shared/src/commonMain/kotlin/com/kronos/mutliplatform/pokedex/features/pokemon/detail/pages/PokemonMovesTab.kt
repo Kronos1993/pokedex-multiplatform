@@ -75,6 +75,7 @@ fun PokemonMovesTab(
         )
         viewModel.availableFilters()
         viewModel.postMoves(moves)
+        viewModel.setFilter(selectedFilter)
     }
 
     if (moves.isEmpty()) {

@@ -8,6 +8,10 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -93,6 +97,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -306,6 +311,15 @@ import pokedex.shared.generated.resources.evolution_detail_tab_time_of_day
 import pokedex.shared.generated.resources.evolution_detail_tab_trigger
 import pokedex.shared.generated.resources.evolution_detail_tab_turn_upside_down
 import pokedex.shared.generated.resources.evolution_detail_tab_use_item
+import pokedex.shared.generated.resources.generation_i
+import pokedex.shared.generated.resources.generation_ii
+import pokedex.shared.generated.resources.generation_iii
+import pokedex.shared.generated.resources.generation_iv
+import pokedex.shared.generated.resources.generation_ix
+import pokedex.shared.generated.resources.generation_v
+import pokedex.shared.generated.resources.generation_vi
+import pokedex.shared.generated.resources.generation_vii
+import pokedex.shared.generated.resources.generation_viii
 import pokedex.shared.generated.resources.legendary_pokemon
 import pokedex.shared.generated.resources.mythical_pokemon
 import pokedex.shared.generated.resources.pokemon_detail_tab_encounter_game_version
@@ -1063,40 +1077,119 @@ fun TypeChip(
 /* -------------------------------------------------------------------------- */
 
 @Composable
+fun GenerationHeader(
+    title: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp, vertical = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        HorizontalDivider(
+            modifier = Modifier.weight(1f),
+            color = MaterialTheme.colorScheme.outlineVariant
+        )
+        Text(
+            text = title,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        HorizontalDivider(
+            modifier = Modifier.weight(1f),
+            color = MaterialTheme.colorScheme.outlineVariant
+        )
+    }
+}
+
+@Composable
 fun PokemonEncounterGridItem(
     item: EncounterByVersion,
     itemsPerRow: Int = 2,
+    isExpanded: Boolean = true,
+    onToggle: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    PokemonEncounterSectionCard(
-        title = item.version.name.prettyName(),
-        icon = Icons.Default.VideogameAsset,
-        iconTint = MaterialTheme.colorScheme.onSurface,
-        modifier = modifier.background(Color.Transparent)
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.Transparent)
     ) {
-        val chunked = item.locations.chunked(itemsPerRow)
-        Column(
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier.fillMaxWidth()
+        // Header clickeable con chevron
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onToggle)
+                .padding(bottom = if (isExpanded) 10.dp else 0.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            chunked.forEach { row ->
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier.fillMaxWidth()
+            BodyText(
+                text = item.version.name.prettyName(),
+                vector = Icons.Default.VideogameAsset,
+                iconTint = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Bold,
+                size = ComponentSize.LARGE,
+                modifier = Modifier.weight(1f)
+            )
+
+            val rotation by animateFloatAsState(
+                targetValue = if (isExpanded) 180f else 0f,
+                animationSpec = tween(durationMillis = 250),
+                label = "chevron_${item.version.name}"
+            )
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowDown,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
+                    .size(20.dp)
+                    .rotate(rotation)
+            )
+        }
+
+        // Contenido colapsable
+        AnimatedVisibility(
+            visible = isExpanded,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            BaseCardView(
+                cardBackgroundColor = Color.Transparent,
+                pressedElevation = 0.dp,
+                elevation = 0.dp
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    row.forEach { locationEncounter ->
-                        LocationEncounterItem(
-                            item = locationEncounter,
-                            itemsPerRow = itemsPerRow,
-                            modifier = Modifier.weight(1f)
-                        )
+                    val chunked = item.locations.chunked(itemsPerRow)
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        chunked.forEach { row ->
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                row.forEach { locationEncounter ->
+                                    LocationEncounterItem(
+                                        item = locationEncounter,
+                                        itemsPerRow = itemsPerRow,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
     }
 }
-
 @Composable
 fun VersionItem(
     item: VersionDetail,
@@ -2247,6 +2340,20 @@ fun statShortName(statName: String): String {
     }
 }
 
+
+@Composable
+fun generationDisplayName(generation: Int): String = when (generation) {
+    1 -> stringResource(Res.string.generation_i)
+    2 -> stringResource(Res.string.generation_ii)
+    3 -> stringResource(Res.string.generation_iii)
+    4 -> stringResource(Res.string.generation_iv)
+    5 -> stringResource(Res.string.generation_v)
+    6 -> stringResource(Res.string.generation_vi)
+    7 -> stringResource(Res.string.generation_vii)
+    8 -> stringResource(Res.string.generation_viii)
+    9 -> stringResource(Res.string.generation_ix)
+    else -> "Generation $generation"
+}
 /* -------------------------------------------------------------------------- */
 /* PREVIEWS                                                                   */
 /* -------------------------------------------------------------------------- */

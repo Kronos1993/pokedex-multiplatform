@@ -61,6 +61,7 @@ import com.kronos.mutliplatform.pokedex.domain.model.move.MoveList
 import com.kronos.mutliplatform.pokedex.domain.model.nature.NatureDetail
 import com.kronos.mutliplatform.pokedex.domain.model.pokedex.Pokedex
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.Encounter
+import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterByGeneration
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterByVersion
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterDetail
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.LocationEncounter
@@ -584,5 +585,23 @@ fun List<EncounterDto>.toEncountersByVersion(): List<EncounterByVersion> {
                 }
             )
         }
-        .sortedBy { it.version.name }
+        .sortedWith(
+            compareBy(
+                { VersionGenerationMapper.getGeneration(it.version.name) },
+                { VersionGenerationMapper.getVersionOrder(it.version.name) }
+            )
+        )
+}
+
+fun List<EncounterByVersion>.toEncountersByGeneration(): List<EncounterByGeneration> {
+    return this
+        .groupBy { VersionGenerationMapper.getGeneration(it.version.name) }
+        .map { (gen, versions) ->
+            EncounterByGeneration(
+                generation = gen,
+                generationName = VersionGenerationMapper.getGenerationDisplayName(gen),
+                versions = versions
+            )
+        }
+        .sortedBy { it.generation }
 }

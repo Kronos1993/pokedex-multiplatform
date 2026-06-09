@@ -77,6 +77,7 @@ fun PokemonDetailScreen(
     deviceScreenConfiguration: DeviceScreenConfiguration,
 ) {
     val viewModel = koinViewModel<PokemonDetailScreenViewModel>()
+    val currentTab by viewModel.currentTab.collectAsStateWithLifecycle()
     val pokemonInfo by viewModel.pokemon.collectAsStateWithLifecycle()
     val pokemonEncounters by viewModel.pokemonEncounterList.collectAsStateWithLifecycle()
     val pokemonSpritesUrl by viewModel.pokemonSpritesUrl.collectAsStateWithLifecycle()
@@ -343,7 +344,11 @@ fun PokemonDetailScreen(
             if (!isLoading) {
                 ScrollableTabView(
                     tabs = tabs,
-                    paddingValues = paddingValues
+                    paddingValues = paddingValues,
+                    initialTab = currentTab,
+                    onTabChanged = { _, index ->
+                        viewModel.postCurrentTab(index)
+                    }
                 )
             }
 

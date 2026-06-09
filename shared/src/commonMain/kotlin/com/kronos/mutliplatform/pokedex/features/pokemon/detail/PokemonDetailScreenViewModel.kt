@@ -5,13 +5,14 @@ import com.kronos.mutliplatform.pokedex.core.cache.ICache
 import com.kronos.mutliplatform.pokedex.core.result.onError
 import com.kronos.mutliplatform.pokedex.core.result.onSuccess
 import com.kronos.mutliplatform.pokedex.core.viewmodel.ParentViewModel
+import com.kronos.mutliplatform.pokedex.data.mapper.toEncountersByGeneration
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.ImageType
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.UrlProvider
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.util.FullNetworkError
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.ChainLink
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.EvolutionChain
 import com.kronos.mutliplatform.pokedex.domain.model.game.Game
-import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterByVersion
+import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterByGeneration
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonInfo
 import com.kronos.mutliplatform.pokedex.domain.model.stat.Stat
 import com.kronos.mutliplatform.pokedex.domain.repository.AbilityRemoteRepository
@@ -35,6 +36,9 @@ class PokemonDetailScreenViewModel(
     var urlProvider: UrlProvider,
 ) : ParentViewModel() {
 
+    private var _currentTab = MutableStateFlow(0)
+    var currentTab = _currentTab.asStateFlow()
+
     private var _pokemon = MutableStateFlow(PokemonInfo())
     var pokemon: StateFlow<PokemonInfo> = _pokemon.asStateFlow()
 
@@ -55,7 +59,7 @@ class PokemonDetailScreenViewModel(
     private val _pokemonGames = MutableStateFlow<List<Game>>(emptyList())
     val pokemonGames = _pokemonGames.asStateFlow()
 
-    private val _pokemonEncounterList = MutableStateFlow<List<EncounterByVersion>>(emptyList())
+    private val _pokemonEncounterList = MutableStateFlow<List<EncounterByGeneration>>(emptyList())
     val pokemonEncounterList = _pokemonEncounterList.asStateFlow()
 
     var stringSpriteHome = ""
@@ -79,6 +83,10 @@ class PokemonDetailScreenViewModel(
         this.stringSpriteFemale = stringSpriteFemale
         this.stringSpriteFrontShiny = stringSpriteFrontShiny
         this.stringSpriteFemaleShiny = stringSpriteFemaleShiny
+    }
+
+    fun postCurrentTab(tab: Int) {
+        _currentTab.value = tab
     }
 
     private fun postPokemon(pokemon: PokemonInfo) {
@@ -148,7 +156,7 @@ class PokemonDetailScreenViewModel(
 
     }
 
-    private fun postPokemonEncounters(list: List<EncounterByVersion>) {
+    private fun postPokemonEncounters(list: List<EncounterByGeneration>) {
         _pokemonEncounterList.value = (list)
     }
 
@@ -197,7 +205,7 @@ class PokemonDetailScreenViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             pokemonRemoteRepository.getPokemonEncountersInfo(pokemon)
                 .onSuccess {
-                    postPokemonEncounters(it)
+                    postPokemonEncounters(it.toEncountersByGeneration() )
                 }
                 .onError {
                     val err = HashMap<String, String>()

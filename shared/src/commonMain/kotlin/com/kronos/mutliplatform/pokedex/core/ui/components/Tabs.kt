@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -57,14 +58,20 @@ class TabItem(
 fun ScrollableTabView(
     tabs: List<TabItem>,
     paddingValues: PaddingValues,
+    initialTab: Int = 0,
+    onTabChanged: ((TabItem,Int) -> Unit)? = null,
     showTextOnlyOnSelected: Boolean = false
 ) {
 
-    val pagerState = rememberPagerState { tabs.size }
+    val pagerState = rememberPagerState(initialPage = initialTab) { tabs.size }
     val scope = rememberCoroutineScope()
 
     val selectedTabIndex by remember {
         derivedStateOf { pagerState.currentPage }
+    }
+
+    LaunchedEffect(pagerState.currentPage) {
+        onTabChanged?.invoke(tabs[pagerState.currentPage],pagerState.currentPage)
     }
 
     Column(
@@ -97,8 +104,7 @@ fun ScrollableTabView(
 
                 val isSelected = index == selectedTabIndex
 
-                val shouldShowText =
-                    showTextOnlyOnSelected || isSelected
+                val shouldShowText = showTextOnlyOnSelected || isSelected
 
                 Tab(
                     selected = isSelected,
@@ -120,11 +126,7 @@ fun ScrollableTabView(
 
                     icon = {
                         Icon(
-                            imageVector = if (isSelected) {
-                                tab.iconSelected
-                            } else {
-                                tab.iconUnselected
-                            },
+                            imageVector = if (isSelected) tab.iconSelected else tab.iconUnselected,
                             contentDescription = tab.name,
                             tint = tab.iconColor,
                             modifier = Modifier.height(24.dp)

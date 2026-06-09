@@ -159,4 +159,15 @@
     <string name="berry_detail_info_screen_size">Size</string>
     <string name="berry_detail_info_screen_see_more">See More</string>
 
+
+    <string name="generation_i">Generation I</string>
+    <string name="generation_ii">Generation II</string>
+    <string name="generation_iii">Generation III</string>
+    <string name="generation_iv">Generation IV</string>
+    <string name="generation_v">Generation V</string>
+    <string name="generation_vi">Generation VI</string>
+    <string name="generation_vii">Generation VII</string>
+    <string name="generation_viii">Generation VIII</string>
+    <string name="generation_ix">Generation IX</string>
+
 </resources>
