@@ -133,6 +133,7 @@ fun PokemonListScreen(
                             icon = Icons.AutoMirrored.Filled.ArrowBack,
                             onClick = {
                                 scope.launch {
+                                    viewModel.isSearching(false)
                                     navHost.popBackStack()
                                 }
                             },

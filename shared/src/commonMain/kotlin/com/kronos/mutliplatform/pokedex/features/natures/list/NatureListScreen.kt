@@ -55,8 +55,8 @@ import pokedex.shared.generated.resources.app_name
 import pokedex.shared.generated.resources.empty_move_list
 import pokedex.shared.generated.resources.loading_dialog_text
 import pokedex.shared.generated.resources.loading_dialog_title
+import pokedex.shared.generated.resources.menu_nature_search_placeholder
 import pokedex.shared.generated.resources.menu_natures
-import pokedex.shared.generated.resources.menu_pokemon_search_placeholder
 import pokedex.shared.generated.resources.refresh_list
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -164,7 +164,7 @@ fun NatureListScreen(
                     title = stringResource(Res.string.menu_natures),
                     isSearching = isSearching,
                     searchQuery = searchQuery,
-                    searchPlaceholder = stringResource(Res.string.menu_pokemon_search_placeholder),
+                    searchPlaceholder = stringResource(Res.string.menu_nature_search_placeholder),
                     searchEnabled = true,
                     onSearchQueryChange = {
                         viewModel.updateSearchQuery(it)
@@ -181,7 +181,10 @@ fun NatureListScreen(
                         IconButton(
                             icon = Icons.Filled.Menu,
                             onClick = {
-                                scope.launch { drawerState.open() }
+                                scope.launch {
+                                    drawerState.open()
+                                    viewModel.isSearching(false)
+                                }
                             },
                             type = ButtonType.TEXT,
                             iconColor = MaterialTheme.colorScheme.onPrimary,

@@ -179,7 +179,10 @@ fun PokedexScreen(
                         IconButton(
                             icon = Icons.Filled.Menu,
                             onClick = {
-                                scope.launch { drawerState.open() }
+                                scope.launch {
+                                    drawerState.open()
+                                    viewModel.isSearching(false)
+                                }
                             },
                             type = ButtonType.TEXT,
                             iconColor = MaterialTheme.colorScheme.onPrimary,

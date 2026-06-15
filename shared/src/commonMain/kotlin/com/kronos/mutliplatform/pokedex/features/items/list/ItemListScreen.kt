@@ -46,8 +46,8 @@ import pokedex.shared.generated.resources.Res
 import pokedex.shared.generated.resources.empty_pokedex_list
 import pokedex.shared.generated.resources.loading_dialog_text
 import pokedex.shared.generated.resources.loading_dialog_title
+import pokedex.shared.generated.resources.menu_item_search_placeholder
 import pokedex.shared.generated.resources.menu_items
-import pokedex.shared.generated.resources.menu_pokemon_search_placeholder
 import pokedex.shared.generated.resources.refresh_list
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -128,7 +128,7 @@ fun ItemListScreen(
                     title = screenTitle.replaceFirstChar { it.uppercase() },
                     isSearching = isSearching,
                     searchQuery = searchQuery,
-                    searchPlaceholder = stringResource(Res.string.menu_pokemon_search_placeholder),
+                    searchPlaceholder = stringResource(Res.string.menu_item_search_placeholder),
                     searchEnabled = true,
                     onSearchQueryChange = {
                         viewModel.updateSearchQuery(it)
@@ -146,6 +146,7 @@ fun ItemListScreen(
                             icon = Icons.AutoMirrored.Filled.ArrowBack,
                             onClick = {
                                 scope.launch {
+                                    viewModel.isSearching(false)
                                     navHost.popBackStack()
                                 }
                             },

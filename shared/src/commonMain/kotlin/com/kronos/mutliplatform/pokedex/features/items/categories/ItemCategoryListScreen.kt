@@ -55,8 +55,8 @@ import pokedex.shared.generated.resources.app_name
 import pokedex.shared.generated.resources.empty_pokedex_list
 import pokedex.shared.generated.resources.loading_dialog_text
 import pokedex.shared.generated.resources.loading_dialog_title
+import pokedex.shared.generated.resources.menu_item_categories_search_placeholder
 import pokedex.shared.generated.resources.menu_items_categories
-import pokedex.shared.generated.resources.menu_pokemon_search_placeholder
 import pokedex.shared.generated.resources.refresh_list
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -141,7 +141,6 @@ fun ItemCategoryListScreen(
             }
     }
 
-
     NavDrawer(
         navigationItems = navDestinations,
         selectedIndex = selectedItem,
@@ -167,7 +166,7 @@ fun ItemCategoryListScreen(
                     title = itemCategoriesTitle,
                     isSearching = isSearching,
                     searchQuery = searchQuery,
-                    searchPlaceholder = stringResource(Res.string.menu_pokemon_search_placeholder),
+                    searchPlaceholder = stringResource(Res.string.menu_item_categories_search_placeholder),
                     searchEnabled = true,
                     onSearchQueryChange = {
                         viewModel.updateSearchQuery(it)
@@ -184,7 +183,10 @@ fun ItemCategoryListScreen(
                         IconButton(
                             icon = Icons.Filled.Menu,
                             onClick = {
-                                scope.launch { drawerState.open() }
+                                scope.launch {
+                                    drawerState.open()
+                                    viewModel.isSearching(false)
+                                }
                             },
                             type = ButtonType.TEXT,
                             iconColor = MaterialTheme.colorScheme.onPrimary,
