@@ -55,8 +55,8 @@ import pokedex.shared.generated.resources.app_name
 import pokedex.shared.generated.resources.empty_pokedex_list
 import pokedex.shared.generated.resources.loading_dialog_text
 import pokedex.shared.generated.resources.loading_dialog_title
-import pokedex.shared.generated.resources.menu_pokemon_search_placeholder
 import pokedex.shared.generated.resources.menu_types
+import pokedex.shared.generated.resources.menu_types_search_placeholder
 import pokedex.shared.generated.resources.refresh_list
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -128,7 +128,6 @@ fun TypeListScreen(
             }
     }
 
-
     NavDrawer(
         navigationItems = navDestinations,
         selectedIndex = selectedItem,
@@ -154,7 +153,7 @@ fun TypeListScreen(
                     title = stringResource(Res.string.menu_types),
                     isSearching = isSearching,
                     searchQuery = searchQuery,
-                    searchPlaceholder = stringResource(Res.string.menu_pokemon_search_placeholder),
+                    searchPlaceholder = stringResource(Res.string.menu_types_search_placeholder),
                     searchEnabled = true,
                     onSearchQueryChange = {
                         viewModel.updateSearchQuery(it)
@@ -171,7 +170,10 @@ fun TypeListScreen(
                         IconButton(
                             icon = Icons.Filled.Menu,
                             onClick = {
-                                scope.launch { drawerState.open() }
+                                scope.launch {
+                                    drawerState.open()
+                                    viewModel.isSearching(false)
+                                }
                             },
                             type = ButtonType.TEXT,
                             iconColor = MaterialTheme.colorScheme.onPrimary,
