@@ -17,13 +17,21 @@
     <string name="menu_pokedex_search_placeholder">Buscar en la Pokedex...</string>
     <string name="menu_pokemon_search_placeholder">Buscar Pokémon...</string>
     <string name="menu_moves">Movimientos</string>
+    <string name="menu_moves_search_placeholder">Buscar Movimientos...</string>
     <string name="menu_types">Tipos</string>
+    <string name="menu_types_search_placeholder">Buscar Tipos...</string>
     <string name="menu_abilities">Habilidades</string>
+    <string name="menu_abilities_search_placeholder">Buscar Habilidades...</string>
     <string name="menu_natures">Naturalezas</string>
+    <string name="menu_nature_search_placeholder">Buscar Naturalezas...</string>
     <string name="menu_egg_groups">Grupos Huevo</string>
+    <string name="menu_egg_group_search_placeholder">Buscar Grupos Huevo...</string>
     <string name="menu_items_categories">Categorías de Objetos</string>
+    <string name="menu_item_categories_search_placeholder">Buscar Categorías...</string>
     <string name="menu_items">Objetos</string>
+    <string name="menu_item_search_placeholder">Buscar Objetos...</string>
     <string name="menu_berries">Bayas</string>
+    <string name="menu_berries_search_placeholder">Buscar Bayas...</string>
     <string name="menu_settings">Configuración</string>
     <string name="menu_about">Acerca de</string>
 

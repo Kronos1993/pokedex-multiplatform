@@ -17,13 +17,21 @@
     <string name="menu_pokedex_search_placeholder">Search Pokedex...</string>
     <string name="menu_pokemon_search_placeholder">Search Pokemon...</string>
     <string name="menu_moves">Moves</string>
+    <string name="menu_moves_search_placeholder">Search Moves...</string>
     <string name="menu_types">Types</string>
+    <string name="menu_types_search_placeholder">Search Types...</string>
     <string name="menu_abilities">Abilities</string>
+    <string name="menu_abilities_search_placeholder">Search Abilities...</string>
     <string name="menu_natures">Natures</string>
+    <string name="menu_nature_search_placeholder">Search Natures...</string>
     <string name="menu_egg_groups">Egg Groups</string>
+    <string name="menu_egg_group_search_placeholder">Search Egg Groups...</string>
     <string name="menu_items_categories">Item Categories</string>
+    <string name="menu_item_categories_search_placeholder">Search Categories...</string>
     <string name="menu_items">Items</string>
+    <string name="menu_item_search_placeholder">Search Item...</string>
     <string name="menu_berries">Berries</string>
+    <string name="menu_berries_search_placeholder">Search Berries...</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_about">About</string>
 
