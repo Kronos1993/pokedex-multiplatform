@@ -2,6 +2,7 @@ package com.kronos.mutliplatform.pokedex.features.pokedex
 
 import androidx.lifecycle.viewModelScope
 import com.kronos.mutliplatform.pokedex.core.Platform
+import com.kronos.mutliplatform.pokedex.core.PlatformType
 import com.kronos.mutliplatform.pokedex.core.result.onError
 import com.kronos.mutliplatform.pokedex.core.result.onSuccess
 import com.kronos.mutliplatform.pokedex.core.util.IAppInfo
@@ -52,6 +53,15 @@ class PokedexScreenViewModel(
 
     private var _appVersion = MutableStateFlow("")
     var appVersion: StateFlow<String> = _appVersion.asStateFlow()
+
+    init {
+        setLimit(
+            if (platform.platformType == PlatformType.DESKTOP)
+                100
+            else
+                50
+        )
+    }
 
     fun getAppVersion() {
         _appVersion.value = appInfo.getAppVersion()
@@ -107,7 +117,6 @@ class PokedexScreenViewModel(
     fun loadPokedex(reset: Boolean = false) {
         _loading.value = true
         if (reset) {
-            setLimit(50)
             setOffset(0)
             setLastPage(false)
         }

@@ -2,7 +2,7 @@ package com.kronos.mutliplatform.pokedex.features.pokemon.list
 
 import androidx.lifecycle.viewModelScope
 import com.kronos.mutliplatform.pokedex.core.Platform
-import com.kronos.mutliplatform.pokedex.core.cache.ICache
+import com.kronos.mutliplatform.pokedex.core.PlatformType
 import com.kronos.mutliplatform.pokedex.core.result.onError
 import com.kronos.mutliplatform.pokedex.core.result.onSuccess
 import com.kronos.mutliplatform.pokedex.core.viewmodel.ParentViewModel
@@ -46,6 +46,15 @@ class PokemonListScreenViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
+
+    init {
+        setLimit(
+            if (platform.platformType == PlatformType.DESKTOP)
+                100
+            else
+                50
+        )
+    }
 
     private fun postPokemons(pokemons: List<PokemonDexEntry>) {
         _allPokemons.value = pokemons.map {

@@ -2,6 +2,7 @@ package com.kronos.mutliplatform.pokedex.features.abilities.list
 
 import androidx.lifecycle.viewModelScope
 import com.kronos.mutliplatform.pokedex.core.Platform
+import com.kronos.mutliplatform.pokedex.core.PlatformType
 import com.kronos.mutliplatform.pokedex.core.result.onError
 import com.kronos.mutliplatform.pokedex.core.result.onSuccess
 import com.kronos.mutliplatform.pokedex.core.util.IAppInfo
@@ -35,8 +36,7 @@ class AbilityListScreenViewModel(
             } else {
                 abilities.filter {
                     it.name.contains(
-                        query.trim(),
-                        ignoreCase = true
+                        query.trim(), ignoreCase = true
                     )
                 }
             }
@@ -49,6 +49,15 @@ class AbilityListScreenViewModel(
     private var _appVersion = MutableStateFlow("")
     var appVersion: StateFlow<String> = _appVersion.asStateFlow()
 
+    init {
+        setLimit(
+            if (platform.platformType == PlatformType.DESKTOP)
+                100
+            else
+                50
+        )
+    }
+
     fun getAppVersion() {
         _appVersion.value = appInfo.getAppVersion()
     }
@@ -60,7 +69,6 @@ class AbilityListScreenViewModel(
     fun loadAbilities(reset: Boolean = false) {
         _loading.value = true
         if (reset) {
-            setLimit(50)
             setOffset(0)
             setLastPage(false)
         }
@@ -68,20 +76,16 @@ class AbilityListScreenViewModel(
             abilityRemoteRepository.listAbility(
                 limit.value,
                 offset.value,
-            )
-                .onSuccess {
+            ).onSuccess {
                     _loading.value = (false)
-                    if (reset)
-                        _allAbilities.value = listOf()
+                    if (reset) _allAbilities.value = listOf()
 
                     if (it.results.isNotEmpty()) {
                         setOffset(offset.value + limit.value)
                         postAbilities(it.results)
-                    } else
-                        setLastPage(true)
+                    } else setLastPage(true)
 
-                }
-                .onError {
+                }.onError {
                     val err = HashMap<String, String>()
                     if (it is FullNetworkError) {
                         err["error"] = it.errorMessage

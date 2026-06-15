@@ -2,6 +2,7 @@ package com.kronos.mutliplatform.pokedex.features.items.list
 
 import androidx.lifecycle.viewModelScope
 import com.kronos.mutliplatform.pokedex.core.Platform
+import com.kronos.mutliplatform.pokedex.core.PlatformType
 import com.kronos.mutliplatform.pokedex.core.result.onError
 import com.kronos.mutliplatform.pokedex.core.result.onSuccess
 import com.kronos.mutliplatform.pokedex.core.viewmodel.ParentViewModel
@@ -47,6 +48,15 @@ class ItemListScreenViewModel(
         )
 
 
+    init {
+        setLimit(
+            if (platform.platformType == PlatformType.DESKTOP)
+                100
+            else
+                50
+        )
+    }
+
     private fun postItems(items: List<NamedResourceApi>) {
         _allItems.value = _allItems.value.plus(items)
 
@@ -63,7 +73,6 @@ class ItemListScreenViewModel(
     fun getItems(reset: Boolean = false) {
         _loading.value = true
         if (reset) {
-            setLimit(50)
             setOffset(0)
             setLastPage(false)
         }
