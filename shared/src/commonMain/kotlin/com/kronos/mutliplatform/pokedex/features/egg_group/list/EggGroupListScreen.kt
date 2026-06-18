@@ -182,8 +182,8 @@ fun EggGroupListScreen(
                             icon = Icons.Filled.Menu,
                             onClick = {
                                 scope.launch {
-                                    drawerState.open()
                                     viewModel.isSearching(false)
+                                    drawerState.open()
                                 }
                             },
                             type = ButtonType.TEXT,
