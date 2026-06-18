@@ -66,7 +66,8 @@ val commonRemoteModules = module {
         PokedexRemoteDataSourceImpl(
             get(),
             get(named(KtorClientFactoryType.PUBLIC)),
-            get()
+            get(),
+            get(),
         )
     }.bind<PokedexRemoteDataSource>()
 
@@ -74,6 +75,7 @@ val commonRemoteModules = module {
         PokemonRemoteDataSourceImpl(
             get(),
             get(named(KtorClientFactoryType.PUBLIC)),
+            get(),
             get(),
             get()
         )
@@ -84,6 +86,7 @@ val commonRemoteModules = module {
             get(),
             get(named(KtorClientFactoryType.PUBLIC)),
             get(),
+            get(),
         )
     }.bind<SpecieRemoteDataSource>()
 
@@ -91,6 +94,7 @@ val commonRemoteModules = module {
         AbilityRemoteDataSourceImpl(
             get(),
             get(named(KtorClientFactoryType.PUBLIC)),
+            get(),
             get(),
         )
     }.bind<AbilityRemoteDataSource>()
@@ -100,6 +104,7 @@ val commonRemoteModules = module {
             get(),
             get(named(KtorClientFactoryType.PUBLIC)),
             get(),
+            get(),
         )
     }.bind<BerryRemoteDataSource>()
 
@@ -107,6 +112,7 @@ val commonRemoteModules = module {
         EggGroupRemoteDataSourceImpl(
             get(),
             get(named(KtorClientFactoryType.PUBLIC)),
+            get(),
             get(),
         )
     }.bind<EggGroupRemoteDataSource>()
@@ -116,6 +122,7 @@ val commonRemoteModules = module {
             get(),
             get(named(KtorClientFactoryType.PUBLIC)),
             get(),
+            get(),
         )
     }.bind<EvolutionChainRemoteDataSource>()
 
@@ -123,6 +130,7 @@ val commonRemoteModules = module {
         ItemRemoteDataSourceImpl(
             get(),
             get(named(KtorClientFactoryType.PUBLIC)),
+            get(),
             get(),
         )
     }.bind<ItemRemoteDataSource>()
@@ -132,6 +140,7 @@ val commonRemoteModules = module {
             get(),
             get(named(KtorClientFactoryType.PUBLIC)),
             get(),
+            get(),
         )
     }.bind<MoveRemoteDataSource>()
 
@@ -140,6 +149,7 @@ val commonRemoteModules = module {
             get(),
             get(named(KtorClientFactoryType.PUBLIC)),
             get(),
+            get(),
         )
     }.bind<NatureRemoteDataSource>()
 
@@ -147,6 +157,7 @@ val commonRemoteModules = module {
         TypeRemoteDataSourceImpl(
             get(),
             get(named(KtorClientFactoryType.PUBLIC)),
+            get(),
             get(),
         )
     }.bind<TypeRemoteDataSource>()

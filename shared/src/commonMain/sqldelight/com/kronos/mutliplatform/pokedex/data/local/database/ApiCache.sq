@@ -1,0 +1,15 @@
+CREATE TABLE ApiCache (
+    url TEXT NOT NULL PRIMARY KEY,
+    response TEXT NOT NULL,
+    timestamp INTEGER NOT NULL
+);
+
+getByUrl:
+SELECT * FROM ApiCache WHERE url = :url;
+
+upsert:
+INSERT OR REPLACE INTO ApiCache(url, response, timestamp)
+VALUES (:url, :response, :timestamp);
+
+deleteExpired:
+DELETE FROM ApiCache WHERE timestamp < :expiry;
