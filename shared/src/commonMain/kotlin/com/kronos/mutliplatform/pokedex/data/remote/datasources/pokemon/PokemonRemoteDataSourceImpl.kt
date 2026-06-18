@@ -2,6 +2,8 @@ package com.kronos.mutliplatform.pokedex.data.remote.datasources.pokemon
 
 import com.kronos.mutliplatform.pokedex.core.result.Error
 import com.kronos.mutliplatform.pokedex.core.result.Result
+import com.kronos.mutliplatform.pokedex.data.local.database.ApiCache
+import com.kronos.mutliplatform.pokedex.data.local.datasource.api_cache.ApiCacheLocalDataSource
 import com.kronos.mutliplatform.pokedex.data.mapper.toEncountersByVersion
 import com.kronos.mutliplatform.pokedex.data.mapper.toNamedResource
 import com.kronos.mutliplatform.pokedex.data.mapper.toPokemonInfo
@@ -27,12 +29,14 @@ import io.ktor.client.request.get
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlin.time.Clock
 
 class PokemonRemoteDataSourceImpl(
     private val urlProvider: UrlProvider,
     private val httpClient: KtorClientFactory,
     private val httpEngine: KtorEngineFactory,
-    private val specieRemoteDataSource: SpecieRemoteDataSource
+    private val specieRemoteDataSource: SpecieRemoteDataSource,
+    private val apiCache: ApiCacheLocalDataSource
 ) : PokemonRemoteDataSource {
 
     override suspend fun listPokemon(
@@ -219,247 +223,69 @@ class PokemonRemoteDataSourceImpl(
     }
 
     override suspend fun getPokemonInfo(pokemon: String): Result<PokemonInfo, Error> {
-        val response =
-            try {
-                httpClient.createKtorClient(httpEngine)
-                    .get(urlProvider.getPublicApiUrl() + PokemonApi.GET_POKEMON_INFO(pokemon))
-            } catch (e: UnresolvedAddressException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + PokemonApi.GET_POKEMON_INFO(
-                                pokemon
-                            )
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SerializationException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + PokemonApi.GET_POKEMON_INFO(
-                                pokemon
-                            )
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SocketTimeoutException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + PokemonApi.GET_POKEMON_INFO(
-                                pokemon
-                            )
-                        }",
-                        0
-                    )
-                )
+        val url = urlProvider.getPublicApiUrl() + PokemonApi.GET_POKEMON_INFO(pokemon)
+
+        val cached = apiCache.getByUrl(url)
+        if (cached != null) {
+            return try {
+                val json = Json {
+                    ignoreUnknownKeys = true
+                    isLenient = true
+                    allowSpecialFloatingPointValues = true
+                }
+                val dto = json.decodeFromString<PokemonInfoDto>(cached.response)
+                val specie = specieRemoteDataSource.getSpecie(dto.species.name)
+                val specieResult = if (specie is Result.Success) specie.data else null
+                Result.Success(dto.toPokemonInfo(specieResult))
             } catch (e: Exception) {
                 e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + PokemonApi.GET_POKEMON_INFO(
-                                pokemon
-                            )
-                        }",
-                        0
-                    )
-                )
+                fetchPokemonInfoFromNetwork(url)
             }
-
-        return when (response.status.value) {
-            in 200..299 -> {
-                val result: String = response.body<String>()
-                if (result.isNotEmpty()) {
-                    try {
-                        val json = Json {
-                            ignoreUnknownKeys = true
-                            isLenient = true
-                            allowSpecialFloatingPointValues = true
-                        }
-                        val list =
-                            json.decodeFromString<PokemonInfoDto>(result)
-                        val specie = specieRemoteDataSource.getSpecie(list.species.name)
-                        val specieResult = if (
-                            specie is Result.Success
-                        ){
-                            specie.data
-                        }else{
-                            null
-                        }
-                        Result.Success(list.toPokemonInfo(specieResult))
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                "Serialization error",
-                                0
-                            )
-                        )
-                    }
-                } else {
-                    Result.Error(
-                        FullNetworkError(
-                            NetworkError.SERIALIZATION,
-                            "Serialization error",
-                            0
-                        )
-                    )
-                }
-
-            }
-
-            400 -> {
-                val result: String = response.body<String>()
-                if (result.isNotEmpty()) {
-                    try {
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                NetworkError.SERIALIZATION.name,
-                                409
-                            )
-                        )
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                "Serialization error",
-                                0
-                            )
-                        )
-                    }
-                } else {
-                    Result.Error(
-                        FullNetworkError(
-                            NetworkError.SERIALIZATION,
-                            "Serialization error",
-                            0
-                        )
-                    )
-                }
-            }
-
-            401 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.UNAUTHORIZED,
-                    "UNAUTHORIZED",
-                    401
-                )
-            )
-
-            409 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.CONFLICT,
-                    "CONFLICT",
-                    409
-                )
-            )
-
-            408 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.REQUEST_TIMEOUT,
-                    "CONFLICT",
-                    408
-                )
-            )
-
-            413 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.PAYLOAD_TOO_LARGE,
-                    "PAYLOAD TOO LARGE",
-                    413
-                )
-            )
-
-            in 500..599 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.SERVER_ERROR,
-                    "SERVER ERROR",
-                    response.status.value
-                )
-            )
-
-            else -> Result.Error(
-                FullNetworkError(
-                    NetworkError.UNKNOWN,
-                    "UNKNOWN",
-                    response.status.value
-                )
-            )
         }
+
+        return fetchPokemonInfoFromNetwork(url)
     }
 
     override suspend fun getPokemonEncountersInfo(pokemon: String): Result<List<EncounterByVersion>, Error> {
-        val response =
-            try {
-                httpClient.createKtorClient(httpEngine)
-                    .get(urlProvider.getPublicApiUrl() + PokemonApi.GET_POKEMON_ENCOUNTERS(pokemon))
-            } catch (e: UnresolvedAddressException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + PokemonApi.GET_POKEMON_ENCOUNTERS(
-                                pokemon
-                            )
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SerializationException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + PokemonApi.GET_POKEMON_ENCOUNTERS(
-                                pokemon
-                            )
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SocketTimeoutException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + PokemonApi.GET_POKEMON_ENCOUNTERS(
-                                pokemon
-                            )
-                        }",
-                        0
-                    )
+        val url = urlProvider.getPublicApiUrl() + PokemonApi.GET_POKEMON_ENCOUNTERS(pokemon)
+
+        val cached = apiCache.getByUrl(url)
+        if (cached != null) {
+            return try {
+                val json = Json {
+                    ignoreUnknownKeys = true
+                    isLenient = true
+                    allowSpecialFloatingPointValues = true
+                }
+                Result.Success(
+                    json.decodeFromString<List<EncounterDto>>(cached.response)
+                        .toEncountersByVersion()
                 )
             } catch (e: Exception) {
                 e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + PokemonApi.GET_POKEMON_ENCOUNTERS(
-                                pokemon
-                            )
-                        }",
-                        0
-                    )
-                )
+                fetchPokemonEncountersFromNetwork(url)
             }
+        }
+
+        return fetchPokemonEncountersFromNetwork(url)
+    }
+
+    private suspend fun fetchPokemonInfoFromNetwork(url: String): Result<PokemonInfo, Error> {
+        val response = try {
+            httpClient.createKtorClient(httpEngine).get(url)
+        } catch (e: UnresolvedAddressException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SerializationException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SocketTimeoutException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        }
 
         return when (response.status.value) {
             in 200..299 -> {
@@ -471,42 +297,19 @@ class PokemonRemoteDataSourceImpl(
                             isLenient = true
                             allowSpecialFloatingPointValues = true
                         }
-                        val list =
-                            json.decodeFromString<List<EncounterDto>>(result)
-                        Result.Success(list.toEncountersByVersion())
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                "Serialization error",
-                                0
+                        val dto = json.decodeFromString<PokemonInfoDto>(result)
+                        val specie = specieRemoteDataSource.getSpecie(dto.species.name)
+                        val specieResult = if (specie is Result.Success) specie.data else null
+
+                        apiCache.insertOrUpdate(
+                            ApiCache(
+                                url = url,
+                                response = result,
+                                timestamp = Clock.System.now().toEpochMilliseconds()
                             )
                         )
-                    }
-                } else {
-                    Result.Error(
-                        FullNetworkError(
-                            NetworkError.SERIALIZATION,
-                            "Serialization error",
-                            0
-                        )
-                    )
-                }
 
-            }
-
-            400 -> {
-                val result: String = response.body<String>()
-                if (result.isNotEmpty()) {
-                    try {
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                NetworkError.SERIALIZATION.name,
-                                409
-                            )
-                        )
+                        Result.Success(dto.toPokemonInfo(specieResult))
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Result.Error(
@@ -528,30 +331,16 @@ class PokemonRemoteDataSourceImpl(
                 }
             }
 
-            401 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.UNAUTHORIZED,
-                    "UNAUTHORIZED",
-                    401
-                )
-            )
-
-            409 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.CONFLICT,
-                    "CONFLICT",
-                    409
-                )
-            )
-
+            401 -> Result.Error(FullNetworkError(NetworkError.UNAUTHORIZED, "UNAUTHORIZED", 401))
             408 -> Result.Error(
                 FullNetworkError(
                     NetworkError.REQUEST_TIMEOUT,
-                    "CONFLICT",
+                    "REQUEST_TIMEOUT",
                     408
                 )
             )
 
+            409 -> Result.Error(FullNetworkError(NetworkError.CONFLICT, "CONFLICT", 409))
             413 -> Result.Error(
                 FullNetworkError(
                     NetworkError.PAYLOAD_TOO_LARGE,
@@ -578,4 +367,98 @@ class PokemonRemoteDataSourceImpl(
         }
     }
 
+    private suspend fun fetchPokemonEncountersFromNetwork(url: String): Result<List<EncounterByVersion>, Error> {
+        val response = try {
+            httpClient.createKtorClient(httpEngine).get(url)
+        } catch (e: UnresolvedAddressException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SerializationException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SocketTimeoutException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        }
+
+        return when (response.status.value) {
+            in 200..299 -> {
+                val result: String = response.body<String>()
+                if (result.isNotEmpty()) {
+                    try {
+                        val json = Json {
+                            ignoreUnknownKeys = true
+                            isLenient = true
+                            allowSpecialFloatingPointValues = true
+                        }
+                        val dto = json.decodeFromString<List<EncounterDto>>(result)
+
+                        apiCache.insertOrUpdate(
+                            ApiCache(
+                                url = url,
+                                response = result,
+                                timestamp = Clock.System.now().toEpochMilliseconds()
+                            )
+                        )
+
+                        Result.Success(dto.toEncountersByVersion())
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        Result.Error(
+                            FullNetworkError(
+                                NetworkError.SERIALIZATION,
+                                "Serialization error",
+                                0
+                            )
+                        )
+                    }
+                } else {
+                    Result.Error(
+                        FullNetworkError(
+                            NetworkError.SERIALIZATION,
+                            "Serialization error",
+                            0
+                        )
+                    )
+                }
+            }
+
+            401 -> Result.Error(FullNetworkError(NetworkError.UNAUTHORIZED, "UNAUTHORIZED", 401))
+            408 -> Result.Error(
+                FullNetworkError(
+                    NetworkError.REQUEST_TIMEOUT,
+                    "REQUEST_TIMEOUT",
+                    408
+                )
+            )
+
+            409 -> Result.Error(FullNetworkError(NetworkError.CONFLICT, "CONFLICT", 409))
+            413 -> Result.Error(
+                FullNetworkError(
+                    NetworkError.PAYLOAD_TOO_LARGE,
+                    "PAYLOAD TOO LARGE",
+                    413
+                )
+            )
+
+            in 500..599 -> Result.Error(
+                FullNetworkError(
+                    NetworkError.SERVER_ERROR,
+                    "SERVER ERROR",
+                    response.status.value
+                )
+            )
+
+            else -> Result.Error(
+                FullNetworkError(
+                    NetworkError.UNKNOWN,
+                    "UNKNOWN",
+                    response.status.value
+                )
+            )
+        }
+    }
 }

@@ -2,6 +2,8 @@ package com.kronos.mutliplatform.pokedex.data.remote.datasources.item
 
 import com.kronos.mutliplatform.pokedex.core.result.Error
 import com.kronos.mutliplatform.pokedex.core.result.Result
+import com.kronos.mutliplatform.pokedex.data.local.database.ApiCache
+import com.kronos.mutliplatform.pokedex.data.local.datasource.api_cache.ApiCacheLocalDataSource
 import com.kronos.mutliplatform.pokedex.data.mapper.toItemCategory
 import com.kronos.mutliplatform.pokedex.data.mapper.toItemInfo
 import com.kronos.mutliplatform.pokedex.data.mapper.toNamedResource
@@ -26,11 +28,13 @@ import io.ktor.client.request.get
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlin.time.Clock
 
 class ItemRemoteDataSourceImpl(
     private val urlProvider: UrlProvider,
     private val httpClient: KtorClientFactory,
     private val httpEngine: KtorEngineFactory,
+    private val apiCache: ApiCacheLocalDataSource
 ) : ItemRemoteDataSource {
 
 
@@ -206,57 +210,42 @@ class ItemRemoteDataSourceImpl(
     }
 
     override suspend fun getItem(item: String): Result<ItemInfo, Error> {
-        val response =
-            try {
-                httpClient.createKtorClient(httpEngine)
-                    .get(
-                        urlProvider.getPublicApiUrl() + ItemApi.GET_ITEM(item)
-                    )
-            } catch (e: UnresolvedAddressException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + ItemApi.GET_ITEM(item)
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SerializationException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + ItemApi.GET_ITEM(item)
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SocketTimeoutException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + ItemApi.GET_ITEM(item)
-                        }",
-                        0
-                    )
-                )
+        val url = urlProvider.getPublicApiUrl() + ItemApi.GET_ITEM(item)
+
+        val cached = apiCache.getByUrl(url)
+        if (cached != null) {
+            return try {
+                val json = Json {
+                    ignoreUnknownKeys = true
+                    isLenient = true
+                    allowSpecialFloatingPointValues = true
+                }
+                Result.Success(json.decodeFromString<ItemInfoDto>(cached.response).toItemInfo())
             } catch (e: Exception) {
                 e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + ItemApi.GET_ITEM(item)
-                        }",
-                        0
-                    )
-                )
+                fetchItemFromNetwork(url)
             }
+        }
+
+        return fetchItemFromNetwork(url)
+    }
+
+    private suspend fun fetchItemFromNetwork(url: String): Result<ItemInfo, Error> {
+        val response = try {
+            httpClient.createKtorClient(httpEngine).get(url)
+        } catch (e: UnresolvedAddressException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SerializationException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SocketTimeoutException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        }
 
         return when (response.status.value) {
             in 200..299 -> {
@@ -268,110 +257,31 @@ class ItemRemoteDataSourceImpl(
                             isLenient = true
                             allowSpecialFloatingPointValues = true
                         }
-                        val list =
-                            json.decodeFromString<ItemInfoDto>(result)
-                        Result.Success(list.toItemInfo())
+                        val dto = json.decodeFromString<ItemInfoDto>(result)
+
+                        apiCache.insertOrUpdate(
+                            ApiCache(
+                                url = url,
+                                response = result,
+                                timestamp = Clock.System.now().toEpochMilliseconds()
+                            )
+                        )
+
+                        Result.Success(dto.toItemInfo())
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                "Serialization error",
-                                0
-                            )
-                        )
+                        Result.Error(FullNetworkError(NetworkError.SERIALIZATION, "Serialization error", 0))
                     }
                 } else {
-                    Result.Error(
-                        FullNetworkError(
-                            NetworkError.SERIALIZATION,
-                            "Serialization error",
-                            0
-                        )
-                    )
-                }
-
-            }
-
-            400 -> {
-                val result: String = response.body<String>()
-                if (result.isNotEmpty()) {
-                    try {
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                NetworkError.SERIALIZATION.name,
-                                409
-                            )
-                        )
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                "Serialization error",
-                                0
-                            )
-                        )
-                    }
-                } else {
-                    Result.Error(
-                        FullNetworkError(
-                            NetworkError.SERIALIZATION,
-                            "Serialization error",
-                            0
-                        )
-                    )
+                    Result.Error(FullNetworkError(NetworkError.SERIALIZATION, "Serialization error", 0))
                 }
             }
-
-            401 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.UNAUTHORIZED,
-                    "UNAUTHORIZED",
-                    401
-                )
-            )
-
-            409 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.CONFLICT,
-                    "CONFLICT",
-                    409
-                )
-            )
-
-            408 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.REQUEST_TIMEOUT,
-                    "CONFLICT",
-                    408
-                )
-            )
-
-            413 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.PAYLOAD_TOO_LARGE,
-                    "PAYLOAD TOO LARGE",
-                    413
-                )
-            )
-
-            in 500..599 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.SERVER_ERROR,
-                    "SERVER ERROR",
-                    response.status.value
-                )
-            )
-
-            else -> Result.Error(
-                FullNetworkError(
-                    NetworkError.UNKNOWN,
-                    "UNKNOWN",
-                    response.status.value
-                )
-            )
+            401 -> Result.Error(FullNetworkError(NetworkError.UNAUTHORIZED, "UNAUTHORIZED", 401))
+            408 -> Result.Error(FullNetworkError(NetworkError.REQUEST_TIMEOUT, "REQUEST_TIMEOUT", 408))
+            409 -> Result.Error(FullNetworkError(NetworkError.CONFLICT, "CONFLICT", 409))
+            413 -> Result.Error(FullNetworkError(NetworkError.PAYLOAD_TOO_LARGE, "PAYLOAD TOO LARGE", 413))
+            in 500..599 -> Result.Error(FullNetworkError(NetworkError.SERVER_ERROR, "SERVER ERROR", response.status.value))
+            else -> Result.Error(FullNetworkError(NetworkError.UNKNOWN, "UNKNOWN", response.status.value))
         }
     }
 
@@ -564,57 +474,42 @@ class ItemRemoteDataSourceImpl(
     }
 
     override suspend fun getItemCategory(item: String): Result<ItemCategory, Error> {
-        val response =
-            try {
-                httpClient.createKtorClient(httpEngine)
-                    .get(
-                        urlProvider.getPublicApiUrl() + ItemApi.GET_ITEM_CATEGORY(item)
-                    )
-            } catch (e: UnresolvedAddressException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + ItemApi.GET_ITEM_CATEGORY(item)
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SerializationException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + ItemApi.GET_ITEM_CATEGORY(item)
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SocketTimeoutException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + ItemApi.GET_ITEM_CATEGORY(item)
-                        }",
-                        0
-                    )
-                )
+        val url = urlProvider.getPublicApiUrl() + ItemApi.GET_ITEM_CATEGORY(item)
+
+        val cached = apiCache.getByUrl(url)
+        if (cached != null) {
+            return try {
+                val json = Json {
+                    ignoreUnknownKeys = true
+                    isLenient = true
+                    allowSpecialFloatingPointValues = true
+                }
+                Result.Success(json.decodeFromString<ItemCategoryDto>(cached.response).toItemCategory())
             } catch (e: Exception) {
                 e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + ItemApi.GET_ITEM_CATEGORY(item)
-                        }",
-                        0
-                    )
-                )
+                fetchItemCategoryFromNetwork(url)
             }
+        }
+
+        return fetchItemCategoryFromNetwork(url)
+    }
+
+    private suspend fun fetchItemCategoryFromNetwork(url: String): Result<ItemCategory, Error> {
+        val response = try {
+            httpClient.createKtorClient(httpEngine).get(url)
+        } catch (e: UnresolvedAddressException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SerializationException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SocketTimeoutException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        }
 
         return when (response.status.value) {
             in 200..299 -> {
@@ -626,111 +521,31 @@ class ItemRemoteDataSourceImpl(
                             isLenient = true
                             allowSpecialFloatingPointValues = true
                         }
-                        val list =
-                            json.decodeFromString<ItemCategoryDto>(result)
-                        Result.Success(list.toItemCategory())
+                        val dto = json.decodeFromString<ItemCategoryDto>(result)
+
+                        apiCache.insertOrUpdate(
+                            ApiCache(
+                                url = url,
+                                response = result,
+                                timestamp = Clock.System.now().toEpochMilliseconds()
+                            )
+                        )
+
+                        Result.Success(dto.toItemCategory())
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                "Serialization error",
-                                0
-                            )
-                        )
+                        Result.Error(FullNetworkError(NetworkError.SERIALIZATION, "Serialization error", 0))
                     }
                 } else {
-                    Result.Error(
-                        FullNetworkError(
-                            NetworkError.SERIALIZATION,
-                            "Serialization error",
-                            0
-                        )
-                    )
-                }
-
-            }
-
-            400 -> {
-                val result: String = response.body<String>()
-                if (result.isNotEmpty()) {
-                    try {
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                NetworkError.SERIALIZATION.name,
-                                409
-                            )
-                        )
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                "Serialization error",
-                                0
-                            )
-                        )
-                    }
-                } else {
-                    Result.Error(
-                        FullNetworkError(
-                            NetworkError.SERIALIZATION,
-                            "Serialization error",
-                            0
-                        )
-                    )
+                    Result.Error(FullNetworkError(NetworkError.SERIALIZATION, "Serialization error", 0))
                 }
             }
-
-            401 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.UNAUTHORIZED,
-                    "UNAUTHORIZED",
-                    401
-                )
-            )
-
-            409 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.CONFLICT,
-                    "CONFLICT",
-                    409
-                )
-            )
-
-            408 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.REQUEST_TIMEOUT,
-                    "CONFLICT",
-                    408
-                )
-            )
-
-            413 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.PAYLOAD_TOO_LARGE,
-                    "PAYLOAD TOO LARGE",
-                    413
-                )
-            )
-
-            in 500..599 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.SERVER_ERROR,
-                    "SERVER ERROR",
-                    response.status.value
-                )
-            )
-
-            else -> Result.Error(
-                FullNetworkError(
-                    NetworkError.UNKNOWN,
-                    "UNKNOWN",
-                    response.status.value
-                )
-            )
+            401 -> Result.Error(FullNetworkError(NetworkError.UNAUTHORIZED, "UNAUTHORIZED", 401))
+            408 -> Result.Error(FullNetworkError(NetworkError.REQUEST_TIMEOUT, "REQUEST_TIMEOUT", 408))
+            409 -> Result.Error(FullNetworkError(NetworkError.CONFLICT, "CONFLICT", 409))
+            413 -> Result.Error(FullNetworkError(NetworkError.PAYLOAD_TOO_LARGE, "PAYLOAD TOO LARGE", 413))
+            in 500..599 -> Result.Error(FullNetworkError(NetworkError.SERVER_ERROR, "SERVER ERROR", response.status.value))
+            else -> Result.Error(FullNetworkError(NetworkError.UNKNOWN, "UNKNOWN", response.status.value))
         }
     }
-
 }

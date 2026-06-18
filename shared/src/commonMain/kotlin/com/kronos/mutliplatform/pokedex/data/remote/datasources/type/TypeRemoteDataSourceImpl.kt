@@ -2,6 +2,8 @@ package com.kronos.mutliplatform.pokedex.data.remote.datasources.type
 
 import com.kronos.mutliplatform.pokedex.core.result.Error
 import com.kronos.mutliplatform.pokedex.core.result.Result
+import com.kronos.mutliplatform.pokedex.data.local.database.ApiCache
+import com.kronos.mutliplatform.pokedex.data.local.datasource.api_cache.ApiCacheLocalDataSource
 import com.kronos.mutliplatform.pokedex.data.mapper.toNamedResource
 import com.kronos.mutliplatform.pokedex.data.mapper.toResponseList
 import com.kronos.mutliplatform.pokedex.data.mapper.toTypeInfo
@@ -23,11 +25,13 @@ import io.ktor.client.request.get
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlin.time.Clock
 
 class TypeRemoteDataSourceImpl(
     private val urlProvider: UrlProvider,
     private val httpClient: KtorClientFactory,
     private val httpEngine: KtorEngineFactory,
+    private val apiCache: ApiCacheLocalDataSource
 ) : TypeRemoteDataSource {
 
 
@@ -203,55 +207,42 @@ class TypeRemoteDataSourceImpl(
     }
 
     override suspend fun getTypeInfo(type: String): Result<TypeInfo, Error> {
-        val response =
-            try {
-                httpClient.createKtorClient(httpEngine)
-                    .get(urlProvider.getPublicApiUrl() + TypeApi.GET_TYPE(type))
-            } catch (e: UnresolvedAddressException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + TypeApi.GET_TYPE(type)
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SerializationException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + TypeApi.GET_TYPE(type)
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SocketTimeoutException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + TypeApi.GET_TYPE(type)
-                        }",
-                        0
-                    )
-                )
+        val url = urlProvider.getPublicApiUrl() + TypeApi.GET_TYPE(type)
+
+        val cached = apiCache.getByUrl(url)
+        if (cached != null) {
+            return try {
+                val json = Json {
+                    ignoreUnknownKeys = true
+                    isLenient = true
+                    allowSpecialFloatingPointValues = true
+                }
+                Result.Success(json.decodeFromString<TypeInfoDto>(cached.response).toTypeInfo())
             } catch (e: Exception) {
                 e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + TypeApi.GET_TYPE(type)
-                        }",
-                        0
-                    )
-                )
+                fetchTypeInfoFromNetwork(url)
             }
+        }
+
+        return fetchTypeInfoFromNetwork(url)
+    }
+
+    private suspend fun fetchTypeInfoFromNetwork(url: String): Result<TypeInfo, Error> {
+        val response = try {
+            httpClient.createKtorClient(httpEngine).get(url)
+        } catch (e: UnresolvedAddressException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SerializationException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SocketTimeoutException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        }
 
         return when (response.status.value) {
             in 200..299 -> {
@@ -263,42 +254,17 @@ class TypeRemoteDataSourceImpl(
                             isLenient = true
                             allowSpecialFloatingPointValues = true
                         }
-                        val list =
-                            json.decodeFromString<TypeInfoDto>(result)
-                        Result.Success(list.toTypeInfo())
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                "Serialization error",
-                                0
+                        val dto = json.decodeFromString<TypeInfoDto>(result)
+
+                        apiCache.insertOrUpdate(
+                            ApiCache(
+                                url = url,
+                                response = result,
+                                timestamp = Clock.System.now().toEpochMilliseconds()
                             )
                         )
-                    }
-                } else {
-                    Result.Error(
-                        FullNetworkError(
-                            NetworkError.SERIALIZATION,
-                            "Serialization error",
-                            0
-                        )
-                    )
-                }
 
-            }
-
-            400 -> {
-                val result: String = response.body<String>()
-                if (result.isNotEmpty()) {
-                    try {
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                NetworkError.SERIALIZATION.name,
-                                409
-                            )
-                        )
+                        Result.Success(dto.toTypeInfo())
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Result.Error(
@@ -320,30 +286,16 @@ class TypeRemoteDataSourceImpl(
                 }
             }
 
-            401 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.UNAUTHORIZED,
-                    "UNAUTHORIZED",
-                    401
-                )
-            )
-
-            409 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.CONFLICT,
-                    "CONFLICT",
-                    409
-                )
-            )
-
+            401 -> Result.Error(FullNetworkError(NetworkError.UNAUTHORIZED, "UNAUTHORIZED", 401))
             408 -> Result.Error(
                 FullNetworkError(
                     NetworkError.REQUEST_TIMEOUT,
-                    "CONFLICT",
+                    "REQUEST_TIMEOUT",
                     408
                 )
             )
 
+            409 -> Result.Error(FullNetworkError(NetworkError.CONFLICT, "CONFLICT", 409))
             413 -> Result.Error(
                 FullNetworkError(
                     NetworkError.PAYLOAD_TOO_LARGE,
@@ -369,5 +321,4 @@ class TypeRemoteDataSourceImpl(
             )
         }
     }
-
 }

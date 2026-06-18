@@ -2,6 +2,8 @@ package com.kronos.mutliplatform.pokedex.data.remote.datasources.species
 
 import com.kronos.mutliplatform.pokedex.core.result.Error
 import com.kronos.mutliplatform.pokedex.core.result.Result
+import com.kronos.mutliplatform.pokedex.data.local.database.ApiCache
+import com.kronos.mutliplatform.pokedex.data.local.datasource.api_cache.ApiCacheLocalDataSource
 import com.kronos.mutliplatform.pokedex.data.mapper.toSpecieInfo
 import com.kronos.mutliplatform.pokedex.data.remote.api.species.SpeciesApi
 import com.kronos.mutliplatform.pokedex.data.remote.dto.SpecieInfoDto
@@ -17,63 +19,52 @@ import io.ktor.client.request.get
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlin.time.Clock
 
 class SpecieRemoteDataSourceImpl(
     private val urlProvider: UrlProvider,
     private val httpClient: KtorClientFactory,
     private val httpEngine: KtorEngineFactory,
+    private val apiCache: ApiCacheLocalDataSource
 ) : SpecieRemoteDataSource {
 
     override suspend fun getSpecie(pokemon: String): Result<SpecieInfo, Error> {
-        val response =
-            try {
-                httpClient.createKtorClient(httpEngine)
-                    .get(urlProvider.getPublicApiUrl() + SpeciesApi.GET_SPECIE_INFO(pokemon))
-            } catch (e: UnresolvedAddressException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + SpeciesApi.GET_SPECIE_INFO(pokemon)
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SerializationException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + SpeciesApi.GET_SPECIE_INFO(pokemon)
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SocketTimeoutException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + SpeciesApi.GET_SPECIE_INFO(pokemon)
-                        }",
-                        0
-                    )
-                )
+        val url = urlProvider.getPublicApiUrl() + SpeciesApi.GET_SPECIE_INFO(pokemon)
+
+        val cached = apiCache.getByUrl(url)
+        if (cached != null) {
+            return try {
+                val json = Json {
+                    ignoreUnknownKeys = true
+                    isLenient = true
+                    allowSpecialFloatingPointValues = true
+                }
+                Result.Success(json.decodeFromString<SpecieInfoDto>(cached.response).toSpecieInfo())
             } catch (e: Exception) {
                 e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + SpeciesApi.GET_SPECIE_INFO(pokemon)
-                        }",
-                        0
-                    )
-                )
+                fetchSpecieFromNetwork(url)
             }
+        }
+
+        return fetchSpecieFromNetwork(url)
+    }
+
+    private suspend fun fetchSpecieFromNetwork(url: String): Result<SpecieInfo, Error> {
+        val response = try {
+            httpClient.createKtorClient(httpEngine).get(url)
+        } catch (e: UnresolvedAddressException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SerializationException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SocketTimeoutException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        }
 
         return when (response.status.value) {
             in 200..299 -> {
@@ -85,42 +76,17 @@ class SpecieRemoteDataSourceImpl(
                             isLenient = true
                             allowSpecialFloatingPointValues = true
                         }
-                        val list =
-                            json.decodeFromString<SpecieInfoDto>(result)
-                        Result.Success(list.toSpecieInfo())
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                "Serialization error",
-                                0
+                        val dto = json.decodeFromString<SpecieInfoDto>(result)
+
+                        apiCache.insertOrUpdate(
+                            ApiCache(
+                                url = url,
+                                response = result,
+                                timestamp = Clock.System.now().toEpochMilliseconds()
                             )
                         )
-                    }
-                } else {
-                    Result.Error(
-                        FullNetworkError(
-                            NetworkError.SERIALIZATION,
-                            "Serialization error",
-                            0
-                        )
-                    )
-                }
 
-            }
-
-            400 -> {
-                val result: String = response.body<String>()
-                if (result.isNotEmpty()) {
-                    try {
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                NetworkError.SERIALIZATION.name,
-                                409
-                            )
-                        )
+                        Result.Success(dto.toSpecieInfo())
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Result.Error(
@@ -142,30 +108,16 @@ class SpecieRemoteDataSourceImpl(
                 }
             }
 
-            401 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.UNAUTHORIZED,
-                    "UNAUTHORIZED",
-                    401
-                )
-            )
-
-            409 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.CONFLICT,
-                    "CONFLICT",
-                    409
-                )
-            )
-
+            401 -> Result.Error(FullNetworkError(NetworkError.UNAUTHORIZED, "UNAUTHORIZED", 401))
             408 -> Result.Error(
                 FullNetworkError(
                     NetworkError.REQUEST_TIMEOUT,
-                    "CONFLICT",
+                    "REQUEST_TIMEOUT",
                     408
                 )
             )
 
+            409 -> Result.Error(FullNetworkError(NetworkError.CONFLICT, "CONFLICT", 409))
             413 -> Result.Error(
                 FullNetworkError(
                     NetworkError.PAYLOAD_TOO_LARGE,
@@ -191,5 +143,4 @@ class SpecieRemoteDataSourceImpl(
             )
         }
     }
-
 }

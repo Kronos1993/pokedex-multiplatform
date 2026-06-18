@@ -2,6 +2,8 @@ package com.kronos.mutliplatform.pokedex.data.remote.datasources.berry
 
 import com.kronos.mutliplatform.pokedex.core.result.Error
 import com.kronos.mutliplatform.pokedex.core.result.Result
+import com.kronos.mutliplatform.pokedex.data.local.database.ApiCache
+import com.kronos.mutliplatform.pokedex.data.local.datasource.api_cache.ApiCacheLocalDataSource
 import com.kronos.mutliplatform.pokedex.data.mapper.toBerryInfo
 import com.kronos.mutliplatform.pokedex.data.mapper.toNamedResource
 import com.kronos.mutliplatform.pokedex.data.mapper.toResponseList
@@ -23,11 +25,13 @@ import io.ktor.client.request.get
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlin.time.Clock
 
 class BerryRemoteDataSourceImpl(
     private val urlProvider: UrlProvider,
     private val httpClient: KtorClientFactory,
     private val httpEngine: KtorEngineFactory,
+    private val apiCache: ApiCacheLocalDataSource
 ) : BerryRemoteDataSource {
 
 
@@ -203,55 +207,43 @@ class BerryRemoteDataSourceImpl(
     }
 
     override suspend fun getBerry(berry: String): Result<BerryInfo, Error> {
-        val response =
-            try {
-                httpClient.createKtorClient(httpEngine)
-                    .get(urlProvider.getPublicApiUrl() + BerryApi.GET_BERRY(berry))
-            } catch (e: UnresolvedAddressException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + BerryApi.GET_BERRY(berry)
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SerializationException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + BerryApi.GET_BERRY(berry)
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SocketTimeoutException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + BerryApi.GET_BERRY(berry)
-                        }",
-                        0
-                    )
-                )
+        val url = urlProvider.getPublicApiUrl() + BerryApi.GET_BERRY(berry)
+
+        // cache-first
+        val cached = apiCache.getByUrl(url)
+        if (cached != null) {
+            return try {
+                val json = Json {
+                    ignoreUnknownKeys = true
+                    isLenient = true
+                    allowSpecialFloatingPointValues = true
+                }
+                Result.Success(json.decodeFromString<BerryInfoDto>(cached.response).toBerryInfo())
             } catch (e: Exception) {
                 e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + BerryApi.GET_BERRY(berry)
-                        }",
-                        0
-                    )
-                )
+                fetchBerryFromNetwork(url)
             }
+        }
+
+        return fetchBerryFromNetwork(url)
+    }
+
+    private suspend fun fetchBerryFromNetwork(url: String): Result<BerryInfo, Error> {
+        val response = try {
+            httpClient.createKtorClient(httpEngine).get(url)
+        } catch (e: UnresolvedAddressException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SerializationException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SocketTimeoutException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        }
 
         return when (response.status.value) {
             in 200..299 -> {
@@ -263,42 +255,17 @@ class BerryRemoteDataSourceImpl(
                             isLenient = true
                             allowSpecialFloatingPointValues = true
                         }
-                        val list =
-                            json.decodeFromString<BerryInfoDto>(result)
-                        Result.Success(list.toBerryInfo())
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                "Serialization error",
-                                0
+                        val dto = json.decodeFromString<BerryInfoDto>(result)
+
+                        apiCache.insertOrUpdate(
+                            ApiCache(
+                                url = url,
+                                response = result,
+                                timestamp = Clock.System.now().toEpochMilliseconds()
                             )
                         )
-                    }
-                } else {
-                    Result.Error(
-                        FullNetworkError(
-                            NetworkError.SERIALIZATION,
-                            "Serialization error",
-                            0
-                        )
-                    )
-                }
 
-            }
-
-            400 -> {
-                val result: String = response.body<String>()
-                if (result.isNotEmpty()) {
-                    try {
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                NetworkError.SERIALIZATION.name,
-                                409
-                            )
-                        )
+                        Result.Success(dto.toBerryInfo())
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Result.Error(
@@ -320,30 +287,16 @@ class BerryRemoteDataSourceImpl(
                 }
             }
 
-            401 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.UNAUTHORIZED,
-                    "UNAUTHORIZED",
-                    401
-                )
-            )
-
-            409 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.CONFLICT,
-                    "CONFLICT",
-                    409
-                )
-            )
-
+            401 -> Result.Error(FullNetworkError(NetworkError.UNAUTHORIZED, "UNAUTHORIZED", 401))
             408 -> Result.Error(
                 FullNetworkError(
                     NetworkError.REQUEST_TIMEOUT,
-                    "CONFLICT",
+                    "REQUEST_TIMEOUT",
                     408
                 )
             )
 
+            409 -> Result.Error(FullNetworkError(NetworkError.CONFLICT, "CONFLICT", 409))
             413 -> Result.Error(
                 FullNetworkError(
                     NetworkError.PAYLOAD_TOO_LARGE,
@@ -369,5 +322,4 @@ class BerryRemoteDataSourceImpl(
             )
         }
     }
-
 }

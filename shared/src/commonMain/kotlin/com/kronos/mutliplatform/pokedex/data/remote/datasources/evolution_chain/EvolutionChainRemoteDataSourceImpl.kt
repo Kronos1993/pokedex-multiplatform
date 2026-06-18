@@ -2,10 +2,13 @@ package com.kronos.mutliplatform.pokedex.data.remote.datasources.evolution_chain
 
 import com.kronos.mutliplatform.pokedex.core.result.Error
 import com.kronos.mutliplatform.pokedex.core.result.Result
+import com.kronos.mutliplatform.pokedex.data.local.database.ApiCache
+import com.kronos.mutliplatform.pokedex.data.local.datasource.api_cache.ApiCacheLocalDataSource
 import com.kronos.mutliplatform.pokedex.data.mapper.toEvolutionChain
 import com.kronos.mutliplatform.pokedex.data.mapper.toNamedResource
 import com.kronos.mutliplatform.pokedex.data.mapper.toResponseList
 import com.kronos.mutliplatform.pokedex.data.remote.api.evolution_chain.EvolutionChainApi
+import com.kronos.mutliplatform.pokedex.data.remote.dto.EvolutionChainDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.NamedResourceApiDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.ResponseListDto
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.KtorClientFactory
@@ -15,7 +18,6 @@ import com.kronos.mutliplatform.pokedex.data.remote.ktor.util.FullNetworkError
 import com.kronos.mutliplatform.pokedex.data.remote.ktor.util.NetworkError
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.ResponseList
-import com.kronos.mutliplatform.pokedex.data.remote.dto.EvolutionChainDto
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.EvolutionChain
 import io.ktor.client.call.body
 import io.ktor.client.network.sockets.SocketTimeoutException
@@ -23,11 +25,13 @@ import io.ktor.client.request.get
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlin.time.Clock
 
 class EvolutionChainRemoteDataSourceImpl(
     private val urlProvider: UrlProvider,
     private val httpClient: KtorClientFactory,
     private val httpEngine: KtorEngineFactory,
+    private val apiCache: ApiCacheLocalDataSource
 ) : EvolutionChainRemoteDataSource {
 
 
@@ -203,67 +207,44 @@ class EvolutionChainRemoteDataSourceImpl(
     }
 
     override suspend fun getEvolutionChain(chainId: Int): Result<EvolutionChain, Error> {
-        val response =
-            try {
-                httpClient.createKtorClient(httpEngine)
-                    .get(
-                        urlProvider.getPublicApiUrl() + EvolutionChainApi.GET_EVOLUTION_CHAIN(
-                            chainId
-                        )
-                    )
-            } catch (e: UnresolvedAddressException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + EvolutionChainApi.GET_EVOLUTION_CHAIN(
-                                chainId
-                            )
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SerializationException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + EvolutionChainApi.GET_EVOLUTION_CHAIN(
-                                chainId
-                            )
-                        }",
-                        0
-                    )
-                )
-            } catch (e: SocketTimeoutException) {
-                e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + EvolutionChainApi.GET_EVOLUTION_CHAIN(
-                                chainId
-                            )
-                        }",
-                        0
-                    )
+        val url = urlProvider.getPublicApiUrl() + EvolutionChainApi.GET_EVOLUTION_CHAIN(chainId)
+
+        val cached = apiCache.getByUrl(url)
+        if (cached != null) {
+            return try {
+                val json = Json {
+                    ignoreUnknownKeys = true
+                    isLenient = true
+                    allowSpecialFloatingPointValues = true
+                }
+                Result.Success(
+                    json.decodeFromString<EvolutionChainDto>(cached.response).toEvolutionChain()
                 )
             } catch (e: Exception) {
                 e.printStackTrace()
-                return Result.Error(
-                    FullNetworkError(
-                        NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + EvolutionChainApi.GET_EVOLUTION_CHAIN(
-                                chainId
-                            )
-                        }",
-                        0
-                    )
-                )
+                fetchEvolutionChainFromNetwork(url)
             }
+        }
+
+        return fetchEvolutionChainFromNetwork(url)
+    }
+
+    private suspend fun fetchEvolutionChainFromNetwork(url: String): Result<EvolutionChain, Error> {
+        val response = try {
+            httpClient.createKtorClient(httpEngine).get(url)
+        } catch (e: UnresolvedAddressException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SerializationException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: SocketTimeoutException) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return Result.Error(FullNetworkError(NetworkError.NO_INTERNET, e.message ?: "", 0))
+        }
 
         return when (response.status.value) {
             in 200..299 -> {
@@ -275,42 +256,17 @@ class EvolutionChainRemoteDataSourceImpl(
                             isLenient = true
                             allowSpecialFloatingPointValues = true
                         }
-                        val list =
-                            json.decodeFromString<EvolutionChainDto>(result)
-                        Result.Success(list.toEvolutionChain())
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                "Serialization error",
-                                0
+                        val dto = json.decodeFromString<EvolutionChainDto>(result)
+
+                        apiCache.insertOrUpdate(
+                            ApiCache(
+                                url = url,
+                                response = result,
+                                timestamp = Clock.System.now().toEpochMilliseconds()
                             )
                         )
-                    }
-                } else {
-                    Result.Error(
-                        FullNetworkError(
-                            NetworkError.SERIALIZATION,
-                            "Serialization error",
-                            0
-                        )
-                    )
-                }
 
-            }
-
-            400 -> {
-                val result: String = response.body<String>()
-                if (result.isNotEmpty()) {
-                    try {
-                        Result.Error(
-                            FullNetworkError(
-                                NetworkError.SERIALIZATION,
-                                NetworkError.SERIALIZATION.name,
-                                409
-                            )
-                        )
+                        Result.Success(dto.toEvolutionChain())
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Result.Error(
@@ -332,30 +288,16 @@ class EvolutionChainRemoteDataSourceImpl(
                 }
             }
 
-            401 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.UNAUTHORIZED,
-                    "UNAUTHORIZED",
-                    401
-                )
-            )
-
-            409 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.CONFLICT,
-                    "CONFLICT",
-                    409
-                )
-            )
-
+            401 -> Result.Error(FullNetworkError(NetworkError.UNAUTHORIZED, "UNAUTHORIZED", 401))
             408 -> Result.Error(
                 FullNetworkError(
                     NetworkError.REQUEST_TIMEOUT,
-                    "CONFLICT",
+                    "REQUEST_TIMEOUT",
                     408
                 )
             )
 
+            409 -> Result.Error(FullNetworkError(NetworkError.CONFLICT, "CONFLICT", 409))
             413 -> Result.Error(
                 FullNetworkError(
                     NetworkError.PAYLOAD_TOO_LARGE,
@@ -381,6 +323,4 @@ class EvolutionChainRemoteDataSourceImpl(
             )
         }
     }
-
-
 }
