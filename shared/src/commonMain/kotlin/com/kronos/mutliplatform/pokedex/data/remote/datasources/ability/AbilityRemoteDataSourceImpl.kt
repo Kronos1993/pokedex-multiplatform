@@ -34,23 +34,42 @@ class AbilityRemoteDataSourceImpl(
     private val apiCache: ApiCacheLocalDataSource
 ) : AbilityRemoteDataSource {
 
-
     override suspend fun listAbility(
         limit: Int,
         offset: Int
     ): Result<ResponseList<NamedResourceApi>, Error> {
+        val url = urlProvider.getPublicApiUrl() + AbilityApi.LIST(limit, offset)
+
+        val cached = apiCache.getByUrl(url)
+        if (cached != null) {
+            return try {
+                val json = Json {
+                    ignoreUnknownKeys = true
+                    isLenient = true
+                    allowSpecialFloatingPointValues = true
+                }
+                val list =
+                    json.decodeFromString<ResponseListDto<NamedResourceApiDto>>(cached.response)
+                Result.Success(list.toResponseList { it.toNamedResource() })
+            } catch (e: Exception) {
+                e.printStackTrace()
+                fetchAbilityListFromNetwork(url)
+            }
+        }
+
+        return fetchAbilityListFromNetwork(url)
+    }
+
+    private suspend fun fetchAbilityListFromNetwork(url: String): Result<ResponseList<NamedResourceApi>, Error> {
         val response =
             try {
-                httpClient.createKtorClient(httpEngine)
-                    .get(urlProvider.getPublicApiUrl() + AbilityApi.LIST(limit, offset))
+                httpClient.createKtorClient(httpEngine).get(url)
             } catch (e: UnresolvedAddressException) {
                 e.printStackTrace()
                 return Result.Error(
                     FullNetworkError(
                         NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + AbilityApi.LIST(limit, offset)
-                        }",
+                        "No internet connection: ${e.message} - $url",
                         0
                     )
                 )
@@ -59,9 +78,7 @@ class AbilityRemoteDataSourceImpl(
                 return Result.Error(
                     FullNetworkError(
                         NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + AbilityApi.LIST(limit, offset)
-                        }",
+                        "No internet connection: ${e.message} - $url",
                         0
                     )
                 )
@@ -70,9 +87,7 @@ class AbilityRemoteDataSourceImpl(
                 return Result.Error(
                     FullNetworkError(
                         NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + AbilityApi.LIST(limit, offset)
-                        }",
+                        "No internet connection: ${e.message} - $url",
                         0
                     )
                 )
@@ -81,9 +96,7 @@ class AbilityRemoteDataSourceImpl(
                 return Result.Error(
                     FullNetworkError(
                         NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + AbilityApi.LIST(limit, offset)
-                        }",
+                        "No internet connection: ${e.message} - $url",
                         0
                     )
                 )
@@ -101,6 +114,15 @@ class AbilityRemoteDataSourceImpl(
                         }
                         val list =
                             json.decodeFromString<ResponseListDto<NamedResourceApiDto>>(result)
+
+                        apiCache.insertOrUpdate(
+                            ApiCache(
+                                url = url,
+                                response = result,
+                                timestamp = Clock.System.now().toEpochMilliseconds()
+                            )
+                        )
+
                         Result.Success(list.toResponseList { it.toNamedResource() })
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -121,7 +143,6 @@ class AbilityRemoteDataSourceImpl(
                         )
                     )
                 }
-
             }
 
             400 -> {
@@ -156,30 +177,9 @@ class AbilityRemoteDataSourceImpl(
                 }
             }
 
-            401 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.UNAUTHORIZED,
-                    "UNAUTHORIZED",
-                    401
-                )
-            )
-
-            409 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.CONFLICT,
-                    "CONFLICT",
-                    409
-                )
-            )
-
-            408 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.REQUEST_TIMEOUT,
-                    "CONFLICT",
-                    408
-                )
-            )
-
+            401 -> Result.Error(FullNetworkError(NetworkError.UNAUTHORIZED, "UNAUTHORIZED", 401))
+            409 -> Result.Error(FullNetworkError(NetworkError.CONFLICT, "CONFLICT", 409))
+            408 -> Result.Error(FullNetworkError(NetworkError.REQUEST_TIMEOUT, "CONFLICT", 408))
             413 -> Result.Error(
                 FullNetworkError(
                     NetworkError.PAYLOAD_TOO_LARGE,
@@ -189,11 +189,7 @@ class AbilityRemoteDataSourceImpl(
             )
 
             in 500..599 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.SERVER_ERROR,
-                    "SERVER ERROR",
-                    response.status.value
-                )
+                FullNetworkError(NetworkError.SERVER_ERROR, "SERVER ERROR", response.status.value)
             )
 
             else -> Result.Error(

@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
 
 
 class ApiCacheLocalDatasourceImpl(
@@ -13,15 +14,18 @@ class ApiCacheLocalDatasourceImpl(
 ) : ApiCacheLocalDataSource {
 
     private val queries = db.apiCacheQueries
-    private val ttlMs = 7 * 24 * 60 * 60 * 1000L
+    private val ttlMs = 7.days.inWholeMilliseconds
 
     override suspend fun getByUrl(url: String): ApiCache? =
         withContext(Dispatchers.IO) {
             try {
                 val row = queries.getByUrl(url).executeAsOneOrNull() ?: return@withContext null
                 val age = Clock.System.now().toEpochMilliseconds() - row.timestamp
-                if (age > ttlMs) null
-                else ApiCache(url = row.url, response = row.response, timestamp = row.timestamp)
+                if (age > ttlMs) {
+                    queries.deleteByUrl(url)
+                    null
+                } else
+                    ApiCache(url = row.url, response = row.response, timestamp = row.timestamp)
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 null

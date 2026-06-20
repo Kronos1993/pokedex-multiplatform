@@ -39,18 +39,38 @@ class NatureRemoteDataSourceImpl(
         limit: Int,
         offset: Int
     ): Result<ResponseList<NamedResourceApi>, Error> {
+        val url = urlProvider.getPublicApiUrl() + NatureApi.LIST(limit, offset)
+
+        val cached = apiCache.getByUrl(url)
+        if (cached != null) {
+            return try {
+                val json = Json {
+                    ignoreUnknownKeys = true
+                    isLenient = true
+                    allowSpecialFloatingPointValues = true
+                }
+                val list =
+                    json.decodeFromString<ResponseListDto<NamedResourceApiDto>>(cached.response)
+                Result.Success(list.toResponseList { it.toNamedResource() })
+            } catch (e: Exception) {
+                e.printStackTrace()
+                fetchNatureListFromNetwork(url)
+            }
+        }
+
+        return fetchNatureListFromNetwork(url)
+    }
+
+    private suspend fun fetchNatureListFromNetwork(url: String): Result<ResponseList<NamedResourceApi>, Error> {
         val response =
             try {
-                httpClient.createKtorClient(httpEngine)
-                    .get(urlProvider.getPublicApiUrl() + NatureApi.LIST(limit, offset))
+                httpClient.createKtorClient(httpEngine).get(url)
             } catch (e: UnresolvedAddressException) {
                 e.printStackTrace()
                 return Result.Error(
                     FullNetworkError(
                         NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + NatureApi.LIST(limit, offset)
-                        }",
+                        "No internet connection: ${e.message} - $url",
                         0
                     )
                 )
@@ -59,9 +79,7 @@ class NatureRemoteDataSourceImpl(
                 return Result.Error(
                     FullNetworkError(
                         NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + NatureApi.LIST(limit, offset)
-                        }",
+                        "No internet connection: ${e.message} - $url",
                         0
                     )
                 )
@@ -70,9 +88,7 @@ class NatureRemoteDataSourceImpl(
                 return Result.Error(
                     FullNetworkError(
                         NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + NatureApi.LIST(limit, offset)
-                        }",
+                        "No internet connection: ${e.message} - $url",
                         0
                     )
                 )
@@ -81,9 +97,7 @@ class NatureRemoteDataSourceImpl(
                 return Result.Error(
                     FullNetworkError(
                         NetworkError.NO_INTERNET,
-                        "No internet connection: ${e.message} - ${
-                            urlProvider.getPublicApiUrl() + NatureApi.LIST(limit, offset)
-                        }",
+                        "No internet connection: ${e.message} - $url",
                         0
                     )
                 )
@@ -101,6 +115,15 @@ class NatureRemoteDataSourceImpl(
                         }
                         val list =
                             json.decodeFromString<ResponseListDto<NamedResourceApiDto>>(result)
+
+                        apiCache.insertOrUpdate(
+                            ApiCache(
+                                url = url,
+                                response = result,
+                                timestamp = Clock.System.now().toEpochMilliseconds()
+                            )
+                        )
+
                         Result.Success(list.toResponseList { it.toNamedResource() })
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -121,7 +144,6 @@ class NatureRemoteDataSourceImpl(
                         )
                     )
                 }
-
             }
 
             400 -> {
@@ -156,30 +178,9 @@ class NatureRemoteDataSourceImpl(
                 }
             }
 
-            401 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.UNAUTHORIZED,
-                    "UNAUTHORIZED",
-                    401
-                )
-            )
-
-            409 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.CONFLICT,
-                    "CONFLICT",
-                    409
-                )
-            )
-
-            408 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.REQUEST_TIMEOUT,
-                    "CONFLICT",
-                    408
-                )
-            )
-
+            401 -> Result.Error(FullNetworkError(NetworkError.UNAUTHORIZED, "UNAUTHORIZED", 401))
+            409 -> Result.Error(FullNetworkError(NetworkError.CONFLICT, "CONFLICT", 409))
+            408 -> Result.Error(FullNetworkError(NetworkError.REQUEST_TIMEOUT, "CONFLICT", 408))
             413 -> Result.Error(
                 FullNetworkError(
                     NetworkError.PAYLOAD_TOO_LARGE,
@@ -189,11 +190,7 @@ class NatureRemoteDataSourceImpl(
             )
 
             in 500..599 -> Result.Error(
-                FullNetworkError(
-                    NetworkError.SERVER_ERROR,
-                    "SERVER ERROR",
-                    response.status.value
-                )
+                FullNetworkError(NetworkError.SERVER_ERROR, "SERVER ERROR", response.status.value)
             )
 
             else -> Result.Error(
@@ -217,7 +214,9 @@ class NatureRemoteDataSourceImpl(
                     isLenient = true
                     allowSpecialFloatingPointValues = true
                 }
-                Result.Success(json.decodeFromString<NatureDetailDto>(cached.response).toNatureDetail())
+                Result.Success(
+                    json.decodeFromString<NatureDetailDto>(cached.response).toNatureDetail()
+                )
             } catch (e: Exception) {
                 e.printStackTrace()
                 fetchNatureFromNetwork(url)
@@ -267,18 +266,58 @@ class NatureRemoteDataSourceImpl(
                         Result.Success(dto.toNatureDetail())
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        Result.Error(FullNetworkError(NetworkError.SERIALIZATION, "Serialization error", 0))
+                        Result.Error(
+                            FullNetworkError(
+                                NetworkError.SERIALIZATION,
+                                "Serialization error",
+                                0
+                            )
+                        )
                     }
                 } else {
-                    Result.Error(FullNetworkError(NetworkError.SERIALIZATION, "Serialization error", 0))
+                    Result.Error(
+                        FullNetworkError(
+                            NetworkError.SERIALIZATION,
+                            "Serialization error",
+                            0
+                        )
+                    )
                 }
             }
+
             401 -> Result.Error(FullNetworkError(NetworkError.UNAUTHORIZED, "UNAUTHORIZED", 401))
-            408 -> Result.Error(FullNetworkError(NetworkError.REQUEST_TIMEOUT, "REQUEST_TIMEOUT", 408))
+            408 -> Result.Error(
+                FullNetworkError(
+                    NetworkError.REQUEST_TIMEOUT,
+                    "REQUEST_TIMEOUT",
+                    408
+                )
+            )
+
             409 -> Result.Error(FullNetworkError(NetworkError.CONFLICT, "CONFLICT", 409))
-            413 -> Result.Error(FullNetworkError(NetworkError.PAYLOAD_TOO_LARGE, "PAYLOAD TOO LARGE", 413))
-            in 500..599 -> Result.Error(FullNetworkError(NetworkError.SERVER_ERROR, "SERVER ERROR", response.status.value))
-            else -> Result.Error(FullNetworkError(NetworkError.UNKNOWN, "UNKNOWN", response.status.value))
+            413 -> Result.Error(
+                FullNetworkError(
+                    NetworkError.PAYLOAD_TOO_LARGE,
+                    "PAYLOAD TOO LARGE",
+                    413
+                )
+            )
+
+            in 500..599 -> Result.Error(
+                FullNetworkError(
+                    NetworkError.SERVER_ERROR,
+                    "SERVER ERROR",
+                    response.status.value
+                )
+            )
+
+            else -> Result.Error(
+                FullNetworkError(
+                    NetworkError.UNKNOWN,
+                    "UNKNOWN",
+                    response.status.value
+                )
+            )
         }
     }
 }

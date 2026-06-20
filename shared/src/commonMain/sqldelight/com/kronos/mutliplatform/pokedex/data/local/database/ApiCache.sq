@@ -13,3 +13,7 @@ VALUES (:url, :response, :timestamp);
 
 deleteExpired:
 DELETE FROM ApiCache WHERE timestamp < :expiry;
+
+deleteByUrl:
+DELETE FROM ApiCache
+WHERE url = :url;
