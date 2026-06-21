@@ -91,7 +91,7 @@ fun PokemonItemCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = Modifier.size(48.dp),
+                modifier = Modifier.size(64.dp),
                 contentAlignment = Alignment.Center
             ) {
                 var isLoading by remember { mutableStateOf(true) }
@@ -101,7 +101,7 @@ fun PokemonItemCard(
                     Image(
                         imageVector = Icons.Pokeball,
                         contentDescription = item.pokemon.name,
-                        modifier = Modifier.size(48.dp)
+                        modifier = Modifier.size(64.dp)
                     )
                 }
 
@@ -114,7 +114,7 @@ fun PokemonItemCard(
                     onLoading = { isLoading = true },
                     onSuccess = { isLoading = false },
                     onError = { isLoading = false; isError = true },
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(64.dp)
                 )
             }
 

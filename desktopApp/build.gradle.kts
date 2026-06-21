@@ -20,9 +20,24 @@ compose.desktop {
         mainClass = "com.kronos.mutliplatform.pokedex.MainKt"
 
         nativeDistributions {
+            modules("jdk.unsupported", "java.sql")
+
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.kronos.mutliplatform.pokedex"
+            packageName = "Pokedex"
             packageVersion = "1.0.0"
+
+            macOS {
+                iconFile.set(rootProject.file("icons/desktop-app-icons/icon.icns"))
+                bundleID = "com.kronos.mutliplatform.pokedex"
+            }
+            windows {
+                iconFile.set(rootProject.file("icons/desktop-app-icons/icon.ico"))
+                menuGroup = "Pokedex"
+                upgradeUuid = "TU-UUID-AQUI"
+            }
+            linux {
+                iconFile.set(rootProject.file("icons/desktop-app-icons/icon.png"))
+            }
         }
     }
 }
