@@ -112,6 +112,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.Popup
 import coil3.compose.AsyncImage
 import com.kronos.mutliplatform.pokedex.components.EmptyList
@@ -273,7 +275,6 @@ import com.kronos.mutliplatform.pokedex.domain.model.ability.Ability
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.ChainLink
 import com.kronos.mutliplatform.pokedex.domain.model.evolution_chain.EvolutionDetail
 import com.kronos.mutliplatform.pokedex.domain.model.game.Game
-import com.kronos.mutliplatform.pokedex.domain.model.pokemon.Encounter
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterByVersion
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.EncounterDetail
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.LocationEncounter
@@ -363,6 +364,7 @@ fun PokemonDetailItem(
     isDarkTheme: Boolean,
     currentLang: String,
     onTypeClick: (type: Type) -> Unit,
+    onPokemonImageClick: (imageUrl:String) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -381,7 +383,8 @@ fun PokemonDetailItem(
 
                 PokemonArtwork(
                     imageUrl = pokemon.sprites.frontHome,
-                    dominantColor = dominantColor
+                    dominantColor = dominantColor,
+                    onPokemonImageClick = onPokemonImageClick
                 )
 
                 Spacer(modifier = Modifier.width(20.dp))
@@ -480,7 +483,8 @@ fun PokemonDetailItem(
 @Composable
 private fun PokemonArtwork(
     imageUrl: String,
-    dominantColor: Color
+    dominantColor: Color,
+    onPokemonImageClick: (imageUrl:String) -> Unit,
 ) {
 
     val scale by animateFloatAsState(
@@ -497,6 +501,11 @@ private fun PokemonArtwork(
             .clip(CircleShape)
             .background(
                 dominantColor.copy(alpha = .08f)
+            )
+            .clickable(
+                onClick = {
+                    onPokemonImageClick(imageUrl)
+                }
             ),
         contentAlignment = Alignment.Center
     ) {
@@ -509,6 +518,25 @@ private fun PokemonArtwork(
                 .scale(scale),
             contentScale = ContentScale.Fit
         )
+    }
+}
+
+@Composable
+fun ImagePreviewDialog(
+    showDialog: Boolean,
+    onClose: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    if (showDialog) {
+        Dialog(
+            onDismissRequest = onClose,
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                dismissOnClickOutside = true
+            )
+        ) {
+            content()
+        }
     }
 }
 
@@ -541,44 +569,6 @@ fun PokemonSectionCard(
 
             Column(
                 modifier = Modifier.padding(18.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                content = content
-            )
-        }
-    }
-}
-
-
-@Composable
-fun PokemonEncounterSectionCard(
-    title: String,
-    icon: ImageVector,
-    iconTint: Color,
-    modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
-) {
-
-    Column(
-        modifier = modifier.fillMaxWidth()
-    ) {
-
-        BodyText(
-            text = title,
-            vector = icon,
-            iconTint = iconTint,
-            fontWeight = FontWeight.Bold,
-            size = ComponentSize.LARGE,
-            modifier = Modifier.padding(bottom = 10.dp)
-        )
-
-        BaseCardView(
-            cardBackgroundColor = Color.Transparent,
-            pressedElevation = 0.dp,
-            elevation = 0.dp
-        ) {
-
-            Column(
-                modifier = Modifier,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 content = content
             )
@@ -1190,6 +1180,7 @@ fun PokemonEncounterGridItem(
         }
     }
 }
+
 @Composable
 fun VersionItem(
     item: VersionDetail,
@@ -2370,7 +2361,8 @@ fun PreviewPokemonDetailItem() {
                 dominantColor = Color.Unspecified,
                 isDarkTheme = false,
                 currentLang = "en",
-                onTypeClick = {}
+                onTypeClick = {},
+                onPokemonImageClick = {}
             )
         }
     }
@@ -2644,21 +2636,6 @@ private val mockEncounterDetail = EncounterDetail(
 
 private val mockVersionDetail = VersionDetail(
     encounterDetail = mockEncounterDetail
-)
-
-private val mockEncounter = Encounter(
-    location = NamedResourceApi(name = "pallet-town-area"),
-    versionDetails = listOf(
-        mockVersionDetail,
-        mockVersionDetail.copy(
-            encounterDetail = mockEncounterDetail.copy(
-                method = NamedResourceApi(name = "surf"),
-                minLevel = 10,
-                maxLevel = 25,
-                chance = 15
-            )
-        )
-    )
 )
 
 // --- Previews ---

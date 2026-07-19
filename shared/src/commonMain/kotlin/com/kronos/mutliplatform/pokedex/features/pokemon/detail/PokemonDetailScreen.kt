@@ -20,8 +20,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -85,6 +87,9 @@ fun PokemonDetailScreen(
     val pokemonEvolutionChain by viewModel.pokemonEvolutionList.collectAsStateWithLifecycle()
     val isLoading by viewModel.loading.collectAsStateWithLifecycle()
     val errorMessage by viewModel.message.collectAsStateWithLifecycle()
+
+    var showPokemonImage by remember { mutableStateOf(false) }
+    var pokemonImageToShow by remember { mutableStateOf<String?>(null) }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -193,10 +198,23 @@ fun PokemonDetailScreen(
                 onAbilityClick = {
                     navHost.navigate("${Destinations.ABILITY_DETAIL.name}/${it.ability.name}")
                 },
-                onSpriteClick = {},
+                onSpriteClick = {
+                    pokemonImageToShow = it
+                    showPokemonImage = true
+                },
                 onOtherFormsClick = {
                     navHost.navigate("${Destinations.POKEMON_DETAIL.name}/${it.name}")
                 },
+                onPokemonImageClick = {
+                    pokemonImageToShow = it
+                    showPokemonImage = true
+                },
+                onClosePokemonImageDialog = {
+                    showPokemonImage = false
+                    pokemonImageToShow = null
+                },
+                pokemonImageToShow = pokemonImageToShow,
+                showPokemonImage = showPokemonImage
             )
         },
 
