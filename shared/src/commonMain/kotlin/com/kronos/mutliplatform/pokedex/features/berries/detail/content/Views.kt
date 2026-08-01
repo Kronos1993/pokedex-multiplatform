@@ -48,6 +48,7 @@ import pokedex.shared.generated.resources.berry_detail_info_screen_info
 import pokedex.shared.generated.resources.berry_detail_info_screen_see_more
 import pokedex.shared.generated.resources.berry_detail_info_screen_size
 import pokedex.shared.generated.resources.berry_detail_info_screen_smoothness
+import pokedex.shared.generated.resources.item_detail_info_screen_none
 
 // ── Screen ────────────────────────────────────────────────────────────────────
 
@@ -235,15 +236,14 @@ private fun BerryInfoContent(
 
             BerryStatPill(
                 label = stringResource(Res.string.berry_detail_info_screen_firmness),
-                value = berryInfo.firmness.name
-                    .replace("-", " ")
-                    .replaceFirstChar { it.uppercase() },
+                value = berryInfo.firmness?.name?.toDisplayName()
+                    ?: stringResource(Res.string.item_detail_info_screen_none),
                 modifier = Modifier.weight(1f),
             )
 
             BerryStatPill(
                 label = stringResource(Res.string.berry_detail_info_screen_growth_time),
-                value = berryInfo.growthTime.toString(),
+                value = berryInfo.growthTime.orNoneText(),
                 modifier = Modifier.weight(1f),
             )
         }
@@ -255,13 +255,13 @@ private fun BerryInfoContent(
 
             BerryStatPill(
                 label = stringResource(Res.string.berry_detail_info_screen_smoothness),
-                value = berryInfo.smoothness.toString(),
+                value = berryInfo.smoothness.orNoneText(),
                 modifier = Modifier.weight(1f),
             )
 
             BerryStatPill(
                 label = stringResource(Res.string.berry_detail_info_screen_size),
-                value = "${berryInfo.size} mm",
+                value = berryInfo.size.orNoneText(" mm"),
                 modifier = Modifier.weight(1f),
             )
         }
@@ -368,6 +368,12 @@ private fun BerryStatPill(
     }
 }
 
+@Composable
+private fun Int?.orNoneText(suffix: String = ""): String =
+    this?.let { "$it$suffix" } ?: stringResource(Res.string.item_detail_info_screen_none)
+
+private fun String.toDisplayName(): String =
+    replace("-", " ").replaceFirstChar(Char::uppercase)
 // ─────────────────────────────────────────────────────────────────────────────
 // Previews
 // ─────────────────────────────────────────────────────────────────────────────

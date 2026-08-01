@@ -107,13 +107,13 @@ fun BerryInfoDto.toBerryInfo(): BerryInfo =
         names = names.map { Name(it.name, it.language) },
         id = id,
         size = size,
-        firmness = firmness.toNamedResource(),
+        firmness = firmness?.toNamedResource(),
         flavors = flavors.map { it.toBerryFlavor() },
         growthTime = growthTime,
         itemResource = itemResource.toNamedResource(),
         maxHarvest = maxHarvest,
         naturalGiftPower = naturalGiftPower,
-        naturalGiftType = naturalGiftType.toNamedResource(),
+        naturalGiftType = naturalGiftType?.toNamedResource(),
         smoothness = smoothness,
         soilDryness = soilDryness
     )
