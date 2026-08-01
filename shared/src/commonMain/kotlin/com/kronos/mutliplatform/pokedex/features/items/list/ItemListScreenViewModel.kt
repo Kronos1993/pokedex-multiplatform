@@ -116,8 +116,8 @@ class ItemListScreenViewModel(
                     _loading.value = (false)
                     if (it.items.isNotEmpty()) {
                         postItems(it.items)
-                    } else
-                        setLastPage(true)
+                    }
+                    setLastPage(true)
 
                 }
                 .onError {
