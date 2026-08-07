@@ -18,6 +18,7 @@ import com.kronos.mutliplatform.pokedex.data.remote.dto.FlavorTextEntryDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.GameIndexDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.ItemCategoryDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.ItemInfoDto
+import com.kronos.mutliplatform.pokedex.data.remote.dto.ItemPriceDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.MoveDetailDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.MoveInfoDto
 import com.kronos.mutliplatform.pokedex.data.remote.dto.MoveListDto
@@ -55,6 +56,7 @@ import com.kronos.mutliplatform.pokedex.domain.model.item.BerryFlavor
 import com.kronos.mutliplatform.pokedex.domain.model.item.BerryInfo
 import com.kronos.mutliplatform.pokedex.domain.model.item.ItemCategory
 import com.kronos.mutliplatform.pokedex.domain.model.item.ItemInfo
+import com.kronos.mutliplatform.pokedex.domain.model.item.ItemPrice
 import com.kronos.mutliplatform.pokedex.domain.model.move.MoveDetail
 import com.kronos.mutliplatform.pokedex.domain.model.move.MoveInfo
 import com.kronos.mutliplatform.pokedex.domain.model.move.MoveList
@@ -217,12 +219,20 @@ fun ItemInfoDto.toItemInfo(): ItemInfo =
         sprites = sprites.toSprite(),
         babyTriggerFor = babyTriggerFor,
         category = category.toNamedResource(),
-        cost = cost,
+        prices = prices.map { it.toItemPrice() },
         descriptions = descriptions.map { it.toFlavorText() },
         effectEntries = effectEntries.map { it.toEffectEntry() },
         flingEffect = flingEffect?.toNamedResource() ?: NamedResourceApi(),
         flingPower = flingPower,
         heldByPokemon = heldByPokemon.map { it.pokemon.toNamedResource() }
+    )
+
+fun ItemPriceDto.toItemPrice(): ItemPrice =
+    ItemPrice(
+        currency = currency?.toNamedResource()?: NamedResourceApi(),
+        purchasePrice = purchasePrice?:0,
+        sellPrice = sellPrice?:0,
+        versionGroup = versionGroup?.toNamedResource()?:NamedResourceApi()
     )
 
 fun ItemCategoryDto.toItemCategory(): ItemCategory =

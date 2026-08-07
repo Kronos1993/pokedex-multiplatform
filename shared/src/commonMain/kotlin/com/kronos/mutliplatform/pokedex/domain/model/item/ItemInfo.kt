@@ -13,7 +13,7 @@ data class ItemInfo(
     var attributes: List<NamedResourceApi> = listOf(),
     var babyTriggerFor: ResourceApi? = ResourceApi(),
     var category: NamedResourceApi = NamedResourceApi(),
-    var cost: Int = 0,
+    var prices:List<ItemPrice> = listOf(),
     var effectEntries: List<EffectEntry> = listOf(),
     var descriptions: List<FlavorText> = listOf(),
     var flingEffect: NamedResourceApi? = NamedResourceApi(),

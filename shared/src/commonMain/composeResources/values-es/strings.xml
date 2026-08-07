@@ -144,6 +144,7 @@
     <string name="item_detail_info_screen_info">Información</string>
     <string name="item_detail_info_screen_held_by">Equipado por</string>
     <string name="item_detail_info_screen_cost">Costo</string>
+    <string name="item_detail_info_screen_sell">Venta</string>
     <string name="item_detail_info_screen_category">Categoría</string>
     <string name="item_detail_info_screen_effect">Efecto</string>
     <string name="item_detail_info_screen_effect_explanation">Explicación del Efecto</string>

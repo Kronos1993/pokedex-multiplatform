@@ -147,6 +147,7 @@
     <string name="item_detail_info_screen_info">Info</string>
     <string name="item_detail_info_screen_held_by">Held By</string>
     <string name="item_detail_info_screen_cost">Cost</string>
+    <string name="item_detail_info_screen_sell">Sell</string>
     <string name="item_detail_info_screen_category">Category</string>
     <string name="item_detail_info_screen_effect">Effect</string>
     <string name="item_detail_info_screen_effect_explanation">Effect Explanation</string>

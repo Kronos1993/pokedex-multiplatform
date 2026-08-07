@@ -2,6 +2,7 @@ package com.kronos.mutliplatform.pokedex.data.remote.dto
 
 import com.kronos.mutliplatform.pokedex.data.NameDto
 import com.kronos.mutliplatform.pokedex.domain.model.ResourceApi
+import com.kronos.mutliplatform.pokedex.domain.model.item.ItemPrice
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -11,7 +12,7 @@ data class ItemInfoDto(
     @SerialName("baby_trigger_for")
     var babyTriggerFor: ResourceApi? = ResourceApi(),
     var category: NamedResourceApiDto = NamedResourceApiDto(),
-    var cost: Int = 0,
+    var prices:List<ItemPriceDto> = listOf(),
     @SerialName("effect_entries")
     var effectEntries: List<EffectEntryDto> = listOf(),
     @SerialName("flavor_text_entries")

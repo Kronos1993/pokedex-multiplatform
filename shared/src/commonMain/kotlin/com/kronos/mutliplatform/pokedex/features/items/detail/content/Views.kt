@@ -38,6 +38,7 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.TitleText
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
 import com.kronos.mutliplatform.pokedex.domain.model.NamedResourceApi
 import com.kronos.mutliplatform.pokedex.domain.model.item.ItemInfo
+import com.kronos.mutliplatform.pokedex.domain.model.item.ItemPrice
 import com.kronos.mutliplatform.pokedex.domain.model.pokemon.PokemonDexEntry
 import com.kronos.mutliplatform.pokedex.domain.model.sprite.Sprite
 import com.kronos.mutliplatform.pokedex.features.pokemon.detail.content.prettyName
@@ -54,6 +55,7 @@ import pokedex.shared.generated.resources.item_detail_info_screen_fling_power
 import pokedex.shared.generated.resources.item_detail_info_screen_held_by
 import pokedex.shared.generated.resources.item_detail_info_screen_info
 import pokedex.shared.generated.resources.item_detail_info_screen_none
+import pokedex.shared.generated.resources.item_detail_info_screen_sell
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Item Info Screen
@@ -193,12 +195,22 @@ private fun ItemHeaderCard(
                 )
 
                 BodyText(
+                    text = itemInfo.category.name
+                        .replace("-", " ")
+                        .replaceFirstChar { it.uppercase() },
+                    textColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    size = ComponentSize.MEDIUM,
+                    fontWeight = FontWeight.Bold,
+                )
+
+                BodyText(
                     text = itemInfo.getDescription(lang)
                         .replace("\n", " ")
                         .ifBlank { "—" },
                     textColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 5,
                 )
+
             }
         }
     }
@@ -286,15 +298,13 @@ private fun ItemInfoContent(
 
             ItemStatPill(
                 label = stringResource(Res.string.item_detail_info_screen_cost),
-                value = "$${itemInfo.cost}",
+                value = "$${itemInfo.prices.firstOrNull()?.purchasePrice?:0}",
                 modifier = Modifier.weight(1f),
             )
 
             ItemStatPill(
-                label = stringResource(Res.string.item_detail_info_screen_category),
-                value = itemInfo.category.name
-                    .replace("-", " ")
-                    .replaceFirstChar { it.uppercase() },
+                label = stringResource(Res.string.item_detail_info_screen_sell),
+                value = "$${itemInfo.prices.firstOrNull()?.sellPrice?:0}",
                 modifier = Modifier.weight(1f),
             )
         }
@@ -453,7 +463,15 @@ private fun PreviewItemInfoScreen() {
 private fun mockItemInfo() = ItemInfo(
     id = 1,
     name = "master-ball",
-    cost = 0,
+    prices = listOf(
+        ItemPrice(
+            purchasePrice = 0,
+            sellPrice = 0,
+            currency = NamedResourceApi(
+                name = "dollar",
+                url = ""),
+        )
+    ),
     flingPower = 10,
     flingEffect = NamedResourceApi(
         name = "flinch",
