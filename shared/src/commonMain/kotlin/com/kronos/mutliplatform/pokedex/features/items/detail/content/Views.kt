@@ -298,13 +298,13 @@ private fun ItemInfoContent(
 
             ItemStatPill(
                 label = stringResource(Res.string.item_detail_info_screen_cost),
-                value = "$${itemInfo.prices.firstOrNull()?.purchasePrice?:0}",
+                value = "$${itemInfo.prices.lastOrNull()?.purchasePrice?:0}",
                 modifier = Modifier.weight(1f),
             )
 
             ItemStatPill(
                 label = stringResource(Res.string.item_detail_info_screen_sell),
-                value = "$${itemInfo.prices.firstOrNull()?.sellPrice?:0}",
+                value = "$${itemInfo.prices.lastOrNull()?.sellPrice?:0}",
                 modifier = Modifier.weight(1f),
             )
         }
