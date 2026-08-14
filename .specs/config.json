@@ -1,0 +1,110 @@
+{
+  "_comment": "Spec-driven workflow configuration. Read by /spec-new, /spec-plan, /spec-implement, /spec-review, /spec-handoff, /spec-finalize, /spec-ship, /create-pr, /spec-status. Key catalog + per-skill reader map: .specs/config.schema.md. Edit-as-needed; do not commit secrets — use env-var indirection. Ported from the sibling repo multiplatform-weather-app's .specs/ workflow (itself adapted from a Smartmatic-internal lineage) for this repo's shape: a Kotlin Multiplatform app using the current standard multi-module project structure (THREE Gradle modules — :androidApp, :desktopApp, :shared — not a single :composeApp like the sibling weather-app repo), solo-maintained, GitHub-hosted, NO issue tracker, and NO automated test suite.",
+
+  "version": 1,
+
+  "paths": {
+    "specs_root": "specs",
+    "archive_root": "specs/_archive",
+    "templates_root": ".specs/templates",
+    "improvements_log": ".specs/IMPROVEMENTS.md"
+  },
+
+  "intake": {
+    "_comment": "No issue tracker of any kind — /spec-new only ever reads a local file or takes a manual/typed description.",
+    "sources": ["file", "manual", "url"],
+    "_sources_doc": "'file': a local markdown/text note — read verbatim. 'manual': the user describes the work directly in chat; /spec-new transcribes it into story.md. 'url': a plain link fetched with WebFetch if reachable, else treated as a manual paste with the URL recorded in source_ref. No project-key concept exists — spec_id is chosen by the user or slugged from the title."
+  },
+
+  "branch": {
+    "naming": {
+      "bug": "bugfix/{key}",
+      "story": "feature/{key}",
+      "refactor": "refactor/{key}",
+      "chore": "chore/{key}",
+      "hotfix": "hotfix/{key}"
+    },
+    "_naming_doc": "This repo's git history uses feat:/fix: commit-type prefixes loosely and has no enforced branch-naming convention today (solo-maintained, no merge commits found in history — commits go straight to the active branch). This table is this workflow's own going-forward convention, not a retrofit of history."
+  },
+
+  "plan": {
+    "_comment": "Used by /spec-plan. Split-heuristic thresholds.",
+    "split_thresholds": {
+      "modules": 3,
+      "risks": 4,
+      "subsystems": 2
+    },
+    "_split_thresholds_doc": "modules: proposal.md §4 affected-modules table spanning this many DISTINCT capability areas (domain, data, features/<x>, core, di, cache, components — see architecture.modules below) triggers a split suggestion. Same tuning as the sibling weather-app repo — a fine-grained single-module-per-platform-target layout where touching one feature + its own data/repository counterpart is normal, single-feature work."
+  },
+
+  "ship": {
+    "_comment": "Used by /spec-ship. Controls eager-archive behavior.",
+    "open_archive_pr": true
+  },
+
+  "pr": {
+    "_comment": "Used by /create-pr, /spec-finalize, and /spec-ship. This repo is hosted on GitHub; pull requests are opened via gh.",
+    "cli": "gh",
+    "host": "github.com",
+    "repo_slug": "Kronos1993/pokedex-multiplatform",
+    "default_target": "main",
+    "_default_target_doc": "This repo has THREE branch references: local `main` (the actively-worked branch), and on origin both `main` and `master` (origin/HEAD points at master). No merge commits exist anywhere in history — i.e. no PR flow has been used yet, so there's no precedent to infer from. Defaulted to `main` (the branch actually being worked on) — CONFIRM with the user before the first real /create-pr run whether `master` is actually the intended upstream integration branch, and update this value once confirmed.",
+    "create_args": [],
+    "_create_args_doc": "GitHub has no MR-creation-time equivalent to GitLab's squash/delete-branch flags; those are merge-time choices (gh pr merge --squash --delete-branch), not creation-time ones.",
+    "first_push_strict_host_checking": "accept-new"
+  },
+
+  "reviewers": {
+    "default": [],
+    "_default_doc": "Solo-maintained repo (GitHub user Kronos1993) — no default reviewer today. Add a GitHub username here if/when a second maintainer joins."
+  },
+
+  "notifications": {
+    "_comment": "All channels disabled by default. No issue tracker to comment on, no webhook configured.",
+    "events": {
+      "pr_open": { "enabled": false, "channels": [] },
+      "spec_archived": { "enabled": false, "channels": [] }
+    },
+    "channels": {}
+  },
+
+  "review": {
+    "_comment": "Used by /spec-review.",
+    "default_mode": "quick",
+    "confidence_critical": 80,
+    "confidence_important": 50,
+    "findings_file": "specs/{key}/.review-findings.md"
+  },
+
+  "verification": {
+    "_comment": "Controls build invocations in /spec-implement. No wrapper /build skill exists — build directly via the commands below. Module names differ from the sibling weather-app repo: :androidApp / :desktopApp / :shared, not :composeApp.",
+    "build_per_implement_step": false,
+    "build_matrix_at_pre_handoff": true,
+    "_build_matrix_at_pre_handoff_doc": "Three-module layout (:androidApp, :desktopApp, :shared) — 'matrix' means: run the Android debug assemble once at pre-handoff (covers :shared + :androidApp compilation). Run './gradlew build' instead when the step touched jvmMain/desktopApp or iosMain.",
+    "build_commands": {
+      "android": "./gradlew :androidApp:assembleDebug",
+      "desktop": "./gradlew :desktopApp:run",
+      "desktop_hot_reload": "./gradlew :desktopApp:hotRun --auto",
+      "full": "./gradlew build",
+      "ios": "no Gradle target — build via Xcode (iosApp/iosApp.xcodeproj) or the IDE run configuration; not automatable headlessly from this skill chain, surface as an out-of-band manual check when a step touches shared/src/iosMain or iosApp/"
+    },
+    "skip_all_local": false,
+    "distinguish_pre_existing_baseline": true,
+    "no_test_suite": true,
+    "_no_test_suite_doc": "This repo has ZERO test source sets. /spec-implement and /spec-plan must never invent a 'run tests' step; verification is build-green only (plus a manual run in the simulator/emulator for UI-visible changes).",
+    "secret_log_keywords": ["apiKey", "api_key", "API_KEY", "token", "Token", "TOKEN", "secret", "Secret", "password", "Password"],
+    "_secret_log_keywords_doc": "PokeAPI (the data source) is a free, keyless public API — this repo currently has no credential of its own, but the keyword list is kept as a standing guard in case one is added later (e.g. a rate-limit token)."
+  },
+
+  "architecture": {
+    "_comment": "Read by /spec-plan (gauntlet automation) and /spec-implement (pre-handoff gate). This repo is a Clean-Architecture-over-Koin KMP app, same lineage as the sibling weather-app and parcel-tracking-multiplatform repos, but with one real difference: persistence uses SQLDelight (a single generic HTTP-response cache table), not per-feature Room entities — see cache.* below.",
+    "modules": ["domain", "data", "features", "core", "di", "cache", "components"],
+    "shape": "features/<feature>/XxxScreenViewModel (extends core/viewmodel/ParentViewModel) -> domain/repository/*Interface (DIP boundary) -> data/repository/<feature>/*Impl -> data/remote (Ktor, PokeAPI); data/local exists mainly for the generic ICache (SQLDelight), not per-feature tables; di/ wires interface->impl via Koin",
+    "expect_actual_parity_required": true,
+    "_expect_actual_parity_doc": "Every `expect` declaration added or changed in commonMain must have a matching `actual` in every active source set that needs it (androidMain, iosMain, jvmMain). File-suffix convention here: `.android.kt`, `.jvm.kt`, `.ios.kt` (confirmed from this repo's own di/core files) — same shape as the sibling repos, just spelled slightly differently (`.jvm.kt` not `.native.kt`).",
+    "cache_not_room": true,
+    "_cache_not_room_doc": "Unlike the sibling weather-app/parcel-tracking repos (Room, per-feature entities), this repo's only local persistence is a single generic response cache: shared/src/commonMain/sqldelight/.../data/local/database/ApiCache.sq, wired via core/cache/CacheModule.kt (ICache/AppCache). A new feature almost never needs its own Room-style entity/dao here — it goes through the existing ICache (keyed by request) automatically. Only add a new SQLDelight table for a genuinely new persisted concept, not as the default path for a new feature (see .claude/skills/new-feature/SKILL.md).",
+    "dual_localization_required": false,
+    "_dual_localization_doc": "No iosApp/*.strings files found in this repo (unlike weather-app) — localization lives only in shared/src/commonMain/composeResources/values[-es]/*.xml. Set to false; flip to true if native iOS-side strings are ever introduced (notifications, widgets)."
+  }
+}
