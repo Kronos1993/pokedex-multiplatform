@@ -48,7 +48,7 @@
     "host": "github.com",
     "repo_slug": "Kronos1993/pokedex-multiplatform",
     "default_target": "main",
-    "_default_target_doc": "This repo has THREE branch references: local `main` (the actively-worked branch), and on origin both `main` and `master` (origin/HEAD points at master). No merge commits exist anywhere in history — i.e. no PR flow has been used yet, so there's no precedent to infer from. Defaulted to `main` (the branch actually being worked on) — CONFIRM with the user before the first real /create-pr run whether `master` is actually the intended upstream integration branch, and update this value once confirmed.",
+    "_default_target_doc": "CONFIRMED with the user 2026-08-14: this repo has no `develop` branch and no git-flow-style branching model — feature/bugfix/refactor/chore/hotfix branches are cut from `main`, and `main` is the integration branch PRs target. `origin/HEAD` points at `master` for historical reasons only (stale default-branch pointer on GitHub); it is not the working branch and should be disregarded for PR targeting.",
     "create_args": [],
     "_create_args_doc": "GitHub has no MR-creation-time equivalent to GitLab's squash/delete-branch flags; those are merge-time choices (gh pr merge --squash --delete-branch), not creation-time ones.",
     "first_push_strict_host_checking": "accept-new"

@@ -7,7 +7,7 @@ Skill chain: `/spec-new` -> `/spec-plan` -> `/spec-implement` -> [`/spec-review`
 Key config facts (subject to change — re-read `.specs/config.json` rather than trusting this verbatim over time):
 - No issue tracker of any kind; intake is file/manual/url only.
 - Branch naming: `feature/{key}`, `bugfix/{key}`, `refactor/{key}`, `chore/{key}`, `hotfix/{key}`.
-- PR default target `main` is provisional/unconfirmed (repo has local `main` + origin `main`/`master`, no PR history to infer from) — confirm with user before first real `/spec-finalize`.
+- PR default target `main` is CONFIRMED (2026-08-14): no `develop` branch, no git-flow model — branches are cut from `main`, PRs target `main`. `origin/HEAD` pointing at `master` is a stale GitHub pointer, not a workflow signal.
 - `architecture.modules`: domain, data, features, core, di, cache, components — split-heuristic thresholds live in `plan.split_thresholds`.
 - `verification.no_test_suite: true` — see `mem:task_completion`.
 
