@@ -29,3 +29,4 @@ Root package: `com.kronos.mutliplatform.pokedex` (note: "mutliplatform" is a rea
 - `mem:task_completion` — what "done" means for a task here (build-green, no tests).
 - `mem:cache` — the single SQLDelight ICache/AppCache design.
 - `mem:spec_workflow` — the `.specs/` spec-driven workflow and its skills.
+- `mem:navigation` — the `Destinations` enum and where it actually lives in this repo (unlike sibling repos).
