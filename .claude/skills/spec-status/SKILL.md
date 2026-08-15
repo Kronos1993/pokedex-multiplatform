@@ -189,7 +189,7 @@ Progress
   pre-handoff:     6 / 6
 
 Handoff
-  impl PR:     #12  https://github.com/Kronos1993/Multiplatform-Weather-App/pull/12
+  impl PR:     #12  https://github.com/Kronos1993/pokedex-multiplatform/pull/12
   memory PR:   —
   archive PR:  —     (opens after the impl PR merges)
 

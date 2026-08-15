@@ -34,6 +34,12 @@ deferred feature, or rough edge that isn't worth fixing immediately.
 
 ## This repo's own entries
 
+### 2026-08-14 — Weather-app leftovers cleaned out of the ported workflow
+
+**Where:** `.claude/skills/{spec-plan,spec-review,spec-implement,spec-finalize,spec-ship,spec-status}/SKILL.md`, `.specs/{EXTERNAL_SKILLS.md,handoff-schema.md,templates/*.md}`
+**What:** This `.specs/` workflow was ported from the sibling `multiplatform-weather-app` repo and still had un-adapted weather-app content: 13 hardcoded PR URLs pointing at `Kronos1993/Multiplatform-Weather-App`, a keyword-routing table entirely in weather-app domain, "WeatherAPI key" checklist items (including inside `.specs/templates/` — copied into every new spec), and a dual-localization template item assuming iOS `.strings` files this repo doesn't have. Same class of bug the user found in the `parcel-tracking-multiplatform` repo.
+**Resolved:** All corrected in place — see `mem:spec_workflow` for the full list. Illustrative `## Examples` blocks using fictional spec names were left alone (cosmetic only).
+
 ### 2026-08-14 — `pr.default_target` confirmed as `main`
 
 **Where:** `.specs/config.json` `pr.default_target` / `pr._default_target_doc`

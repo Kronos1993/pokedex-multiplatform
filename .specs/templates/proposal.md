@@ -148,16 +148,20 @@ allowed for §5a.
       frontmatter, this is N/A — confirm no new/changed `expect` slipped
       in during investigation.
       Approach: <confirmed / explain>
-- [ ] **Dual localization** — any user-facing string touched that is
-      shown by both the Compose UI and native iOS code (notifications,
-      widgets) is updated in BOTH
-      `shared/src/commonMain/composeResources/values[-es]/*.xml`
-      AND `iosApp/en.strings` + `iosApp/es.strings`. If
-      `localization_touched: no`, this is N/A.
+- [ ] **Dual localization** — this repo has no native iOS `.strings`
+      files (`architecture.dual_localization_required: false`);
+      localization lives only in
+      `shared/src/commonMain/composeResources/values[-es]/*.xml`. This
+      item is N/A unless native iOS-side strings are introduced (e.g.
+      notifications, widgets) — flip `dual_localization_required` in
+      `.specs/config.json` first if that happens.
       Approach: <confirmed / explain>
-- [ ] **Secrets & logging** — no API keys (the WeatherAPI key) or other
-      credentials logged, printed, included in error messages, or
-      hardcoded outside the existing config location.
+- [ ] **Secrets & logging** — no API keys or other credentials logged,
+      printed, included in error messages, or hardcoded outside the
+      existing config location. PokeAPI (this repo's only external API)
+      is free and keyless — this check guards against a credential
+      added later (`verification.secret_log_keywords` in
+      `.specs/config.json`).
       Approach: <confirmed / explain>
 - [ ] **No automated tests exist** — this repo has ZERO test source
       sets (see `CLAUDE.md` and `.specs/config.json`
@@ -234,7 +238,7 @@ at the top of this file.
 Proposal-level summary of anything that needs a human, runs outside
 Claude's reach, or happens after /spec-handoff: a manual check on a
 physical iOS/Android device, an App Store / Play Store metadata update,
-a WeatherAPI plan/quota change, etc. Write "None." if there are none.
+etc. Write "None." if there are none.
 -->
 
 -

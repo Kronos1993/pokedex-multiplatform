@@ -50,7 +50,7 @@ Rules:
 
 - [ ] Full build green (`./gradlew build` — covers Android + JVM/desktop targets; run `./gradlew :androidApp:assembleDebug` at minimum if only Android was touched)
 - [ ] iOS build manually verified via Xcode if any `iosMain`/`iosApp/` file changed (no headless build path exists — see `.specs/EXTERNAL_SKILLS.md`)
-- [ ] No new logs/prints touch the WeatherAPI key or any other credential
+- [ ] No new logs/prints touch an API key or any other credential (PokeAPI itself is keyless — see `verification.secret_log_keywords`)
 - [ ] Every touched commonMain `expect` has a matching `actual` in every affected source set (manual review — see `.specs/config.json` `architecture.expect_actual_parity_required`)
 - [ ] Any touched user-facing string shown by both Compose UI and native iOS code is updated in both `composeResources` and `iosApp/*.strings` (`architecture.dual_localization_required`)
 - [ ] No automated-test checkbox invented — this repo has zero test source sets (confirmed in `CLAUDE.md`); verification is build-green + manual run only

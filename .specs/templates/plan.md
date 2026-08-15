@@ -164,9 +164,10 @@ Rules common to all kinds:
 <!--
 Anything that requires a human, runs outside Claude's reach, or happens
 after /spec-handoff. Examples:
-- "Verify on a real iOS device — the simulator can't exercise GPS
-  location the same way"
-- "Rotate/verify the WeatherAPI key quota before shipping"
+- "Verify sprite/image rendering on a real iOS device — the simulator
+  can behave differently for remote image loading"
+- "Confirm the change doesn't trip PokeAPI's rate limit under real
+  network conditions"
 Leave empty if none.
 -->
 

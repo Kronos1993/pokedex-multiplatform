@@ -95,8 +95,8 @@ commit type mapping.
 **Optional modifiers:**
 
 - `--target <branch>` — override the configured default target
-  (`main` per `.specs/config.json` `pr.default_target` —
-  **unconfirmed**, see that key's `_doc`).
+  (`main` per `.specs/config.json` `pr.default_target` — confirmed,
+  see that key's `_doc`).
 - `--reviewer <user>` — set the GitHub Reviewer field via `gh`'s
   `--reviewer` flag (a GitHub username). Optional; when
   `reviewers.default` is empty, callers omit this flag entirely.
@@ -109,7 +109,7 @@ commit type mapping.
 **Side effects:**
 
 - `git push -u origin <branch>`.
-- Calls `gh pr create` against `github.com/Kronos1993/Multiplatform-Weather-App`.
+- Calls `gh pr create` against `github.com/Kronos1993/pokedex-multiplatform`.
 
 **Failure modes:**
 

@@ -107,18 +107,18 @@ Drill-in mode (`/spec-status <KEY>`) reads `handoff.json` when present:
   "branch": "feature/weather-radar-layers",
   "target_branch": "main",
   "pr_number": 12,
-  "pr_url": "https://github.com/Kronos1993/Multiplatform-Weather-App/pull/12",
+  "pr_url": "https://github.com/Kronos1993/pokedex-multiplatform/pull/12",
   "opened_at": "2026-08-14T18:23:00Z",
   "opened_via": "tier-A",
   "memory_candidates_surfaced": true,
   "memory_branch": "chore/memories-weather-radar-layers",
   "memory_pr_number": 13,
-  "memory_pr_url": "https://github.com/Kronos1993/Multiplatform-Weather-App/pull/13",
+  "memory_pr_url": "https://github.com/Kronos1993/pokedex-multiplatform/pull/13",
   "archived_at": "2026-08-15T09:10:00Z",
   "archive_branch": "chore/archive-weather-radar-layers",
   "archive_reason": "merged",
   "archive_pr_number": 14,
-  "archive_pr_url": "https://github.com/Kronos1993/Multiplatform-Weather-App/pull/14"
+  "archive_pr_url": "https://github.com/Kronos1993/pokedex-multiplatform/pull/14"
 }
 ```
 
@@ -132,18 +132,18 @@ Adds `archived_pre_merge` + `shipped_via`; otherwise the same shape.
   "branch": "feature/weather-radar-layers",
   "target_branch": "main",
   "pr_number": 12,
-  "pr_url": "https://github.com/Kronos1993/Multiplatform-Weather-App/pull/12",
+  "pr_url": "https://github.com/Kronos1993/pokedex-multiplatform/pull/12",
   "opened_at": "2026-08-14T18:23:00Z",
   "opened_via": "tier-A",
   "memory_candidates_surfaced": true,
   "memory_branch": "chore/memories-weather-radar-layers",
   "memory_pr_number": 13,
-  "memory_pr_url": "https://github.com/Kronos1993/Multiplatform-Weather-App/pull/13",
+  "memory_pr_url": "https://github.com/Kronos1993/pokedex-multiplatform/pull/13",
   "archived_at": "2026-08-14T18:24:00Z",
   "archive_branch": "chore/archive-weather-radar-layers",
   "archive_reason": "merged",
   "archive_pr_number": 14,
-  "archive_pr_url": "https://github.com/Kronos1993/Multiplatform-Weather-App/pull/14",
+  "archive_pr_url": "https://github.com/Kronos1993/pokedex-multiplatform/pull/14",
   "archived_pre_merge": true,
   "shipped_via": "spec-ship"
 }

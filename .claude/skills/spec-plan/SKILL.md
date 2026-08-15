@@ -105,20 +105,24 @@ actual folder listing, since new memories get added over time.
 
 | Keyword in story | Likely area(s) |
 |---|---|
-| "weather", "forecast", "current conditions" | `domain/model`, `data/repository/weather` |
-| "location", "GPS", "current position" | `data/repository/location`, `device/screen_config`, `core/preferences` |
-| "radar", "rain", "map layer" | `data/repository/radar`, `components/maps` |
-| "alert", "warning" | `data/repository/alerts`, `domain/model/alerts` |
-| "notification", "suggestion" | `core/notification`, iOS `core/job/`, `iosApp/*.swift` |
-| "widget" | `androidMain` `widget/` (Glance) |
-| "custom location", "saved city", "add city" | `data/repository/user_custom_location`, `features/add_city` |
-| "setting", "preference" | `core/preferences`, `features/home/setting` |
-| "database", "cache", "Room" | `data/local` |
-| "API", "Ktor", "network" | `data/remote` |
+| "pokemon", "species", "stats", "evolution" | `domain/model/pokemon`, `data/repository/pokemon`, `features/pokemon` |
+| "ability", "abilities" | `domain/model/ability`, `data/repository/ability`, `features/abilities` |
+| "item", "held item", "price" | `domain/model/item`, `data/repository/item`, `features/items` |
+| "move", "attack" | `domain/model/move`, `data/repository/move`, `features/move` |
+| "type", "type effectiveness" | `domain/model/type`, `data/repository/type`, `features/types` |
+| "nature" | `domain/model/nature`, `data/repository/nature`, `features/natures` |
+| "berry", "berries" | `domain/model/... (berry)`, `data/repository/berry`, `features/berries` |
+| "egg group", "breeding" | `domain/model/egg_group`, `data/repository/egg_group`, `features/egg_group` |
+| "pokedex", "regional dex", "national dex" | `domain/model/pokedex`, `data/repository/pokedex`, `features/pokedex` |
+| "setting", "preference" | `core/preferences`, `features/setting` |
+| "about", "credits" | `features/about` |
+| "database", "cache" | `data/local` — a single generic SQLDelight `ICache`/`AppCache` (see `mem:cache`), NOT per-feature Room entities |
+| "API", "Ktor", "network", "PokeAPI" | `data/remote` |
 | "DI", "Koin", "injection" | `di/`, `core/di` |
-| "string", "translation", "Spanish", "localization" | Compose `composeResources` AND `iosApp/*.strings` — see `architecture.dual_localization_required` |
+| "string", "translation", "Spanish", "localization" | Compose `composeResources/values[-es]` only — no iOS `.strings` files exist in this repo (`architecture.dual_localization_required: false`) |
 | "iOS", "Swift", "SwiftUI" | `iosMain`, `iosApp/iosApp/` |
-| "Android", "widget", "notification channel" | `androidMain` |
+| "desktop", "JVM" | `jvmMain`, `desktopApp/` |
+| "Android" | `androidMain` |
 
 If the story touches something with no obviously-relevant memory,
 `list_memories()` directly and skim titles — don't assume the table
@@ -177,7 +181,7 @@ If `story.md` has no Assumptions block, delete the section entirely.
 |---|---|
 | Expect/actual parity | If the change touches an existing `expect` declaration or adds a new one, list every source set that needs a matching `actual` (androidMain always; iosMain if the feature is iOS-reachable; jvmMain only if the desktop target is in scope) and confirm the plan covers all of them. If no `expect`/`actual` is touched, set `expect_actual_touched: no` and mark N/A. |
 | Dual localization | If the change adds/edits a user-facing string reachable from both the Compose UI and native iOS code (notifications, widgets), confirm the plan updates both `composeResources` and `iosApp/*.strings`. If the string is Compose-UI-only, set `localization_touched: no` and mark N/A. |
-| Secrets & logging | At plan time there is no diff to grep, so this records **intent, not verification**: confirm the spec does not intend to log the WeatherAPI key or any credential, and note it is re-verified against the actual diff by `/spec-implement`'s pre-handoff secrets-grep. |
+| Secrets & logging | At plan time there is no diff to grep, so this records **intent, not verification**: confirm the spec does not intend to log an API key or any credential (PokeAPI itself is keyless — this guards against one added later), and note it is re-verified against the actual diff by `/spec-implement`'s pre-handoff secrets-grep. |
 | No automated tests exist | State explicitly (this is always true for this repo — see `.specs/config.json` `verification.no_test_suite`): the verification plan relies on build-green + a manual run on the affected platform, never a test-suite run. |
 
 **§5b confinement claim — auto-tick if all of:**
@@ -254,9 +258,9 @@ Generate 1–N risks based on:
   or a Koin module is touched).
 - Known gotchas from the relevant Serena memories.
 - Cross-spec dependency (note in §7 if any `depends_on` is non-empty).
-- Third-party surface exposure: the WeatherAPI key/quota, GPS
-  permission prompts (Moko permissions), MapLibre native framework
-  behavior on iOS.
+- Third-party surface exposure: PokeAPI rate limits or response-shape
+  changes, sprite/image asset availability, SQLDelight cache
+  staleness (`ICache`/`AppCache`).
 
 If the count reaches `plan.split_thresholds.risks` (default 4), the
 split heuristic fires.
@@ -297,11 +301,11 @@ the story references an external doc not already summarized in
 `story.md` → OQ **(BLOCKER)**: "Fetch/read `<link>` and add its
 substance to story.md, or confirm it's not load-bearing."
 
-**2. Does this touch the WeatherAPI integration surface (rate limits,
-response shape, the API key)?** If so, confirm the plan doesn't assume
-undocumented API behavior — OQ (non-blocking) to verify against
-WeatherAPI's actual docs/response during an `[investigate]` step if the
-assumption is non-trivial.
+**2. Does this touch the PokeAPI integration surface (rate limits,
+response shape)?** If so, confirm the plan doesn't assume undocumented
+API behavior — OQ (non-blocking) to verify against PokeAPI's actual
+docs/response during an `[investigate]` step if the assumption is
+non-trivial.
 
 **3. Does this touch both a domain `expect` and its platform
 `actual`s?** Confirm the plan names every affected source set
@@ -326,7 +330,7 @@ Summary of blocking conditions:
 | # | Question | BLOCKER? | Resolved by |
 |---|----------|----------|-------------|
 | 1 | Is a linked design doc read? | Yes if scope changes | `[investigate]` step (or re-run `/spec-new`) |
-| 2 | Is the WeatherAPI assumption verified? | No (unless AC depends on it) | `[investigate]` step |
+| 2 | Is the PokeAPI assumption verified? | No (unless AC depends on it) | `[investigate]` step |
 | 3 | Are all affected source sets identified for expect/actual? | No (unless ambiguous) | `[investigate]` step |
 | 4 | Is exact user-facing copy specified? | No (unless AC depends on it) | `[investigate]` step or direct answer |
 | 5 | Are all `core/` consumers identified? | Yes | `[investigate]` step (`find_referencing_symbols`) |

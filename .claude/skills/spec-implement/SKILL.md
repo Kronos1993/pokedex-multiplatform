@@ -265,10 +265,10 @@ Run each item in tasks.md "Pre-handoff checks" section:
 3. If any `iosMain`/`iosApp/` file changed, surface
    `[!] iOS build must be verified manually via Xcode — no headless
    path exists` rather than silently skipping it.
-4. Grep changed files for new logger/print calls touching the
-   WeatherAPI key or any other credential-shaped string
-   (`verification.secret_log_keywords` in `.specs/config.json`,
-   case-insensitive). Any hit stops the run.
+4. Grep changed files for new logger/print calls touching an API key
+   or any other credential-shaped string (`verification.secret_log_keywords`
+   in `.specs/config.json`, case-insensitive; PokeAPI itself is keyless,
+   so any hit here is a new credential). Any hit stops the run.
 5. Confirm every touched commonMain `expect` has a matching `actual`
    in every affected source set (manual review, per
    `architecture.expect_actual_parity_required`).
