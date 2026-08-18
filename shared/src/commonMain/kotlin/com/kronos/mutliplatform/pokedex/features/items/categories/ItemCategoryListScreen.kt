@@ -193,6 +193,8 @@ fun ItemCategoryListScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.refreshItems(true) },
+                    isRefreshing = isLoading,
                     actions = listOf()
                 )
             },

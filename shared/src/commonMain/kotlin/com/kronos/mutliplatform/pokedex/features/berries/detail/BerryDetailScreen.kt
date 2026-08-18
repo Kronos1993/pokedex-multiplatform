@@ -111,6 +111,8 @@ fun BerryDetailScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.refreshMove(berry) },
+                    isRefreshing = isLoading,
                     actions = listOf(),
                 )
             },

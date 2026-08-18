@@ -191,6 +191,8 @@ fun MoveListScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.loadMoves(true) },
+                    isRefreshing = isLoading,
                     actions = listOf()
                 )
             },

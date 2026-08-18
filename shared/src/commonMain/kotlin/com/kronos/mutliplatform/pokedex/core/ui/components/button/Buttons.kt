@@ -54,6 +54,15 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.BodyText
 import com.kronos.mutliplatform.pokedex.core.ui.components.ComponentSize
 import com.kronos.mutliplatform.pokedex.core.ui.components.IconPosition
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.lerp
+
 @Composable
 fun Button(
     onClick: () -> Unit,
@@ -65,12 +74,27 @@ fun Button(
     style: ButtonStyle = ButtonStyle.PRIMARY,
     iconPosition: IconPosition = IconPosition.START,
     size: ComponentSize = ComponentSize.SMALL,
-    shape: ButtonShape = ButtonShape.CIRCLE
+    shape: ButtonShape = ButtonShape.CIRCLE,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     val buttonColors = getButtonColors(style, type)
+    val isHovered by interactionSource.collectIsHoveredAsState()
+    val isFocused by interactionSource.collectIsFocusedAsState()
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val stateOverlayAlpha = when {
+        !enabled -> 0f
+        isPressed -> 0.12f
+        isHovered -> 0.08f
+        else -> 0f
+    }
     val contentColor = if (enabled) buttonColors.contentColor else buttonColors.disabledContentColor
-    val containerColor =
+    val baseContainerColor =
         if (enabled) buttonColors.containerColor else buttonColors.disabledContainerColor
+    val containerColor = when {
+        type == ButtonType.FILLED -> if (stateOverlayAlpha > 0f) lerp(baseContainerColor, contentColor, stateOverlayAlpha) else baseContainerColor
+        stateOverlayAlpha > 0f -> contentColor.copy(alpha = stateOverlayAlpha)
+        else -> Color.Transparent
+    }
 
     val buttonShape = when (shape) {
         ButtonShape.SQUARE -> when (size) {
@@ -122,6 +146,7 @@ fun Button(
                     .defaultMinSize(minWidth = if (text == null) 56.dp else 96.dp)
             }
         )
+        .then(if (isFocused && enabled) Modifier.border(2.dp, contentColor, buttonShape) else Modifier)
 
     // Ajustar padding para botones circulares
     val horizontalPadding = when {
@@ -154,7 +179,8 @@ fun Button(
                     disabledContainerColor = buttonColors.disabledContainerColor,
                     disabledContentColor = buttonColors.disabledContentColor
                 ),
-                shape = buttonShape
+                shape = buttonShape,
+                interactionSource = interactionSource
             ) {
                 ButtonContent(icon, iconPosition, text, contentColor, size)
             }
@@ -166,6 +192,7 @@ fun Button(
                 enabled = enabled,
                 modifier = buttonModifier.padding(horizontal = horizontalPadding),
                 colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = containerColor,
                     contentColor = contentColor,
                     disabledContentColor = buttonColors.disabledContentColor
                 ),
@@ -176,7 +203,8 @@ fun Button(
                     },
                     color = if (enabled) contentColor else buttonColors.disabledContentColor
                 ),
-                shape = buttonShape
+                shape = buttonShape,
+                interactionSource = interactionSource
             ) {
                 ButtonContent(icon, iconPosition, text, contentColor, size)
             }
@@ -188,10 +216,12 @@ fun Button(
                 enabled = enabled,
                 modifier = buttonModifier.padding(horizontal = horizontalPadding),
                 colors = ButtonDefaults.textButtonColors(
+                    containerColor = containerColor,
                     contentColor = contentColor,
                     disabledContentColor = buttonColors.disabledContentColor
                 ),
-                shape = buttonShape
+                shape = buttonShape,
+                interactionSource = interactionSource
             ) {
                 ButtonContent(icon, iconPosition, text, contentColor, size)
             }
@@ -209,13 +239,28 @@ fun IconButton(
     style: ButtonStyle = ButtonStyle.PRIMARY,
     size: ComponentSize = ComponentSize.SMALL,
     shape: ButtonShape = ButtonShape.CIRCLE,
-    iconColor: Color? = null
+    iconColor: Color? = null,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     val buttonColors = getButtonColors(style, type)
+    val isHovered by interactionSource.collectIsHoveredAsState()
+    val isFocused by interactionSource.collectIsFocusedAsState()
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val stateOverlayAlpha = when {
+        !enabled -> 0f
+        isPressed -> 0.12f
+        isHovered -> 0.08f
+        else -> 0f
+    }
     val contentColor =
         iconColor ?: if (enabled) buttonColors.contentColor else buttonColors.disabledContentColor
-    val containerColor =
+    val baseContainerColor =
         if (enabled) buttonColors.containerColor else buttonColors.disabledContainerColor
+    val containerColor = when {
+        type == ButtonType.FILLED -> if (stateOverlayAlpha > 0f) lerp(baseContainerColor, contentColor, stateOverlayAlpha) else baseContainerColor
+        stateOverlayAlpha > 0f -> contentColor.copy(alpha = stateOverlayAlpha)
+        else -> Color.Transparent
+    }
 
     val buttonShape = when (shape) {
         ButtonShape.SQUARE -> when (size) {
@@ -262,6 +307,7 @@ fun IconButton(
                     .size(40.dp)
             }
         )
+        .then(if (isFocused && enabled) Modifier.border(2.dp, contentColor, buttonShape) else Modifier)
 
     when (type) {
         ButtonType.FILLED -> {
@@ -275,7 +321,8 @@ fun IconButton(
                     disabledContainerColor = buttonColors.disabledContainerColor,
                     disabledContentColor = buttonColors.disabledContentColor
                 ),
-                shape = buttonShape
+                shape = buttonShape,
+                interactionSource = interactionSource
             ) {
                 IconButtonContent(icon, contentColor, size)
             }
@@ -287,6 +334,7 @@ fun IconButton(
                 enabled = enabled,
                 modifier = buttonModifier,
                 colors = IconButtonDefaults.outlinedIconButtonColors(
+                    containerColor = containerColor,
                     contentColor = contentColor,
                     disabledContentColor = buttonColors.disabledContentColor
                 ),
@@ -297,7 +345,8 @@ fun IconButton(
                     },
                     color = if (enabled) contentColor else buttonColors.disabledContentColor
                 ),
-                shape = buttonShape
+                shape = buttonShape,
+                interactionSource = interactionSource
             ) {
                 IconButtonContent(icon, contentColor, size)
             }
@@ -309,6 +358,7 @@ fun IconButton(
                 enabled = enabled,
                 modifier = buttonModifier,
                 colors = IconButtonDefaults.outlinedIconButtonColors(
+                    containerColor = containerColor,
                     contentColor = contentColor,
                     disabledContentColor = buttonColors.disabledContentColor
                 ),
@@ -319,7 +369,8 @@ fun IconButton(
                     },
                     color = Color.Transparent
                 ),
-                shape = buttonShape
+                shape = buttonShape,
+                interactionSource = interactionSource
             ) {
                 IconButtonContent(icon, contentColor, size)
             }

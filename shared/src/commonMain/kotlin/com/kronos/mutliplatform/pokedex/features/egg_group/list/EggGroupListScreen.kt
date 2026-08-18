@@ -191,6 +191,8 @@ fun EggGroupListScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.loadEggGroups(true) },
+                    isRefreshing = isLoading,
                     actions = listOf()
                 )
             },

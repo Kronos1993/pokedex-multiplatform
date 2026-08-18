@@ -112,6 +112,8 @@ fun MoveDetailScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.refreshMove(move) },
+                    isRefreshing = isLoading,
                     actions = listOf(),
                 )
             },

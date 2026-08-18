@@ -24,6 +24,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kronos.mutliplatform.pokedex.core.ui.components.theme.AppTheme
 
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BaseCardView(
@@ -41,10 +44,13 @@ fun BaseCardView(
     val interactionSource = remember { MutableInteractionSource() }
 
     val isPressed by interactionSource.collectIsPressedAsState()
+    val isHovered by interactionSource.collectIsHoveredAsState()
+    val isFocused by interactionSource.collectIsFocusedAsState()
 
     val animatedElevation by animateDpAsState(
         targetValue = when {
             onClick != null && isPressed -> pressedElevation
+            onClick != null && isHovered -> elevation + 2.dp
             else -> elevation
         },
         animationSpec = tween(
@@ -53,6 +59,12 @@ fun BaseCardView(
         ),
         label = "card_elevation"
     )
+
+    val interactiveBorder = when {
+        onClick == null -> borderStroke
+        isFocused && enabled -> BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+        else -> borderStroke
+    }
 
     if (onClick != null) {
         Card(
@@ -65,7 +77,7 @@ fun BaseCardView(
                 contentColor = MaterialTheme.colorScheme.onSurface,
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = animatedElevation),
-            border = borderStroke,
+            border = interactiveBorder,
             shape = shape,
         ) { content() }
     } else {
