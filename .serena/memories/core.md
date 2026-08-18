@@ -30,3 +30,5 @@ Root package: `com.kronos.mutliplatform.pokedex` (note: "mutliplatform" is a rea
 - `mem:cache` — the single SQLDelight ICache/AppCache design.
 - `mem:spec_workflow` — the `.specs/` spec-driven workflow and its skills.
 - `mem:navigation` — the `Destinations` enum and where it actually lives in this repo (unlike sibling repos).
+- `mem:desktop_platform` — Desktop detection pattern, Compose Desktop keyboard-focus gotchas for shortcuts.
+- `mem:build_known_issues` — pre-existing build failures unrelated to your change, checked before assuming a regression.
