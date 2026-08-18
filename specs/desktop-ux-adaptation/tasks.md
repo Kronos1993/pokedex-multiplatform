@@ -60,9 +60,9 @@ generated_by: /spec-plan
 
 ## Handoff
 
-- [ ] Branch created (`feature/desktop-ux-adaptation`)
-- [ ] `/commit` executed
-- [ ] Branch pushed
-- [ ] PR opened against `main`
-- [ ] Spec folder archived to `specs/_archive/desktop-ux-adaptation/`
-- [ ] Reusable-knowledge candidates from `decisions.md` proposed
+- [x] Branch created (`feature/desktop-ux-adaptation`)
+- [x] `/commit` executed
+- [ ] Branch pushed *(see /spec-finalize)*
+- [ ] PR opened against `main` *(see /spec-finalize)*
+- [ ] Spec folder archived to `specs/_archive/desktop-ux-adaptation/` *(see /spec-finalize)*
+- [ ] Reusable-knowledge candidates from `decisions.md` proposed *(see /spec-finalize)*
