@@ -101,6 +101,8 @@ fun TypeDetailScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.loadTypeInfo(type) },
+                    isRefreshing = isLoading,
                     actions = listOf(),
                 )
             },

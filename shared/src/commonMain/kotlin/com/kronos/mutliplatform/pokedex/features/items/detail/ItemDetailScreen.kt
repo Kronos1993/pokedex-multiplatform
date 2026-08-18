@@ -113,6 +113,8 @@ fun ItemDetailScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.refreshItems(item) },
+                    isRefreshing = isLoading,
                     actions = listOf(),
                 )
             },

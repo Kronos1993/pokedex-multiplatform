@@ -100,6 +100,8 @@ fun NatureDetailScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.refreshNature(nature) },
+                    isRefreshing = isLoading,
                     actions = listOf(),
                 )
             },

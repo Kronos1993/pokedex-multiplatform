@@ -112,6 +112,8 @@ fun AbilityDetailScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.refreshMove(ability) },
+                    isRefreshing = isLoading,
                     actions = listOf(),
                 )
             },

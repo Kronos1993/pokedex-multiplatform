@@ -142,6 +142,8 @@ fun PokemonListScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.refreshPokemons(pokedex) },
+                    isRefreshing = isLoading,
                     actions = listOf()
                 )
             },

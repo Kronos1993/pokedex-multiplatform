@@ -180,6 +180,8 @@ fun TypeListScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.loadTypes(true) },
+                    isRefreshing = isLoading,
                     actions = listOf()
                 )
             },

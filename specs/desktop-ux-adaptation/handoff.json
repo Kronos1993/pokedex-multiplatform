@@ -1,0 +1,18 @@
+{
+  "spec_id": "desktop-ux-adaptation",
+  "branch": "feature/desktop-ux-adaptation",
+  "target_branch": "main",
+  "pr_number": 1,
+  "pr_url": "https://github.com/Kronos1993/pokedex-multiplatform/pull/1",
+  "opened_at": "2026-08-18T20:10:53Z",
+  "opened_via": "tier-A",
+  "memory_candidates_surfaced": true,
+  "memory_branch": "chore/memories-desktop-ux-adaptation",
+  "memory_pr_number": 2,
+  "memory_pr_url": "https://github.com/Kronos1993/pokedex-multiplatform/pull/2",
+  "archived_at": null,
+  "archive_branch": null,
+  "archive_reason": null,
+  "archive_pr_number": null,
+  "archive_pr_url": null
+}

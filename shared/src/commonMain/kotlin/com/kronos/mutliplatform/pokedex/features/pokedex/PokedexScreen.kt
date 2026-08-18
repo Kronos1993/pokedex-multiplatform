@@ -60,6 +60,16 @@ import pokedex.shared.generated.resources.menu_pokedex
 import pokedex.shared.generated.resources.menu_pokedex_search_placeholder
 import pokedex.shared.generated.resources.refresh_list
 
+import androidx.compose.foundation.focusable
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
+import com.kronos.mutliplatform.pokedex.core.ui.rememberIsDesktop
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokedexScreen(
@@ -137,6 +147,18 @@ fun PokedexScreen(
         appViewModel.showExitDialog(true)
     }
 
+    // Desktop-only equivalent of the Android back button/gesture above: Esc
+    // triggers the same exit-confirmation callback, gated to the Pokedex route.
+    val isDesktop = rememberIsDesktop()
+    val escFocusRequester = remember { FocusRequester() }
+    val isPokedexRoute = navHost.currentBackStackEntry?.destination?.route == Destinations.POKEDEX.name
+
+    LaunchedEffect(isDesktop, isPokedexRoute) {
+        if (isDesktop && isPokedexRoute) {
+            escFocusRequester.requestFocus()
+        }
+    }
+
     NavDrawer(
         navigationItems = navDestinations,
         selectedIndex = selectedItem,
@@ -153,8 +175,23 @@ fun PokedexScreen(
         } else {
             DrawerDefaults.scrimColor
         },
-        modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.secondaryContainer),
+        modifier = if (isDesktop) {
+            Modifier.fillMaxSize()
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .focusRequester(escFocusRequester)
+                .focusable()
+                .onPreviewKeyEvent { event ->
+                    if (isPokedexRoute && event.type == KeyEventType.KeyDown && event.key == Key.Escape) {
+                        appViewModel.showExitDialog(true)
+                        true
+                    } else {
+                        false
+                    }
+                }
+        } else {
+            Modifier.fillMaxSize()
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+        },
     ) {
         Scaffold(
             topBar = {
@@ -189,6 +226,8 @@ fun PokedexScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.loadPokedex(true) },
+                    isRefreshing = isLoading,
                     actions = listOf()
                 )
             },

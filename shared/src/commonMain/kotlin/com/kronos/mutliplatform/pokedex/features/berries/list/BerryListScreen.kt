@@ -191,6 +191,8 @@ fun BerryListScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.loadBerries(true) },
+                    isRefreshing = isLoading,
                     actions = listOf()
                 )
             },

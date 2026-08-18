@@ -191,6 +191,8 @@ fun NatureListScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.loadNatures(true) },
+                    isRefreshing = isLoading,
                     actions = listOf()
                 )
             },

@@ -112,6 +112,8 @@ fun EggGroupDetailScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.refreshEggGroup(eggGroup) },
+                    isRefreshing = isLoading,
                     actions = listOf(),
                 )
             },

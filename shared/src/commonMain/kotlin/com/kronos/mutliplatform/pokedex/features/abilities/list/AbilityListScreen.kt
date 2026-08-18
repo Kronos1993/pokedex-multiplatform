@@ -191,6 +191,8 @@ fun AbilityListScreen(
                             size = ComponentSize.LARGE
                         )
                     },
+                    onRefresh = { viewModel.loadAbilities(true) },
+                    isRefreshing = isLoading,
                     actions = listOf()
                 )
             },

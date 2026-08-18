@@ -35,12 +35,23 @@ import com.kronos.mutliplatform.pokedex.core.ui.components.button.Button
 import com.kronos.mutliplatform.pokedex.core.ui.components.button.IconButton
 import com.kronos.mutliplatform.pokedex.core.ui.components.menu.AppBarAction
 
+import androidx.compose.foundation.focusable
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
+import com.kronos.mutliplatform.pokedex.core.ui.rememberIsDesktop
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopAppBar(
     title: String?,
     navIconButton: @Composable () -> Unit,
     actions: List<AppBarAction>,
+    onRefresh: (() -> Unit)? = null,
+    isRefreshing: Boolean = false,
     searchEnabled: Boolean = false,
     isSearching: Boolean = false,
     searchPlaceholder: String = "",
@@ -58,11 +69,37 @@ fun AppTopAppBar(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
+    val isDesktop = rememberIsDesktop()
+    val refreshFocusRequester = remember { FocusRequester() }
 
     LaunchedEffect(isSearching) {
         if (isSearching) {
             focusRequester.requestFocus()
         }
+    }
+
+    // Desktop-only: give the app bar keyboard focus so the F5 refresh shortcut
+    // works as soon as the screen loads, without stealing focus from search.
+    LaunchedEffect(onRefresh, isDesktop, isSearching) {
+        if (onRefresh != null && isDesktop && !isSearching) {
+            refreshFocusRequester.requestFocus()
+        }
+    }
+
+    val topBarModifier = if (onRefresh != null && isDesktop) {
+        modifier
+            .focusRequester(refreshFocusRequester)
+            .focusable()
+            .onPreviewKeyEvent { event ->
+                if (event.type == KeyEventType.KeyDown && event.key == Key.F5) {
+                    onRefresh()
+                    true
+                } else {
+                    false
+                }
+            }
+    } else {
+        modifier
     }
 
     TopAppBar(
@@ -215,9 +252,18 @@ fun AppTopAppBar(
                     }
                 }
             }
+            if (onRefresh != null && isDesktop) {
+                IconButton(
+                    onClick = onRefresh,
+                    enabled = !isRefreshing,
+                    iconColor = MaterialTheme.colorScheme.onPrimary,
+                    icon = Icons.Filled.Refresh,
+                    size = ComponentSize.LARGE
+                )
+            }
         },
         scrollBehavior = scrollBehavior,
         colors = appBarColors,
-        modifier = modifier
+        modifier = topBarModifier
     )
 }
