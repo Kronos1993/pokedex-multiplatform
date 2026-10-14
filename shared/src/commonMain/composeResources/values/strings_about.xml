@@ -13,7 +13,8 @@
     <string name="about_tech_3">Clean Architecture + Koin</string>
     <string name="about_links_title">Links</string>
     <string name="about_pokeapi">PokéAPI — pokeapi.co</string>
-    <string name="about_github">GitHub — source code</string>
+    <string name="about_website">Kronos Tech — website</string>
+    <string name="about_privacy_policy">Privacy policy</string>
     <string name="about_version">Version %1$s · Compose Multiplatform</string>
     <string name="about_copyright">Copyright © 2025 Kronos Tech.</string>
 </resources>

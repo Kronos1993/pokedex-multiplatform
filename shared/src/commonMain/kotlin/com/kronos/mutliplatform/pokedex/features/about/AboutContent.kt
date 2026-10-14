@@ -20,9 +20,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Bolt
-import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.OpenInBrowser
+import androidx.compose.material.icons.outlined.PrivacyTip
+import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -56,15 +57,16 @@ import pokedex.shared.generated.resources.about_feature_2
 import pokedex.shared.generated.resources.about_feature_3
 import pokedex.shared.generated.resources.about_feature_4
 import pokedex.shared.generated.resources.about_features_title
-import pokedex.shared.generated.resources.about_github
 import pokedex.shared.generated.resources.about_links_title
 import pokedex.shared.generated.resources.about_menu
 import pokedex.shared.generated.resources.about_pokeapi
+import pokedex.shared.generated.resources.about_privacy_policy
 import pokedex.shared.generated.resources.about_tech_1
 import pokedex.shared.generated.resources.about_tech_2
 import pokedex.shared.generated.resources.about_tech_3
 import pokedex.shared.generated.resources.about_technologies
 import pokedex.shared.generated.resources.about_version
+import pokedex.shared.generated.resources.about_website
 import pokedex.shared.generated.resources.ic_copyright
 
 @Composable
@@ -117,7 +119,8 @@ fun AboutInfoSection(
     alignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     modifier: Modifier = Modifier,
 ) {
-    val githubUrl = "https://github.com/Kronos1993/pokedex-multiplatform"
+    val websiteUrl = "https://kronos1993.github.io/#pokedex"
+    val privacyPolicyUrl = "https://kronos1993.github.io/pokedex/privacy/"
     val pokeApiUrl = "https://pokeapi.co/"
 
     Column(
@@ -184,9 +187,14 @@ fun AboutInfoSection(
                     onClick = { expectedIntents.openBrowser(pokeApiUrl) },
                 )
                 AboutLinkRow(
-                    icon = Icons.Outlined.Code,
-                    text = stringResource(Res.string.about_github),
-                    onClick = { expectedIntents.openBrowser(githubUrl) },
+                    icon = Icons.Outlined.Public,
+                    text = stringResource(Res.string.about_website),
+                    onClick = { expectedIntents.openBrowser(websiteUrl) },
+                )
+                AboutLinkRow(
+                    icon = Icons.Outlined.PrivacyTip,
+                    text = stringResource(Res.string.about_privacy_policy),
+                    onClick = { expectedIntents.openBrowser(privacyPolicyUrl) },
                 )
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
                 Row(

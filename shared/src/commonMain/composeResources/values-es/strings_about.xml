@@ -17,7 +17,8 @@
 
     <string name="about_links_title">Enlaces</string>
     <string name="about_pokeapi">PokéAPI — pokeapi.co</string>
-    <string name="about_github">GitHub — código fuente</string>
+    <string name="about_website">Kronos Tech — sitio web</string>
+    <string name="about_privacy_policy">Política de privacidad</string>
 
     <string name="about_version">Versión %1$s · Compose Multiplatform</string>
     <string name="about_copyright">Copyright © 2025 Kronos Tech.</string>
